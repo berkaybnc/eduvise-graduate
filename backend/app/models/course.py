@@ -1,54 +1,56 @@
-from sqlalchemy import Column, Integer, String, Float, Enum, ForeignKey, DateTime
+from sqlalchemy import Column, String, Float, Boolean, Integer, DateTime, ForeignKey, Text
+from sqlalchemy.dialects.sqlite import JSON
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-import enum
+from app.database import Base
+import uuid
+from datetime import datetime
 
-from app.core.database import SqliteBase
-
-class CourseLevel(str, enum.Enum):
-    beginner = "beginner"
-    intermediate = "intermediate"
-    advanced = "advanced"
-
-class Course(SqliteBase):
+class Course(Base):
     __tablename__ = "courses"
-
-    id = Column(Integer, primary_key=True, index=True)
-    instructor_id = Column(Integer, nullable=False) # Maps to PostgreSQL users.id
-    title = Column(String, index=True)
-    description = Column(String)
-    category = Column(String)
-    level = Column(Enum(CourseLevel), default=CourseLevel.beginner)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    instructor_id = Column(String, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(Text)
+    category = Column(String, nullable=False)
+    level = Column(String, default="beginner")  # beginner, intermediate, advanced
+    price = Column(Float, default=0.0)
     thumbnail_url = Column(String)
-    price = Column(Float)
-    currency = Column(String, default="USD")
-    is_published = Column(Integer, default=0) # boolean
-    rating = Column(Float, default=0.0)
-    enrollment_count = Column(Integer, default=0)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    is_published = Column(Boolean, default=False)
+    tags = Column(JSON, default=list)
+    topic_map = Column(JSON, default=dict)  # {topic_name: [video_ids]}
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    instructor = relationship("User", foreign_keys=[instructor_id])
+    sections = relationship("Section", back_populates="course", cascade="all, delete-orphan")
+    enrollments = relationship("Enrollment", back_populates="course")
 
-    sections = relationship("Section", back_populates="course")
-
-class Section(SqliteBase):
+class Section(Base):
     __tablename__ = "sections"
-
-    id = Column(Integer, primary_key=True, index=True)
-    course_id = Column(Integer, ForeignKey("courses.id"))
-    title = Column(String)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    course_id = Column(String, ForeignKey("courses.id"), nullable=False)
+    title = Column(String, nullable=False)
     order_index = Column(Integer, default=0)
-
+    topic_tag = Column(String)  # hangi konuya ait (AI roadmap için)
     course = relationship("Course", back_populates="sections")
-    lessons = relationship("Lesson", back_populates="section")
+    videos = relationship("Video", back_populates="section", cascade="all, delete-orphan")
 
-class Lesson(SqliteBase):
-    __tablename__ = "lessons"
-
-    id = Column(Integer, primary_key=True, index=True)
-    section_id = Column(Integer, ForeignKey("sections.id"))
-    title = Column(String)
-    video_url = Column(String)
+class Video(Base):
+    __tablename__ = "videos"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    section_id = Column(String, ForeignKey("sections.id"), nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(Text)
+    video_url = Column(String, nullable=False)
     duration_seconds = Column(Integer, default=0)
-    is_preview = Column(Integer, default=0) # boolean
     order_index = Column(Integer, default=0)
+    is_preview = Column(Boolean, default=False)
+    section = relationship("Section", back_populates="videos")
 
-    section = relationship("Section", back_populates="lessons")
+class Enrollment(Base):
+    __tablename__ = "enrollments"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    course_id = Column(String, ForeignKey("courses.id"), nullable=False)
+    enrolled_at = Column(DateTime, default=datetime.utcnow)
+    completed_videos = Column(JSON, default=list)  # [video_id, ...]
+    course = relationship("Course", back_populates="enrollments")
