@@ -1,46 +1,18 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: eduvise_postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: eduvise
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: always
-
-  redis:
-    image: redis:7-alpine
-    container_name: eduvise_redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    restart: always
-    
-  api:
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: eduvise_api
+    container_name: eduvise_backend
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/venv
     environment:
-      - POSTGRES_SERVER=db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=eduvise
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
-    restart: always
-
-volumes:
-  postgres_data:
-  redis_data:
+      - DATABASE_URL=sqlite:///./eduvise.db
+      - SECRET_KEY=change-this-to-random-256bit-string
+      - UPLOAD_DIR=./uploads
+    command: sh -c "python seed.py && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
