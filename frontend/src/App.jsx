@@ -17,19 +17,17 @@ function App() {
         <Sidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <TopBar />
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background p-6">
-            <div className="max-w-[1200px] mx-auto">
-              <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/courses/:id" element={<CourseDetail />} />
-                <Route path="/learn/:courseId/:lessonId" element={<Learn />} />
-                <Route path="/assessment/diagnostic" element={<DiagnosticAssessment />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                <Route path="/reports" element={<Reports />} />
-              </Routes>
-            </div>
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:id" element={<CourseDetail />} />
+              <Route path="/learn/:courseId/:lessonId" element={<Learn />} />
+              <Route path="/assessment/diagnostic" element={<DiagnosticAssessment />} />
+              <Route path="/roadmap" element={<Roadmap />} />
+              <Route path="/reports" element={<Reports />} />
+            </Routes>
           </main>
         </div>
       </div>
