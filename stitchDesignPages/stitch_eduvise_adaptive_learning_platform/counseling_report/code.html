@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduVise - Final Counseling Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary": "#3231c1",
+                        "outline-variant": "#c3c5d7",
+                        "surface-bright": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#00201d",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "primary": "#003fb1",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#e1e0ff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d9dadb",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-fixed-variant": "#003dab",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed": "#89f5e7",
+                        "inverse-primary": "#b5c4ff",
+                        "secondary": "#006a61",
+                        "on-tertiary-fixed": "#07006c",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-background": "#191c1d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#2f2ebe",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-surface": "#191c1d",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#00174d",
+                        "secondary-container": "#86f2e4",
+                        "on-secondary": "#ffffff",
+                        "outline": "#737686",
+                        "tertiary-container": "#4c4ed9",
+                        "tertiary-fixed-dim": "#c0c1ff",
+                        "on-secondary-container": "#006f66",
+                        "on-surface-variant": "#434654",
+                        "surface-tint": "#1353d8",
+                        "surface-container-low": "#f3f4f5",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#1a56db",
+                        "on-tertiary-container": "#dbdaff",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "on-primary-container": "#d4dcff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "max-content-width": "1200px",
+                        "base": "4px",
+                        "sidebar-width": "260px",
+                        "sm": "8px",
+                        "xl": "40px"
+                    },
+                    "fontFamily": {
+                        "mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md flex antialiased">
+<!-- SideNavBar -->
+<aside aria-label="Sidebar Navigation" class="hidden md:flex flex-col h-full py-md fixed left-0 top-0 w-[260px] bg-surface-container-highest border-r border-outline-variant z-40">
+<div class="px-lg pb-md mb-md border-b border-outline-variant flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-md text-headline-md font-bold">E</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface m-0">EduVise</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant m-0">Adaptive Learning</p>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300, 'FILL' 0;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300, 'FILL' 0;">map</span>
+<span class="font-label-md text-label-md">Roadmap</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300, 'FILL' 0;">school</span>
+<span class="font-label-md text-label-md">Courses</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-surface-container text-primary border-l-2 border-primary font-bold rounded-r-DEFAULT opacity-90 scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 400, 'FILL' 1;">analytics</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300, 'FILL' 0;">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-260px)] h-16 bg-surface border-b border-outline-variant z-30 flex justify-between items-center px-lg ml-auto">
+<div class="flex items-center md:hidden">
+<h1 class="font-headline-md text-headline-md font-bold text-primary m-0">EduVise</h1>
+</div>
+<div class="hidden md:flex flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'wght' 300;">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Search resources..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">psychology</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container ml-2 overflow-hidden border border-outline-variant">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrE7sMb3QiPm5t6KY83KmSADr6gPOBORWKUH7Agam3JuLYgsuAFtu7C3SVswtjdg1nBZK7jicBpkEZxfL9osgJsZS_gCQPiRKHrVqg22lsMZoXH-9Wib5o9-G58Q2SnYolGLWpncJidUrN01525IA32KrUwehPGCmV502PZRIuyjIjtQq023YSTs6haoVFL1j0Mt5FoFdM5O_xfqHDq1qJu0svNOiUxXKbCP0XVn1UbcQXmpbvhDitZA-rqgI3qP3ayTIRo1CumFBF"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full md:w-[calc(100%-260px)] md:ml-[260px] pt-16 pb-xl min-h-screen">
+<div class="max-w-[1200px] mx-auto p-4 md:p-lg">
+<!-- Header Section -->
+<div class="mb-lg pt-4">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-full mb-3 border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface">Fall Semester Complete</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Alex's Learning Journey - Semester Report</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">Comprehensive analysis of technical competencies, skill progression, and AI-recommended pathways for continued professional development.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg mb-lg">
+<!-- Radar Chart Card (Left) -->
+<div class="md:col-span-7 bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col shadow-sm">
+<div class="border-b border-outline-variant pb-3 mb-4 flex justify-between items-end">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Skill Gap Analysis</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Initial vs. Current Mastery</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-surface-variant border border-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Initial State</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-secondary/20 border border-secondary"></span>
+<span class="font-label-sm text-label-sm text-secondary">Current Mastery</span>
+</div>
+</div>
+</div>
+<div class="flex-1 min-h-[350px] relative flex items-center justify-center bg-surface-bright rounded-lg border border-surface-variant">
+<!-- Stylized SVG Radar Chart representing the graphic requested -->
+<svg class="w-full h-full max-w-[320px] max-h-[320px]" viewbox="0 0 400 400">
+<!-- Grid -->
+<polygon fill="none" points="200,50 330,125 330,275 200,350 70,275 70,125" stroke="#e1e3e4" stroke-width="1"></polygon>
+<polygon fill="none" points="200,100 286,150 286,250 200,300 114,250 114,150" stroke="#e1e3e4" stroke-width="1"></polygon>
+<polygon fill="none" points="200,150 243,175 243,225 200,250 157,225 157,175" stroke="#e1e3e4" stroke-width="1"></polygon>
+<!-- Axes -->
+<line stroke="#e1e3e4" stroke-dasharray="4" stroke-width="1" x1="200" x2="200" y1="200" y2="50"></line>
+<line stroke="#e1e3e4" stroke-dasharray="4" stroke-width="1" x1="200" x2="330" y1="200" y2="125"></line>
+<line stroke="#e1e3e4" stroke-dasharray="4" stroke-width="1" x1="200" x2="330" y1="200" y2="275"></line>
+<line stroke="#e1e3e4" stroke-dasharray="4" stroke-width="1" x1="200" x2="200" y1="200" y2="350"></line>
+<line stroke="#e1e3e4" stroke-dasharray="4" stroke-width="1" x1="200" x2="70" y1="200" y2="275"></line>
+<line stroke="#e1e3e4" stroke-dasharray="4" stroke-width="1" x1="200" x2="70" y1="200" y2="125"></line>
+<!-- Initial State Polygon -->
+<polygon fill="#e1e3e4" fill-opacity="0.4" points="200,120 250,150 260,230 200,260 140,240 130,140" stroke="#737686" stroke-width="1"></polygon>
+<!-- Current Mastery Polygon -->
+<polygon fill="rgba(13, 148, 136, 0.2)" points="200,60 300,140 290,260 200,320 90,260 80,130" stroke="#0D9488" stroke-width="2"></polygon>
+<!-- Current Mastery Nodes -->
+<circle cx="200" cy="60" fill="#0D9488" r="4"></circle>
+<circle cx="300" cy="140" fill="#0D9488" r="4"></circle>
+<circle cx="290" cy="260" fill="#0D9488" r="4"></circle>
+<circle cx="200" cy="320" fill="#0D9488" r="4"></circle>
+<circle cx="90" cy="260" fill="#0D9488" r="4"></circle>
+<circle cx="80" cy="130" fill="#0D9488" r="4"></circle>
+<!-- Labels -->
+<text fill="#434654" font-family="Inter" font-size="12" font-weight="500" text-anchor="middle" x="200" y="35">Data Structs</text>
+<text fill="#434654" font-family="Inter" font-size="12" font-weight="500" text-anchor="start" x="345" y="125">Algorithms</text>
+<text fill="#434654" font-family="Inter" font-size="12" font-weight="500" text-anchor="start" x="345" y="280">Sys Design</text>
+<text fill="#434654" font-family="Inter" font-size="12" font-weight="500" text-anchor="middle" x="200" y="375">Testing</text>
+<text fill="#434654" font-family="Inter" font-size="12" font-weight="500" text-anchor="end" x="55" y="280">Frontend</text>
+<text fill="#434654" font-family="Inter" font-size="12" font-weight="500" text-anchor="end" x="55" y="125">Backend</text>
+</svg>
+</div>
+</div>
+<!-- Stats & Checklist (Right) -->
+<div class="md:col-span-5 flex flex-col gap-lg">
+<!-- Mastery Stats Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<div class="border-b border-outline-variant pb-2 mb-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Mastery Stats</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-primary-container/10 rounded-lg border border-primary-fixed">
+<span class="material-symbols-outlined text-primary mb-2" style="font-variation-settings: 'wght' 300, 'FILL' 1;">trending_up</span>
+<div class="font-headline-lg text-headline-lg text-primary mb-1">92%</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Increase in Coding Fluency</div>
+</div>
+<div class="p-3 bg-secondary-container/10 rounded-lg border border-secondary-fixed">
+<span class="material-symbols-outlined text-secondary mb-2" style="font-variation-settings: 'wght' 300, 'FILL' 1;">task_alt</span>
+<div class="font-headline-lg text-headline-lg text-secondary mb-1">85%</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Overall Completion Rate</div>
+</div>
+</div>
+</div>
+<!-- Competency Checklist Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex-1">
+<div class="border-b border-outline-variant pb-2 mb-4 flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Competency Checklist</h2>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-surface-container-high rounded text-on-surface-variant">12/15 Core</span>
+</div>
+<ul class="space-y-3">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-0.5" style="font-variation-settings: 'wght' 400, 'FILL' 1;">check_circle</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Advanced Graph Algorithms</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Mastered Dijkstra's and A* implementations.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-0.5" style="font-variation-settings: 'wght' 400, 'FILL' 1;">check_circle</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">React State Management</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Proficient with Context API and Redux Toolkit.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-0.5" style="font-variation-settings: 'wght' 400, 'FILL' 1;">check_circle</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">RESTful API Design</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Consistently applies proper verbs and status codes.</p>
+</div>
+</li>
+<li class="flex items-start gap-3 opacity-60">
+<span class="material-symbols-outlined text-outline mt-0.5" style="font-variation-settings: 'wght' 300, 'FILL' 0;">radio_button_unchecked</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Microservices Architecture</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">In progress. Focus on inter-service communication needed.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Recommended Next Steps -->
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Recommended Next Steps</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Course Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:border-primary transition-colors cursor-pointer group">
+<div class="h-32 mb-4 rounded-lg bg-surface-container overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-tint/10 to-surface-tint/5 mix-blend-multiply"></div>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary opacity-20 text-5xl" style="font-variation-settings: 'wght' 300;">policy</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm text-primary px-2 py-1 bg-primary-container/20 rounded">AI Alignment</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style="font-variation-settings: 'wght' 300;">arrow_forward</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface mb-1">AI Ethics III</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Deep dive into bias mitigation and transparent modeling techniques for production ML systems.</p>
+</div>
+<!-- Course Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:border-primary transition-colors cursor-pointer group">
+<div class="h-32 mb-4 rounded-lg bg-surface-container overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/10 to-secondary/5 mix-blend-multiply"></div>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-secondary opacity-20 text-5xl" style="font-variation-settings: 'wght' 300;">architecture</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm text-secondary px-2 py-1 bg-secondary-container/20 rounded">Practical App</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style="font-variation-settings: 'wght' 300;">arrow_forward</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface mb-1">Real-world Project Seminar</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Capstone project simulating a startup environment to bridge the gap in Microservices architecture.</p>
+</div>
+<!-- Course Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:border-primary transition-colors cursor-pointer group">
+<div class="h-32 mb-4 rounded-lg bg-surface-container overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary/10 to-tertiary/5 mix-blend-multiply"></div>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-tertiary opacity-20 text-5xl" style="font-variation-settings: 'wght' 300;">cloud</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm text-tertiary px-2 py-1 bg-tertiary-container/20 rounded">Infrastructure</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style="font-variation-settings: 'wght' 300;">arrow_forward</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface mb-1">Cloud Deployment Ops</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Master container orchestration and CI/CD pipelines to strengthen backend deployment skills.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduVise - Interactive Roadmap</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary": "#3231c1",
+                        "outline-variant": "#c3c5d7",
+                        "surface-bright": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#00201d",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "primary": "#003fb1",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#e1e0ff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d9dadb",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-fixed-variant": "#003dab",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed": "#89f5e7",
+                        "inverse-primary": "#b5c4ff",
+                        "secondary": "#006a61",
+                        "on-tertiary-fixed": "#07006c",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-background": "#191c1d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#2f2ebe",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-surface": "#191c1d",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#00174d",
+                        "secondary-container": "#86f2e4",
+                        "on-secondary": "#ffffff",
+                        "outline": "#737686",
+                        "tertiary-container": "#4c4ed9",
+                        "tertiary-fixed-dim": "#c0c1ff",
+                        "on-secondary-container": "#006f66",
+                        "on-surface-variant": "#434654",
+                        "surface-tint": "#1353d8",
+                        "surface-container-low": "#f3f4f5",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#1a56db",
+                        "on-tertiary-container": "#dbdaff",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "on-primary-container": "#d4dcff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "max-content-width": "1200px",
+                        "base": "4px",
+                        "sidebar-width": "260px",
+                        "sm": "8px",
+                        "xl": "40px"
+                    },
+                    fontFamily: {
+                        "mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "mono": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "label-sm": ["12px", { lineHeight: "14px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "label-md": ["14px", { lineHeight: "16px", fontWeight: "500" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Lightweight dot pattern for the canvas */
+        .bg-dot-pattern {
+            background-image: radial-gradient(var(--tw-colors-outline-variant) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        
+        /* Node connection lines styling */
+        .graph-line {
+            stroke: var(--tw-colors-outline-variant);
+            stroke-width: 1px;
+            stroke-dasharray: 4 4;
+            fill: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (from JSON, modified active state for 'Roadmap') -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-highest border-r border-outline-variant flex flex-col py-md z-50">
+<div class="px-lg pb-md mb-sm border-b border-outline-variant">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">EduVise</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Adaptive Learning</p>
+</div>
+<nav class="flex-1 flex flex-col font-body-md text-body-md">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<!-- Active Tab -->
+<a class="flex items-center gap-3 px-4 py-3 bg-surface-container text-primary border-l-2 border-primary font-bold opacity-90 scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+                Roadmap
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+                Courses
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Reports
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                Profile
+            </a>
+</nav>
+</aside>
+<!-- TopNavBar (from JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-lg z-40">
+<div class="flex items-center w-64">
+<!-- Search simulation -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-DEFAULT py-1.5 pl-8 pr-3 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors" placeholder="Search knowledge graph..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant">
+<button class="hover:bg-surface-container p-2 rounded-DEFAULT transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:bg-surface-container p-2 rounded-DEFAULT transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</button>
+<button class="hover:bg-surface-container p-2 rounded-DEFAULT transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden ml-sm cursor-pointer">
+<!-- Avatar Placeholder -->
+<div class="w-full h-full bg-primary-fixed-dim flex items-center justify-center text-primary font-label-md text-label-md font-bold">U</div>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="ml-[260px] mt-16 h-[calc(100vh-64px)] flex">
+<!-- Knowledge Graph Canvas -->
+<section class="flex-1 relative bg-surface-bright bg-dot-pattern overflow-hidden">
+<!-- SVG Overlay for Connection Lines -->
+<svg aria-hidden="true" class="absolute inset-0 w-full h-full pointer-events-none z-0">
+<!-- Data Structures to Graph Theory -->
+<path class="graph-line" d="M 250 200 L 450 350"></path>
+<!-- Discrete Math to Graph Theory -->
+<path class="graph-line" d="M 200 450 L 450 350"></path>
+<!-- Graph Theory to Probability (Gap) -->
+<path class="graph-line" d="M 450 350 L 500 600" stroke="var(--tw-colors-error)" stroke-opacity="0.3"></path>
+<!-- Graph Theory to Neural Networks -->
+<path class="graph-line" d="M 450 350 L 750 400"></path>
+<!-- Probability to Neural Networks -->
+<path class="graph-line" d="M 500 600 L 750 400"></path>
+</svg>
+<!-- Node: Data Structures (Mastered) -->
+<button class="absolute top-[200px] left-[250px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
+<div class="w-16 h-16 rounded-full bg-surface border-2 border-secondary flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] group-hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="mt-sm font-label-sm text-label-sm text-on-surface px-2 py-1 bg-surface border border-outline-variant rounded-DEFAULT shadow-sm whitespace-nowrap">Data Structures</span>
+</button>
+<!-- Node: Discrete Math (Mastered) -->
+<button class="absolute top-[450px] left-[200px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
+<div class="w-16 h-16 rounded-full bg-surface border-2 border-secondary flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] group-hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="mt-sm font-label-sm text-label-sm text-on-surface px-2 py-1 bg-surface border border-outline-variant rounded-DEFAULT shadow-sm whitespace-nowrap">Discrete Math</span>
+</button>
+<!-- Node: Graph Theory (Current - Active) -->
+<button class="absolute top-[350px] left-[450px] -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center group focus:outline-none">
+<div class="w-20 h-20 rounded-full bg-primary border-2 border-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-4 ring-primary/20">
+<span class="material-symbols-outlined text-on-primary text-[32px]">hub</span>
+</div>
+<span class="mt-sm font-label-sm text-label-sm font-bold text-primary px-3 py-1 bg-surface border border-primary rounded-DEFAULT shadow-sm whitespace-nowrap">Graph Theory</span>
+</button>
+<!-- Node: Probability (Gap - Red) -->
+<button class="absolute top-[600px] left-[500px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
+<div class="w-16 h-16 rounded-full bg-surface border-2 border-error flex items-center justify-center border-dashed group-hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<span class="mt-sm font-label-sm text-label-sm text-error px-2 py-1 bg-surface border border-error rounded-DEFAULT shadow-sm whitespace-nowrap">Probability Gap</span>
+</button>
+<!-- Node: Neural Networks (Upcoming - Gray) -->
+<button class="absolute top-[400px] left-[750px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
+<div class="w-16 h-16 rounded-full bg-surface-container-low border-2 border-outline-variant flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<span class="mt-sm font-label-sm text-label-sm text-outline px-2 py-1 bg-surface-container-low border border-outline-variant rounded-DEFAULT shadow-sm whitespace-nowrap">Neural Networks</span>
+</button>
+<!-- Canvas Controls (Bottom Right) -->
+<div class="absolute bottom-lg right-lg flex flex-col gap-xs bg-surface border border-outline-variant p-1 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-DEFAULT transition-colors"><span class="material-symbols-outlined text-[20px]">add</span></button>
+<div class="h-[1px] bg-outline-variant w-full my-1"></div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-DEFAULT transition-colors"><span class="material-symbols-outlined text-[20px]">remove</span></button>
+<div class="h-[1px] bg-outline-variant w-full my-1"></div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-DEFAULT transition-colors"><span class="material-symbols-outlined text-[20px]">fit_screen</span></button>
+</div>
+</section>
+<!-- Right Detail Panel -->
+<aside class="w-[340px] bg-surface border-l border-outline-variant flex flex-col h-full z-30 shadow-[-4px_0_24px_rgba(0,0,0,0.02)]">
+<!-- Panel Header -->
+<div class="p-lg border-b border-outline-variant">
+<div class="flex items-center gap-2 mb-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Current Focus</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Graph Theory</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-sm">Understand networks, routing, and relationships through nodes and edges.</p>
+</div>
+<!-- Panel Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-lg space-y-lg">
+<!-- AI Insights -->
+<div class="bg-surface-bright border border-outline-variant rounded-lg overflow-hidden">
+<div class="bg-secondary-fixed-dim/20 px-md py-sm border-b border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">psychology</span>
+<h3 class="font-label-md text-label-md font-semibold text-on-secondary-container">AI Insight</h3>
+</div>
+<div class="p-md">
+<p class="font-body-sm text-body-sm text-on-surface">Based on your recent quiz scores, <strong class="font-medium">focus heavily on adjacency matrices</strong> before proceeding to spanning trees. You showed slight hesitation in array representations.</p>
+</div>
+</div>
+<!-- Stats Grid (Bento style) -->
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md">
+<span class="material-symbols-outlined text-outline mb-xs block">schedule</span>
+<div class="font-label-sm text-label-sm text-outline uppercase">Est. Time</div>
+<div class="font-body-lg text-body-lg text-on-surface font-medium">4h 30m</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md">
+<span class="material-symbols-outlined text-outline mb-xs block">trending_up</span>
+<div class="font-label-sm text-label-sm text-outline uppercase">Difficulty</div>
+<div class="font-body-lg text-body-lg text-on-surface font-medium">High</div>
+</div>
+</div>
+<!-- Progress Track -->
+<div>
+<div class="flex justify-between items-center mb-sm">
+<h3 class="font-label-md text-label-md text-on-surface font-semibold">Module Progress</h3>
+<span class="font-mono text-mono text-primary">25%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-1/4"></div>
+</div>
+</div>
+<!-- Prerequisites -->
+<div>
+<h3 class="font-label-md text-label-md text-on-surface font-semibold border-b border-outline-variant pb-xs mb-sm">Prerequisites</h3>
+<ul class="space-y-sm">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-[2px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<div class="font-body-sm text-body-sm text-on-surface">Data Structures</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Mastered • Oct 12</div>
+</div>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-[2px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<div class="font-body-sm text-body-sm text-on-surface">Discrete Mathematics</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Mastered • Oct 20</div>
+</div>
+</li>
+<li class="flex items-start gap-sm bg-error-container/30 p-2 rounded-DEFAULT -mx-2 border border-error-container">
+<span class="material-symbols-outlined text-error text-[18px] mt-[2px]">warning</span>
+<div>
+<div class="font-body-sm text-body-sm text-error font-medium">Probability Basics</div>
+<div class="font-label-sm text-label-sm text-error/80">Skill gap detected</div>
+<a class="font-label-sm text-label-sm text-primary underline mt-xs inline-block" href="#">Review Module</a>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Panel Footer Actions -->
+<div class="p-lg border-t border-outline-variant bg-surface-container-lowest">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-md text-label-md font-semibold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2">
+                    Continue Learning
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</aside>
+</main>
+</body></html>

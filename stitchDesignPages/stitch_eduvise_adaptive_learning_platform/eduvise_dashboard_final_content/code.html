@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduVise Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#005049",
+                      "tertiary": "#3231c1",
+                      "outline-variant": "#c3c5d7",
+                      "surface-bright": "#f8f9fa",
+                      "surface-variant": "#e1e3e4",
+                      "on-secondary-fixed": "#00201d",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#dbe1ff",
+                      "primary": "#003fb1",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#e1e0ff",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#d9dadb",
+                      "inverse-surface": "#2e3132",
+                      "on-primary-fixed-variant": "#003dab",
+                      "surface-container": "#edeeef",
+                      "secondary-fixed": "#89f5e7",
+                      "inverse-primary": "#b5c4ff",
+                      "secondary": "#006a61",
+                      "on-tertiary-fixed": "#07006c",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-background": "#191c1d",
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "error-container": "#ffdad6",
+                      "surface": "#f8f9fa",
+                      "surface-container-high": "#e7e8e9",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#2f2ebe",
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-surface": "#191c1d",
+                      "background": "#f8f9fa",
+                      "on-primary-fixed": "#00174d",
+                      "secondary-container": "#86f2e4",
+                      "on-secondary": "#ffffff",
+                      "outline": "#737686",
+                      "tertiary-container": "#4c4ed9",
+                      "tertiary-fixed-dim": "#c0c1ff",
+                      "on-secondary-container": "#006f66",
+                      "on-surface-variant": "#434654",
+                      "surface-tint": "#1353d8",
+                      "surface-container-low": "#f3f4f5",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#1a56db",
+                      "on-tertiary-container": "#dbdaff",
+                      "primary-fixed-dim": "#b5c4ff",
+                      "on-primary-container": "#d4dcff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "max-content-width": "1200px",
+                      "base": "4px",
+                      "sidebar-width": "260px",
+                      "sm": "8px",
+                      "xl": "40px"
+              },
+              "fontFamily": {
+                      "mono": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #F9FAFB;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-md bg-surface-container-highest dark:bg-inverse-surface fixed left-0 top-0 w-[260px] border-r border-outline-variant dark:border-outline z-50">
+<div class="px-lg pb-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface">EduVise</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Adaptive Learning</p>
+</div>
+<ul class="flex flex-col gap-xs flex-1 px-sm">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 bg-surface-container dark:bg-surface-container-high text-primary dark:text-primary-fixed-dim border-l-2 border-primary font-bold opacity-90 scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-surface-container-high dark:hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md text-label-md">Roadmap</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-surface-container-high dark:hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label-md text-label-md">Courses</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-surface-container-high dark:hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-sm pt-md border-t border-outline-variant/30">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-surface-container-high dark:hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline flex justify-between items-center px-lg z-40">
+<div class="flex items-center">
+<!-- Search Left -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-2 font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Search knowledge base..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-sm cursor-pointer">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyehsqxFFfDnWkHG1kJr8dAJLSwy54e3hqorxA_rM3kbTA1Jak6_9wAlrxeIP-GkaJQxLWm_mbxEL5gc-XquLmgJf3EvuwHBfTrW9M_OMO_2CFO2RSVA2C0sy7ZyuquqcKhmB1YRc0jLU_fPVXXrFyylyV6KJl_uyGXMZEifIOpJkF7EoJsbriWkY8X-jlc5zd-BBo1goEoDSHQDqeXMjH2mWKci4lpd2pW5ZsPL0b7v20tpLTt1FcGeAPqtNv3tGQ9IWIxuGcsi5s"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[260px] mt-16 p-lg h-[calc(100vh-64px)] overflow-y-auto w-full relative">
+<div class="max-w-7xl mx-auto space-y-lg pb-xl">
+<!-- Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Left Card -->
+<div class="lg:col-span-2 bg-gradient-to-br from-[#1A56DB] to-[#003fb1] rounded-xl p-lg relative overflow-hidden text-on-primary">
+<div class="relative z-10">
+<h2 class="font-headline-lg text-headline-lg mb-sm">Welcome back, Alex.</h2>
+<p class="font-body-md text-body-md opacity-90 max-w-md mb-md">
+                            Your AI roadmap has been updated. Resume where you left off.
+                        </p>
+<button class="bg-surface-container-lowest text-primary px-6 py-3 rounded-lg font-label-md text-label-md hover:bg-surface transition-colors flex items-center gap-2">
+<span>Continue Learning</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Decorative elements -->
+<div class="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+<div class="absolute right-20 bottom-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mb-10"></div>
+</div>
+<!-- Right Card (Alert) -->
+<div class="bg-surface-container-lowest border-2 border-secondary/30 rounded-xl p-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 text-secondary mb-3">
+<span>⚡</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold">Critical Gap Detected</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Probability Basics</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                            Recent quiz shows 34% drop. Address before proceeding.
+                        </p>
+</div>
+<button class="mt-4 w-full border border-secondary text-secondary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-secondary/5 transition-colors">
+                        Review Now
+                    </button>
+</div>
+</div>
+<!-- Middle Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Left Card: Knowledge State Radar -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col h-[400px]">
+<div class="border-b border-outline-variant/50 pb-sm mb-md flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Knowledge State</h3>
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex-1 relative flex items-center justify-center">
+<!-- Hexagonal Radar Chart CSS -->
+<div class="relative w-72 h-72 flex items-center justify-center">
+<!-- Concentric Hexagons -->
+<svg class="absolute w-full h-full opacity-30" viewbox="0 0 100 100">
+<polygon fill="none" points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" stroke="currentColor" stroke-width="0.5"></polygon>
+<polygon fill="none" points="50,20 76.5,35 76.5,65 50,80 23.5,65 23.5,35" stroke="currentColor" stroke-width="0.5"></polygon>
+<polygon fill="none" points="50,35 63,42.5 63,57.5 50,65 37,57.5 37,42.5" stroke="currentColor" stroke-width="0.5"></polygon>
+<!-- Axes -->
+<line stroke="currentColor" stroke-width="0.5" x1="50" x2="50" y1="5" y2="95"></line>
+<line stroke="currentColor" stroke-width="0.5" x1="10" x2="90" y1="27.5" y2="72.5"></line>
+<line stroke="currentColor" stroke-width="0.5" x1="10" x2="90" y1="72.5" y2="27.5"></line>
+</svg>
+<!-- Data Polygon -->
+<svg class="absolute w-full h-full opacity-80" viewbox="0 0 100 100">
+<polygon fill="rgba(26, 86, 219, 0.2)" points="50,15 82,32 78,65 50,85 30,68 25,35" stroke="#1A56DB" stroke-width="1.5"></polygon>
+</svg>
+<!-- Labels -->
+<span class="absolute top-[-5px] font-label-sm text-label-sm text-on-surface">Algorithm</span>
+<span class="absolute right-[-10px] top-[20%] font-label-sm text-label-sm text-on-surface">Data Structs</span>
+<span class="absolute right-[-10px] bottom-[20%] font-label-sm text-label-sm text-on-surface">Backend</span>
+<span class="absolute bottom-[-15px] font-label-sm text-label-sm text-on-surface">Frontend</span>
+<span class="absolute left-[-5px] bottom-[20%] font-label-sm text-label-sm text-on-surface">Testing</span>
+<span class="absolute left-[-15px] top-[20%] font-label-sm text-label-sm text-on-surface">Sys Design</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Progress & Streak -->
+<div class="flex flex-col gap-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex-1">
+<h3 class="font-label-md text-label-md text-on-surface-variant font-medium mb-4 uppercase tracking-wider">Skill Progress</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Algorithm</span>
+<span class="text-on-surface-variant">78%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Data Structures</span>
+<span class="text-on-surface-variant">91%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 91%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Backend</span>
+<span class="text-on-surface-variant">45%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Frontend</span>
+<span class="text-on-surface-variant">62%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 62%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xl">
+                                🔥
+                            </div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Current Streak</p>
+<p class="font-headline-md text-headline-md text-on-surface">12 Days</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Active Curriculum -->
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Active Curriculum</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Course Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer flex flex-col group">
+<div class="h-32 bg-surface-variant relative">
+<img alt="Course cover" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyY84G2D2cs8gBNSrnHjXrFUSA6NOti9RuuVqeSZkIoFUlnLh6dwH3HVdBQvMwi0PrI4y32zAZ8LYPnJJGdGbzVILDiorZrpZHXc1H-uePlSPTdvINh1jmyo--fNqgBRtxXaQC4j0JfZzyqTeTPN67xo_JoVdjxS3dM8LiYggAS2YXRsHsn2RT1XX_3nhUAuWORyDVFB0EUWCqYGu_kF2BtN0A_grAo4ZXEc-hduldUvNEurZzZem5iGRUYbuwqhoe-fldumadjGiS"/>
+<div class="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest rounded text-[10px] font-bold text-error tracking-wider uppercase shadow-sm">
+                                REQUIRED
+                            </div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h4 class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">Advanced Graph Theory</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Dr. Sarah Chen</p>
+<div class="mt-auto flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant/30 pt-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+<span>1,240 enrolled</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Course Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer flex flex-col group">
+<div class="h-32 bg-surface-variant relative">
+<img alt="Course cover" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB081B2mucSp4tcNXpeBk_QbvUG6Y9x9sXgTG1TxDIhadtZ4qqyx9nQ_ikimaRjxg6SM4D7Cc-VNZZrjkbB10-VNSrgtyB5y9BEEo_lUSOT9VR45-kSnSt-oDvhy9lKgKnQCGYeHs715vAIssVAU6y-ORUzOipVpEUE6OjdYAaJM1Qri7S81FY1EPyjdjhj1SmJQXoZTtlSvXgyGClYOTtQ8zw94qz5y5moNzWQf9KeDuaNusFrks6O6bME6JioYWEZxvbNK0dxCOC6"/>
+<div class="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest rounded text-[10px] font-bold text-primary tracking-wider uppercase shadow-sm">
+                                TRENDING
+                            </div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h4 class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">System Design Masterclass</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Marcus Reed</p>
+<div class="mt-auto flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant/30 pt-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+<span>8,902 enrolled</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Course Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer flex flex-col group">
+<div class="h-32 bg-surface-variant relative">
+<img alt="Course cover" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYqVvaGvvAQvX43bPscjJ3rxxgLAYuc-CHtpNsRkVJnCDKb16do80HFOaKpevSfAF6nM8L-7vbInVtqCKJzlK0Z48a-k9BLAKUapOCMKhncVJDpUDtqP3oyrjPcIjmJVisdyykv0tlHLGI-kFtf8VLpTvz7ybiov8DCto_oZ8WS6XUldVG71_dh1bHMsdijRKhqCarXEFtHXRzOnwlriIrdn2nG2mq1pBNJu5CtQoT81MptWTpIDdYPnsqafCuOrAzyaAS4HigxUQC"/>
+<div class="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest rounded text-[10px] font-bold text-secondary tracking-wider uppercase shadow-sm">
+                                ELECTIVE
+                            </div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<h4 class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">Introduction to Cryptography</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Prof. Alan Turing</p>
+<div class="mt-auto flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant/30 pt-3">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+<span>456 enrolled</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Course Marketplace - EduVise</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#1353d8",
+                        "surface-container": "#edeeef",
+                        "outline": "#737686",
+                        "on-primary-container": "#d4dcff",
+                        "on-secondary-container": "#006f66",
+                        "on-surface-variant": "#434654",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#07006c",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "inverse-primary": "#b5c4ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-surface": "#2e3132",
+                        "surface-bright": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#c0c1ff",
+                        "on-background": "#191c1d",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#e1e0ff",
+                        "tertiary-container": "#4c4ed9",
+                        "primary-container": "#1a56db",
+                        "surface": "#f8f9fa",
+                        "secondary-fixed": "#89f5e7",
+                        "secondary": "#006a61",
+                        "tertiary": "#3231c1",
+                        "primary": "#003fb1",
+                        "on-tertiary-container": "#dbdaff",
+                        "on-surface": "#191c1d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#86f2e4",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "outline-variant": "#c3c5d7",
+                        "on-tertiary-fixed-variant": "#2f2ebe",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#00174d",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary-fixed-variant": "#003dab",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#00201d",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "sidebar-width": "260px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "max-content-width": "1200px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "mono": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "mono": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-lg fixed left-0 top-0 w-sidebar-width border-r border-outline-variant bg-surface-dim z-50">
+<div class="px-lg mb-lg">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-headline-md">school</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary tracking-tight">EduVise</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">AI Adaptive Learning</p>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-xs overflow-y-auto mt-md">
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-high transition-colors text-label-md font-label-md mx-sm rounded" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-high transition-colors text-label-md font-label-md mx-sm rounded" href="#">
+<span class="material-symbols-outlined" data-icon="route">route</span>
+                Roadmap
+            </a>
+<!-- Active State for Courses -->
+<a class="flex items-center gap-md bg-surface-container-highest text-primary border-l-2 border-primary px-md py-sm opacity-90 transition-opacity duration-150 text-label-md font-label-md mx-sm rounded-r" href="#">
+<span class="material-symbols-outlined" data-icon="school" data-weight="fill" style="font-variation-settings: 'FILL' 1;">school</span>
+                Courses
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-high transition-colors text-label-md font-label-md mx-sm rounded" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Reports
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-high transition-colors text-label-md font-label-md mx-sm rounded" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                Profile
+            </a>
+</div>
+<div class="px-md mt-auto pt-lg border-t border-outline-variant mx-sm flex flex-col gap-xs">
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-high transition-colors text-label-md font-label-md rounded" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-high transition-colors text-label-md font-label-md rounded" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Help
+            </a>
+<button class="mt-md w-full bg-primary-container text-on-primary-container py-sm rounded-lg text-label-md font-label-md font-bold hover:bg-primary hover:text-on-primary transition-colors">
+                Upgrade to Pro
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 md:ml-sidebar-width flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-lg sticky top-0 z-40 bg-surface border-b border-outline-variant max-w-max-content-width w-full mx-auto">
+<div class="flex-1 flex items-center gap-md">
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-xl pr-sm py-[6px] bg-surface-container rounded-lg border-none text-body-sm font-body-sm focus:ring-1 focus:ring-primary outline-none" placeholder="Search courses, skills, or instructors..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+</button>
+<div class="h-6 w-px bg-outline-variant hidden md:block"></div>
+<button class="hidden md:block text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors">Support</button>
+<button class="hidden md:flex items-center gap-xs bg-primary text-on-primary px-md py-[6px] rounded-lg text-label-md font-label-md font-semibold hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    New Goal
+                </button>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-outline-variant cursor-pointer" data-alt="A close-up portrait of a professional looking individual, softly lit against a neutral background. The lighting is balanced and modern, creating a clean, high-key light-mode aesthetic suitable for a sleek UI avatar. The overall color palette is minimal and sophisticated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhT-R_n0EOSogcbhEub8-36oocAV7G5j2QO0svsZ5AaCyCXGWAD840laU15QtS3-L4jd8drnjLFPtVGcFKHLwvBMeplf3pqn22bf51-xYqXceoCswNHjZS58yJn8IAQtrlgBv6Di1zrxF_t-iwgeOeq7AZzW-zwCUEGJkVlubd1zJbYrxdWrhefJ-swipF7un57LxlevPw6ok-1ra0uItShhBOs6qj4fiEKaFMzEZqd3EportaQ3XwLJ7wOa-9D53_FdOH46T681-0"/>
+</div>
+</header>
+<!-- Workspace Canvas -->
+<main class="flex-1 p-lg max-w-max-content-width w-full mx-auto">
+<!-- Page Header -->
+<div class="mb-lg">
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-xs">Explore Courses</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Discover top-rated technical courses curated by AI to match your learning goals.</p>
+</div>
+<!-- Top Filter Bar -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md mb-lg flex flex-wrap items-center gap-md shadow-sm">
+<div class="flex items-center gap-sm">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Sort By</span>
+<select class="text-body-sm font-body-sm border-none bg-surface-container rounded-lg py-xs pl-sm pr-lg focus:ring-1 focus:ring-primary cursor-pointer">
+<option>Most Popular</option>
+<option>Highest Rated</option>
+<option>Newest</option>
+</select>
+</div>
+<div class="h-6 w-px bg-outline-variant hidden sm:block"></div>
+<div class="flex flex-wrap gap-sm">
+<button class="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface hover:bg-surface-container-lowest transition-colors bg-surface-container-lowest shadow-[0px_2px_4px_rgba(0,0,0,0.02)]">
+                        Category
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface hover:bg-surface-container-lowest transition-colors bg-surface-container-lowest shadow-[0px_2px_4px_rgba(0,0,0,0.02)]">
+                        Level
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface hover:bg-surface-container-lowest transition-colors bg-surface-container-lowest shadow-[0px_2px_4px_rgba(0,0,0,0.02)]">
+                        Price
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+<div class="ml-auto">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Showing 124 results</span>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row gap-lg">
+<!-- Left Column: Sidebar Filters -->
+<aside class="w-full lg:w-[280px] shrink-0 space-y-md">
+<!-- Filter Block 1 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md">
+<h3 class="text-label-md font-label-md font-bold mb-sm pb-xs border-b border-outline-variant text-on-surface">Ratings</h3>
+<div class="space-y-xs">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="rounded border-outline text-primary focus:ring-primary w-4 h-4 bg-surface-container cursor-pointer" type="checkbox"/>
+<div class="flex items-center gap-xs text-body-sm font-body-sm text-on-surface group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B] opacity-50" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="ml-xs">4.5 &amp; up</span>
+</div>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline text-primary focus:ring-primary w-4 h-4 bg-surface-container cursor-pointer" type="checkbox"/>
+<div class="flex items-center gap-xs text-body-sm font-body-sm text-on-surface group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px] text-outline-variant" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star_border</span>
+<span class="ml-xs">4.0 &amp; up</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Filter Block 2 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md">
+<h3 class="text-label-md font-label-md font-bold mb-sm pb-xs border-b border-outline-variant text-on-surface">Duration</h3>
+<div class="space-y-xs">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline text-primary focus:ring-primary w-4 h-4 bg-surface-container cursor-pointer" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface group-hover:text-primary transition-colors">0-2 Hours</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="rounded border-outline text-primary focus:ring-primary w-4 h-4 bg-surface-container cursor-pointer" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface group-hover:text-primary transition-colors">3-6 Hours</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline text-primary focus:ring-primary w-4 h-4 bg-surface-container cursor-pointer" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface group-hover:text-primary transition-colors">7-15 Hours</span>
+</label>
+</div>
+</div>
+</aside>
+<!-- Right Column: Course Grid -->
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+<!-- Course Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow duration-200 flex flex-col cursor-pointer group">
+<div class="h-32 bg-surface-container relative w-full overflow-hidden">
+<img alt="Code on screen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close up view of computer code on a dark screen, illuminated with vibrant cyan and blue syntax highlighting. The lighting is moody and technological, suggesting a modern programming environment. The focus is sharp on the text, blurring slightly towards the edges." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCr4vCze7UFveoT8wuLznQqnTchKWREv1CgOOdgZFtlxbwNvTpweOygsoqeXIGBkzRAfbzA6kcoTv1k9jponGn0xcnXD9oPYZskGimkfqnhSepdFSsrKRIgd9UJiwtOIuHp56_V48I0I3ne4ltMpIApDNPtOFQEksyTJJQMJ1dlvdFvtIowqXlHJhrDodvE8AKsoL7Iv8Xg9hXERLnWFEJ7NUuAkZNsYEhAwYfEaqttgmJ5V-pSYavae4AXxJw2jc0K7w2Ts604sIvp"/>
+<div class="absolute top-sm left-sm bg-primary text-on-primary px-xs py-[2px] rounded text-[10px] font-label-sm font-bold uppercase tracking-wider">
+                                REQUIRED
+                            </div>
+</div>
+<div class="p-sm flex flex-col flex-1">
+<h3 class="text-label-md font-label-md font-bold text-on-surface mb-xs leading-snug group-hover:text-primary transition-colors line-clamp-2">Mastering Distributed Systems</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-sm">Dr. Sarah Chen</p>
+<div class="mt-auto">
+<div class="flex items-center gap-xs mb-xs">
+<span class="text-label-sm font-label-sm font-bold text-[#F59E0B]">4.8</span>
+<span class="material-symbols-outlined text-[14px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">(1.2k students)</span>
+</div>
+<div class="flex items-center justify-between border-t border-outline-variant pt-xs mt-xs">
+<span class="text-label-md font-label-md font-bold text-on-surface">$49.99</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">12 Hours</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Course Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow duration-200 flex flex-col cursor-pointer group">
+<div class="h-32 bg-surface-container relative w-full overflow-hidden">
+<img alt="Neural network graphic" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An abstract digital representation of a neural network with glowing nodes and connecting lines. The color palette features deep blues and bright teal accents against a dark background, evoking artificial intelligence and deep learning concepts. The composition is dynamic and futuristic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ4fKmtn5ewbt0HqxW1DinysFDRxXu5yUacA-SSi19M6iq4zCFSgu-fBb1TAqDzu45ORjTkfnRgnGf8rcyn5fylk8cA8FHV3OrPFbGowV2_p8TBmBTQokvVvNtrlxgjDuorWDYvjGh-fhNKmfSs4G7g-VAzIot0P4QaYF9H1-_dIHX-fj5Atx-7wVj6mTBbuNSdx6WSAAARIm-Dcl0GwWoxzgH4NrQ0T41jwNtnjmW3xLMW-qksTO_c9Myc9o8kWG-NIRcqHR_w80H"/>
+<div class="absolute top-sm left-sm bg-secondary text-on-secondary px-xs py-[2px] rounded text-[10px] font-label-sm font-bold uppercase tracking-wider">
+                                NEW
+                            </div>
+</div>
+<div class="p-sm flex flex-col flex-1">
+<h3 class="text-label-md font-label-md font-bold text-on-surface mb-xs leading-snug group-hover:text-primary transition-colors line-clamp-2">Foundations of Neural Networks</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-sm">Prof. Alan Turing</p>
+<div class="mt-auto">
+<div class="flex items-center gap-xs mb-xs">
+<span class="text-label-sm font-label-sm font-bold text-[#F59E0B]">4.9</span>
+<span class="material-symbols-outlined text-[14px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">(850 students)</span>
+</div>
+<div class="flex items-center justify-between border-t border-outline-variant pt-xs mt-xs">
+<span class="text-label-md font-label-md font-bold text-on-surface">$59.99</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">8 Hours</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Course Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow duration-200 flex flex-col cursor-pointer group">
+<div class="h-32 bg-surface-container relative w-full overflow-hidden">
+<img alt="Data analytics graphs" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A computer monitor displaying complex data analytics dashboards with colorful bar charts and line graphs. The setting is a clean, modern office environment with soft, professional lighting. The visual style is crisp and corporate, emphasizing data-driven decision making." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUMIDARBuZTxXUqj6xEfCZTHkjPHxHdIO2ZcvBj5VeeAu_-RQUeoF6xnRDJKX9Qd6n1NtwA2n8uIZUfFIJIxQfHeZwW2qy7Tzd_wfetoqSgwjD_taOXK347KN918BxyAw9teFp6tLKkFQQFWikoh970Fkz-6GKaMzDIJUMwHtYGHIAQ9SBFNuPO5TgjZ6AWcq_C7oK1bSMYd6qGw0LPB-n-Pb4jdXGPGlTrqc5q3ptdujtPCt7kRZDl5TcvMB3ZrscZF5dClpyi97R"/>
+<div class="absolute top-sm left-sm bg-surface text-on-surface border border-outline-variant px-xs py-[2px] rounded text-[10px] font-label-sm font-bold uppercase tracking-wider">
+                                BESTSELLER
+                            </div>
+</div>
+<div class="p-sm flex flex-col flex-1">
+<h3 class="text-label-md font-label-md font-bold text-on-surface mb-xs leading-snug group-hover:text-primary transition-colors line-clamp-2">Advanced Data Analytics with Python</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-sm">Elena Rodriguez</p>
+<div class="mt-auto">
+<div class="flex items-center gap-xs mb-xs">
+<span class="text-label-sm font-label-sm font-bold text-[#F59E0B]">4.7</span>
+<span class="material-symbols-outlined text-[14px] text-[#F59E0B]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">(3.4k students)</span>
+</div>
+<div class="flex items-center justify-between border-t border-outline-variant pt-xs mt-xs">
+<span class="text-label-md font-label-md font-bold text-on-surface">$29.99</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">5.5 Hours</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
