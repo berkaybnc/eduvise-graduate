@@ -19,11 +19,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 const MainLayout = () => {
   return (
-    <div className="flex h-screen bg-background text-text-primary">
+    <div className="flex h-screen bg-[#0D1117] text-white overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopBar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#0D1117]">
           <Outlet />
         </main>
       </div>

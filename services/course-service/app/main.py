@@ -25,7 +25,7 @@ def health_check():
     return {"status": "healthy", "service": "course-service"}
 
 # --- KNOWLEDGE GRAPH API (Madde 12) ---
-@app.post("/knowledge-nodes", response_model=schemas.KnowledgeNodeRead)
+@app.post("/knowledge-nodes/", response_model=schemas.KnowledgeNodeRead)
 def create_knowledge_node(node: schemas.KnowledgeNodeCreate, db: Session = Depends(get_db)):
     db_node = models.KnowledgeNode(**node.model_dump())
     db.add(db_node)
@@ -33,7 +33,7 @@ def create_knowledge_node(node: schemas.KnowledgeNodeCreate, db: Session = Depen
     db.refresh(db_node)
     return db_node
 
-@app.post("/prerequisites")
+@app.post("/prerequisites/")
 def add_prerequisite(req: schemas.PrerequisiteCreate, db: Session = Depends(get_db)):
     db_req = models.Prerequisite(**req.model_dump())
     db.add(db_req)

@@ -1,204 +1,203 @@
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 
-export const Dashboard = () => {
+const StatCard = ({ icon, label, value, color = 'primary', sub }) => (
+  <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-5 flex items-start gap-4 hover:border-white/20 transition-all">
+    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+      color === 'primary' ? 'bg-primary/20' :
+      color === 'emerald' ? 'bg-emerald-500/20' :
+      color === 'orange' ? 'bg-orange-500/20' : 'bg-purple-500/20'
+    }`}>
+      <span className={`material-symbols-outlined text-2xl ${
+        color === 'primary' ? 'text-primary' :
+        color === 'emerald' ? 'text-emerald-400' :
+        color === 'orange' ? 'text-orange-400' : 'text-purple-400'
+      }`}>{icon}</span>
+    </div>
+    <div>
+      <p className="text-slate-400 text-sm font-medium">{label}</p>
+      <p className="text-white text-2xl font-black mt-0.5">{value}</p>
+      {sub && <p className="text-slate-500 text-xs mt-1">{sub}</p>}
+    </div>
+  </div>
+);
+
+const SkillBar = ({ name, percent, color }) => (
+  <div>
+    <div className="flex justify-between items-center mb-1.5">
+      <span className="text-slate-300 text-sm font-medium">{name}</span>
+      <span className="text-slate-400 text-xs font-bold">{percent}%</span>
+    </div>
+    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all duration-1000 ${color}`}
+        style={{ width: `${percent}%` }}
+      />
+    </div>
+  </div>
+);
+
+const StudentDashboard = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const firstName = user?.full_name?.split(' ')[0] || 'Öğrenci';
+
   return (
-    <div className="p-lg h-full overflow-y-auto w-full relative">
-      <div className="max-w-7xl mx-auto space-y-lg pb-xl">
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-          {/* Left Card */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-[#1A56DB] to-[#003fb1] rounded-xl p-lg relative overflow-hidden text-on-primary">
-            <div className="relative z-10">
-              <h2 className="font-headline-lg text-headline-lg mb-sm">Hoş geldin, {user?.full_name?.split(' ')[0] || 'Öğrenci'}.</h2>
-              <p className="font-body-md text-body-md opacity-90 max-w-md mb-md">
-                Yapay Zeka yol haritan güncellendi. Kaldığın yerden devam et.
+    <div className="p-6 h-full overflow-y-auto">
+      <div className="max-w-7xl mx-auto space-y-6 pb-10">
+
+        {/* Hero Banner */}
+        <div className="relative rounded-3xl bg-gradient-to-br from-[#1E1B4B] via-[#312E81] to-[#0F172A] p-8 overflow-hidden border border-white/10">
+          <div className="absolute top-[-30%] right-[-5%] w-80 h-80 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-[-20%] left-[30%] w-60 h-60 bg-[#14B8A6]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 mb-4">
+                <span className="material-symbols-outlined text-emerald-400 text-sm">auto_awesome</span>
+                <span className="text-white/80 text-xs font-semibold">Yapay Zeka Yol Haritanız Güncellendi</span>
+              </div>
+              <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight mb-2">
+                Hoş geldin, {firstName}! 👋
+              </h1>
+              <p className="text-indigo-200/80 text-base max-w-lg">
+                Bugün 2 modül tamamlaman seni hedefine %15 daha da yaklaştırıyor. Devam et!
               </p>
-              <button className="bg-surface-container-lowest text-primary px-6 py-3 rounded-lg font-label-md text-label-md hover:bg-surface transition-colors flex items-center gap-2">
-                <span>Continue Learning</span>
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => navigate('/roadmap')}
+                className="flex items-center gap-2 bg-white text-indigo-900 px-5 py-3 rounded-xl font-bold hover:bg-white/90 transition-all active:scale-95 shadow-xl"
+              >
+                <span className="material-symbols-outlined text-[20px]">map</span>
+                Yol Haritam
+              </button>
+              <button
+                onClick={() => navigate('/courses')}
+                className="flex items-center gap-2 bg-white/10 text-white px-5 py-3 rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20 active:scale-95"
+              >
+                <span className="material-symbols-outlined text-[20px]">school</span>
+                Eğitimler
               </button>
             </div>
-            {/* Decorative elements */}
-            <div className="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-            <div className="absolute right-20 bottom-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mb-10"></div>
           </div>
-          {/* Right Card (Alert) */}
-          <div className="bg-surface-container-lowest border-2 border-secondary/30 rounded-xl p-lg flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-secondary mb-3">
-                <span>⚡</span>
-                <span className="font-label-sm text-label-sm uppercase tracking-wider font-bold">Critical Gap Detected</span>
+        </div>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard icon="local_fire_department" label="Günlük Seri" value="12 Gün" color="orange" sub="En yüksek: 21 gün" />
+          <StatCard icon="auto_graph" label="Genel Puan" value="78%" color="primary" sub="Son ay +12%" />
+          <StatCard icon="check_circle" label="Tamamlanan" value="24 Ders" color="emerald" sub="Bu hafta 4 ders" />
+          <StatCard icon="military_tech" label="Rozet" value="6 Adet" color="purple" sub="Son rozet: 2 gün önce" />
+        </div>
+
+        {/* Middle Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Knowledge Radar */}
+          <div className="lg:col-span-2 bg-[#1E293B] border border-white/10 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-white font-bold text-lg">Bilgi Durumu Haritası</h2>
+                <p className="text-slate-400 text-sm">Konu bazlı hakimiyet seviyeniz</p>
               </div>
-              <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Probability Basics</h3>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Recent quiz shows 34% drop. Address before proceeding.
-              </p>
+              <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg border border-primary/20">
+                Son 30 gün
+              </span>
             </div>
-            <button className="mt-4 w-full border border-secondary text-secondary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-secondary/5 transition-colors">
-              Review Now
+            <div className="space-y-4">
+              <SkillBar name="Algoritmalar" percent={78} color="bg-primary" />
+              <SkillBar name="Veri Yapıları" percent={91} color="bg-emerald-500" />
+              <SkillBar name="Backend Geliştirme" percent={45} color="bg-orange-500" />
+              <SkillBar name="Frontend Geliştirme" percent={62} color="bg-purple-500" />
+              <SkillBar name="Sistem Tasarımı" percent={33} color="bg-red-500" />
+            </div>
+          </div>
+
+          {/* Right Panel */}
+          <div className="flex flex-col gap-4">
+            {/* AI Alert */}
+            <div className="bg-gradient-to-br from-red-950/50 to-[#1E293B] border border-red-500/20 rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="material-symbols-outlined text-red-400 text-xl">warning</span>
+                <span className="text-red-400 text-xs font-bold uppercase tracking-wider">AI Uyarısı</span>
+              </div>
+              <h3 className="text-white font-bold text-base mb-2">Olasılık Temel Boşluğu</h3>
+              <p className="text-slate-400 text-sm mb-4">Son sınavda %34 düşüş tespit edildi. İlerlemeye devam etmeden bu boşluğu kapatmanızı öneriyoruz.</p>
+              <button onClick={() => navigate('/assessment/diagnostic')} className="w-full bg-red-500/20 text-red-400 border border-red-500/30 py-2 px-4 rounded-xl text-sm font-bold hover:bg-red-500/30 transition-all">
+                Şimdi Değerlendir →
+              </button>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-5">
+              <h3 className="text-white font-bold text-sm mb-3">Hızlı Erişim</h3>
+              <div className="space-y-2">
+                {[
+                  { icon: 'map', label: 'Öğrenme Yolum', path: '/roadmap', color: 'text-primary' },
+                  { icon: 'quiz', label: 'Seviye Tespit Sınavı', path: '/assessment/diagnostic', color: 'text-emerald-400' },
+                  { icon: 'bar_chart', label: 'Raporlarım', path: '/reports', color: 'text-orange-400' },
+                ].map(item => (
+                  <button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group"
+                  >
+                    <span className={`material-symbols-outlined text-[18px] ${item.color}`}>{item.icon}</span>
+                    <span className="text-slate-300 text-sm font-medium group-hover:text-white transition-colors">{item.label}</span>
+                    <span className="material-symbols-outlined text-slate-600 text-[16px] ml-auto group-hover:text-slate-400 transition-colors">arrow_forward_ios</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Active Curriculum */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-white font-bold text-lg">Aktif Müfredat</h2>
+            <button onClick={() => navigate('/courses')} className="text-primary text-sm font-semibold hover:text-indigo-300 transition-colors flex items-center gap-1">
+              Tümünü Gör
+              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </button>
           </div>
-        </div>
-        {/* Middle Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-          {/* Left Card: Knowledge State Radar */}
-          <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col h-[400px]">
-            <div className="border-b border-outline-variant/50 pb-sm mb-md flex justify-between items-center">
-              <h3 className="font-headline-md text-headline-md text-on-surface">Knowledge State</h3>
-              <button className="p-1 rounded text-on-surface-variant hover:bg-surface-container transition-colors">
-                <span className="material-symbols-outlined">more_vert</span>
-              </button>
-            </div>
-            <div className="flex-1 relative flex items-center justify-center">
-              {/* Hexagonal Radar Chart CSS */}
-              <div className="relative w-72 h-72 flex items-center justify-center">
-                {/* Concentric Hexagons */}
-                <svg className="absolute w-full h-full opacity-30" viewBox="0 0 100 100">
-                  <polygon fill="none" points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" stroke="currentColor" strokeWidth="0.5"></polygon>
-                  <polygon fill="none" points="50,20 76.5,35 76.5,65 50,80 23.5,65 23.5,35" stroke="currentColor" strokeWidth="0.5"></polygon>
-                  <polygon fill="none" points="50,35 63,42.5 63,57.5 50,65 37,57.5 37,42.5" stroke="currentColor" strokeWidth="0.5"></polygon>
-                  {/* Axes */}
-                  <line stroke="currentColor" strokeWidth="0.5" x1="50" x2="50" y1="5" y2="95"></line>
-                  <line stroke="currentColor" strokeWidth="0.5" x1="10" x2="90" y1="27.5" y2="72.5"></line>
-                  <line stroke="currentColor" strokeWidth="0.5" x1="10" x2="90" y1="72.5" y2="27.5"></line>
-                </svg>
-                {/* Data Polygon */}
-                <svg className="absolute w-full h-full opacity-80" viewBox="0 0 100 100">
-                  <polygon fill="rgba(26, 86, 219, 0.2)" points="50,15 82,32 78,65 50,85 30,68 25,35" stroke="#1A56DB" strokeWidth="1.5"></polygon>
-                </svg>
-                {/* Labels */}
-                <span className="absolute top-[-5px] font-label-sm text-label-sm text-on-surface">Algorithm</span>
-                <span className="absolute right-[-10px] top-[20%] font-label-sm text-label-sm text-on-surface">Data Structs</span>
-                <span className="absolute right-[-10px] bottom-[20%] font-label-sm text-label-sm text-on-surface">Backend</span>
-                <span className="absolute bottom-[-15px] font-label-sm text-label-sm text-on-surface">Frontend</span>
-                <span className="absolute left-[-5px] bottom-[20%] font-label-sm text-label-sm text-on-surface">Testing</span>
-                <span className="absolute left-[-15px] top-[20%] font-label-sm text-label-sm text-on-surface">Sys Design</span>
-              </div>
-            </div>
-          </div>
-          {/* Right Column: Progress & Streak */}
-          <div className="flex flex-col gap-md">
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex-1">
-              <h3 className="font-label-md text-label-md text-on-surface-variant font-medium mb-4 uppercase tracking-wider">Skill Progress</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span className="text-on-surface">Algorithm</span>
-                    <span className="text-on-surface-variant">78%</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { title: 'İleri Seviye Graph Teorisi', instructor: 'Dr. Sarah Chen', enrolled: '1,240', tag: 'ZORUNLU', tagColor: 'text-red-400 bg-red-500/10 border-red-500/20', gradient: 'from-blue-600 to-indigo-900', progress: 65 },
+              { title: 'Sistem Tasarımı Masterclass', instructor: 'Marcus Reed', enrolled: '8,902', tag: 'TREND', tagColor: 'text-primary bg-primary/10 border-primary/20', gradient: 'from-purple-600 to-fuchsia-900', progress: 30 },
+              { title: 'Kriptografiye Giriş', instructor: 'Prof. Alan Turing', enrolled: '456', tag: 'SEÇMELİ', tagColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', gradient: 'from-emerald-600 to-teal-900', progress: 10 },
+            ].map((course) => (
+              <div key={course.title} className="bg-[#1E293B] border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all cursor-pointer group">
+                <div className={`h-32 bg-gradient-to-br ${course.gradient} relative`}>
+                  <div className="absolute top-3 left-3">
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded-md border ${course.tagColor}`}>{course.tag}</span>
                   </div>
-                  <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-primary h-full rounded-full" style={{width: "78%"}}></div>
+                  <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-md text-white text-xs font-bold">
+                    %{course.progress} tamamlandı
                   </div>
                 </div>
-                <div>
-                  <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span className="text-on-surface">Data Structures</span>
-                    <span className="text-on-surface-variant">91%</span>
+                <div className="p-4">
+                  <h4 className="text-white font-bold text-sm mb-1 group-hover:text-primary transition-colors line-clamp-2">{course.title}</h4>
+                  <p className="text-slate-400 text-xs mb-3">{course.instructor}</p>
+                  <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full" style={{ width: `${course.progress}%` }} />
                   </div>
-                  <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-secondary h-full rounded-full" style={{width: "91%"}}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span className="text-on-surface">Backend</span>
-                    <span className="text-on-surface-variant">45%</span>
-                  </div>
-                  <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-primary h-full rounded-full" style={{width: "45%"}}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                    <span className="text-on-surface">Frontend</span>
-                    <span className="text-on-surface-variant">62%</span>
-                  </div>
-                  <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-primary h-full rounded-full" style={{width: "62%"}}></div>
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-white/5">
+                    <span className="text-slate-500 text-xs flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">group</span>
+                      {course.enrolled} kayıtlı
+                    </span>
+                    <button className="text-primary text-xs font-bold hover:text-indigo-300 transition-colors">Devam Et →</button>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xl">
-                  🔥
-                </div>
-                <div>
-                  <p className="font-label-sm text-label-sm text-on-surface-variant">Current Streak</p>
-                  <p className="font-headline-md text-headline-md text-on-surface">12 Days</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-        {/* Bottom Section: Active Curriculum */}
-        <div>
-          <h3 className="font-headline-md text-headline-md text-on-surface mb-md">Active Curriculum</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
-            {/* Course Card 1 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer flex flex-col group">
-              <div className="h-32 bg-surface-variant relative">
-                <img alt="Course cover" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyY84G2D2cs8gBNSrnHjXrFUSA6NOti9RuuVqeSZkIoFUlnLh6dwH3HVdBQvMwi0PrI4y32zAZ8LYPnJJGdGbzVILDiorZrpZHXc1H-uePlSPTdvINh1jmyo--fNqgBRtxXaQC4j0JfZzyqTeTPN67xo_JoVdjxS3dM8LiYggAS2YXRsHsn2RT1XX_3nhUAuWORyDVFB0EUWCqYGu_kF2BtN0A_grAo4ZXEc-hduldUvNEurZzZem5iGRUYbuwqhoe-fldumadjGiS"/>
-                <div className="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest rounded text-[10px] font-bold text-error tracking-wider uppercase shadow-sm">
-                  REQUIRED
-                </div>
-              </div>
-              <div className="p-md flex-1 flex flex-col">
-                <h4 className="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">Advanced Graph Theory</h4>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-4">Dr. Sarah Chen</p>
-                <div className="mt-auto flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant/30 pt-3">
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[16px]">group</span>
-                    <span>1,240 enrolled</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Course Card 2 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer flex flex-col group">
-              <div className="h-32 bg-surface-variant relative">
-                <img alt="Course cover" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB081B2mucSp4tcNXpeBk_QbvUG6Y9x9sXgTG1TxDIhadtZ4qqyx9nQ_ikimaRjxg6SM4D7Cc-VNZZrjkbB10-VNSrgtyB5y9BEEo_lUSOT9VR45-kSnSt-oDvhy9lKgKnQCGYeHs715vAIssVAU6y-ORUzOipVpEUE6OjdYAaJM1Qri7S81FY1EPyjdjhj1SmJQXoZTtlSvXgyGClYOTtQ8zw94qz5y5moNzWQf9KeDuaNusFrks6O6bME6JioYWEZxvbNK0dxCOC6"/>
-                <div className="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest rounded text-[10px] font-bold text-primary tracking-wider uppercase shadow-sm">
-                  TRENDING
-                </div>
-              </div>
-              <div className="p-md flex-1 flex flex-col">
-                <h4 className="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">System Design Masterclass</h4>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-4">Marcus Reed</p>
-                <div className="mt-auto flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant/30 pt-3">
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[16px]">group</span>
-                    <span>8,902 enrolled</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Course Card 3 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer flex flex-col group">
-              <div className="h-32 bg-surface-variant relative">
-                <img alt="Course cover" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYqVvaGvvAQvX43bPscjJ3rxxgLAYuc-CHtpNsRkVJnCDKb16do80HFOaKpevSfAF6nM8L-7vbInVtqCKJzlK0Z48a-k9BLAKUapOCMKhncVJDpUDtqP3oyrjPcIjmJVisdyykv0tlHLGI-kFtf8VLpTvz7ybiov8DCto_oZ8WS6XUldVG71_dh1bHMsdijRKhqCarXEFtHXRzOnwlriIrdn2nG2mq1pBNJu5CtQoT81MptWTpIDdYPnsqafCuOrAzyaAS4HigxUQC"/>
-                <div className="absolute top-3 left-3 px-2 py-1 bg-surface-container-lowest rounded text-[10px] font-bold text-secondary tracking-wider uppercase shadow-sm">
-                  ELECTIVE
-                </div>
-              </div>
-              <div className="p-md flex-1 flex flex-col">
-                <h4 className="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">Introduction to Cryptography</h4>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-4">Prof. Alan Turing</p>
-                <div className="mt-auto flex justify-between items-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant/30 pt-3">
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[16px]">group</span>
-                    <span>456 enrolled</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default StudentDashboard;

@@ -1,177 +1,230 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export const Reports = () => {
+const SKILLS = [
+  { name: 'Algoritmalar', initial: 38, current: 78, color: '#1A56DB' },
+  { name: 'Veri Yapıları', initial: 55, current: 91, color: '#10B981' },
+  { name: 'Backend', initial: 20, current: 45, color: '#F59E0B' },
+  { name: 'Frontend', initial: 30, current: 62, color: '#8B5CF6' },
+  { name: 'Test', initial: 15, current: 50, color: '#06B6D4' },
+  { name: 'Sistem Tasarımı', initial: 10, current: 33, color: '#EC4899' },
+];
+
+const COMPETENCIES = [
+  { label: 'İleri Graf Algoritmaları', detail: "Dijkstra's ve A* implementasyonları tamamlandı.", done: true },
+  { label: 'React State Yönetimi', detail: 'Context API ve Redux Toolkit kullanımı öğrenildi.', done: true },
+  { label: 'RESTful API Tasarımı', detail: 'HTTP fiilleri ve durum kodları doğru uygulanıyor.', done: true },
+  { label: 'Mikroservis Mimarisi', detail: 'Servisler arası iletişim geliştirilmeli. Devam ediyor.', done: false },
+  { label: 'CI/CD ve DevOps', detail: 'Pipeline kurulumu henüz başlanmadı.', done: false },
+];
+
+const RECOMMENDATIONS = [
+  { tag: 'AI Ethics', color: 'text-primary bg-primary/10 border-primary/20', title: 'AI Etiği III', desc: 'Önyargı azaltma ve üretim ML sistemleri için şeffaf modelleme teknikleri.', icon: 'policy' },
+  { tag: 'Capstone', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', title: 'Gerçek Dünya Projesi', desc: 'Mikroservis mimarisindeki boşluğu kapatmak için startup ortamı simülasyonu.', icon: 'architecture' },
+  { tag: 'Altyapı', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20', title: 'Cloud Deployment Ops', desc: 'Container orkestrasyonu ve CI/CD pipeline\'larında ustalaş.', icon: 'cloud' },
+];
+
+const RadarChart = () => {
+  const cx = 160, cy = 160, r = 110;
+  const n = SKILLS.length;
+  const angleStep = (2 * Math.PI) / n;
+  const getPoint = (angle, radius) => ({
+    x: cx + radius * Math.cos(angle - Math.PI / 2),
+    y: cy + radius * Math.sin(angle - Math.PI / 2),
+  });
+
+  const initialPoints = SKILLS.map((s, i) => {
+    const p = getPoint(i * angleStep, (s.initial / 100) * r);
+    return `${p.x},${p.y}`;
+  }).join(' ');
+
+  const currentPoints = SKILLS.map((s, i) => {
+    const p = getPoint(i * angleStep, (s.current / 100) * r);
+    return `${p.x},${p.y}`;
+  }).join(' ');
+
   return (
-    <div className="w-full h-full pb-xl">
-      <div className="max-w-[1200px] mx-auto p-4 md:p-lg">
-        {/* Header Section */}
-        <div className="mb-lg pt-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-full mb-3 border border-outline-variant">
-            <span className="w-2 h-2 rounded-full bg-secondary"></span>
-            <span className="font-label-sm text-label-sm text-on-surface">Fall Semester Complete</span>
+    <svg viewBox="0 0 320 320" className="w-full max-w-[280px] mx-auto">
+      {/* Grid rings */}
+      {[25, 50, 75, 100].map(pct => {
+        const pts = SKILLS.map((_, i) => {
+          const p = getPoint(i * angleStep, (pct / 100) * r);
+          return `${p.x},${p.y}`;
+        }).join(' ');
+        return <polygon key={pct} points={pts} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />;
+      })}
+
+      {/* Axis lines */}
+      {SKILLS.map((_, i) => {
+        const outer = getPoint(i * angleStep, r);
+        return <line key={i} x1={cx} y1={cy} x2={outer.x} y2={outer.y} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />;
+      })}
+
+      {/* Initial state */}
+      <polygon points={initialPoints} fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
+
+      {/* Current mastery */}
+      <polygon points={currentPoints} fill="rgba(26,86,219,0.2)" stroke="#1A56DB" strokeWidth="2" />
+
+      {/* Dots */}
+      {SKILLS.map((s, i) => {
+        const p = getPoint(i * angleStep, (s.current / 100) * r);
+        return <circle key={i} cx={p.x} cy={p.y} r="4" fill="#1A56DB" />;
+      })}
+
+      {/* Labels */}
+      {SKILLS.map((s, i) => {
+        const p = getPoint(i * angleStep, r + 20);
+        return (
+          <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
+            fill="rgba(148,163,184,1)" fontSize="11" fontFamily="Inter" fontWeight="500">
+            {s.name}
+          </text>
+        );
+      })}
+    </svg>
+  );
+};
+
+const Reports = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="p-6 h-full overflow-y-auto">
+      <div className="max-w-5xl mx-auto space-y-6 pb-10">
+
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="text-emerald-400 text-xs font-bold">Güz Dönemi Tamamlandı</span>
+            </div>
+            <h1 className="text-2xl font-black text-white tracking-tight">Öğrenme Yolculuğu Raporu</h1>
+            <p className="text-slate-400 text-sm mt-1 max-w-xl">
+              Teknik yetkinliklerinin kapsamlı analizi, beceri gelişimi ve yapay zeka tarafından önerilen sonraki adımlar.
+            </p>
           </div>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface mb-2">Alex's Learning Journey - Semester Report</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant max-w-3xl">Comprehensive analysis of technical competencies, skill progression, and AI-recommended pathways for continued professional development.</p>
+          <button
+            onClick={() => navigate('/assessment/diagnostic')}
+            className="flex items-center gap-2 bg-gradient-to-r from-primary to-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all text-sm active:scale-95 shrink-0"
+          >
+            <span className="material-symbols-outlined text-[18px]">quiz</span>
+            Yeni Değerlendirme
+          </button>
         </div>
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-lg mb-lg">
-          {/* Radar Chart Card (Left) */}
-          <div className="md:col-span-7 bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col shadow-sm">
-            <div className="border-b border-outline-variant pb-3 mb-4 flex justify-between items-end">
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+          {/* Radar Chart */}
+          <div className="lg:col-span-7 bg-[#1E293B] border border-white/10 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-headline-md text-headline-md text-on-surface">Skill Gap Analysis</h2>
-                <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">Initial vs. Current Mastery</p>
+                <h2 className="text-white font-bold text-lg">Beceri Boşluğu Analizi</h2>
+                <p className="text-slate-400 text-sm">Başlangıç ve güncel hakimiyet karşılaştırması</p>
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-surface-variant border border-outline-variant"></span>
-                  <span className="font-label-sm text-label-sm text-on-surface-variant">Initial State</span>
+                  <span className="w-3 h-1.5 rounded-full bg-white/20 inline-block" />
+                  <span className="text-slate-400 text-xs">Başlangıç</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-secondary/20 border border-secondary"></span>
-                  <span className="font-label-sm text-label-sm text-secondary">Current Mastery</span>
+                  <span className="w-3 h-1.5 rounded-full bg-primary inline-block" />
+                  <span className="text-slate-400 text-xs">Güncel</span>
                 </div>
               </div>
             </div>
-            <div className="flex-1 min-h-[350px] relative flex items-center justify-center bg-surface-bright rounded-lg border border-surface-variant">
-              {/* Stylized SVG Radar Chart representing the graphic requested */}
-              <svg className="w-full h-full max-w-[320px] max-h-[320px]" viewBox="0 0 400 400">
-                {/* Grid */}
-                <polygon fill="none" points="200,50 330,125 330,275 200,350 70,275 70,125" stroke="#e1e3e4" strokeWidth="1"></polygon>
-                <polygon fill="none" points="200,100 286,150 286,250 200,300 114,250 114,150" stroke="#e1e3e4" strokeWidth="1"></polygon>
-                <polygon fill="none" points="200,150 243,175 243,225 200,250 157,225 157,175" stroke="#e1e3e4" strokeWidth="1"></polygon>
-                {/* Axes */}
-                <line stroke="#e1e3e4" strokeDasharray="4" strokeWidth="1" x1="200" x2="200" y1="200" y2="50"></line>
-                <line stroke="#e1e3e4" strokeDasharray="4" strokeWidth="1" x1="200" x2="330" y1="200" y2="125"></line>
-                <line stroke="#e1e3e4" strokeDasharray="4" strokeWidth="1" x1="200" x2="330" y1="200" y2="275"></line>
-                <line stroke="#e1e3e4" strokeDasharray="4" strokeWidth="1" x1="200" x2="200" y1="200" y2="350"></line>
-                <line stroke="#e1e3e4" strokeDasharray="4" strokeWidth="1" x1="200" x2="70" y1="200" y2="275"></line>
-                <line stroke="#e1e3e4" strokeDasharray="4" strokeWidth="1" x1="200" x2="70" y1="200" y2="125"></line>
-                {/* Initial State Polygon */}
-                <polygon fill="#e1e3e4" fillOpacity="0.4" points="200,120 250,150 260,230 200,260 140,240 130,140" stroke="#737686" strokeWidth="1"></polygon>
-                {/* Current Mastery Polygon */}
-                <polygon fill="rgba(13, 148, 136, 0.2)" points="200,60 300,140 290,260 200,320 90,260 80,130" stroke="#0D9488" strokeWidth="2"></polygon>
-                {/* Current Mastery Nodes */}
-                <circle cx="200" cy="60" fill="#0D9488" r="4"></circle>
-                <circle cx="300" cy="140" fill="#0D9488" r="4"></circle>
-                <circle cx="290" cy="260" fill="#0D9488" r="4"></circle>
-                <circle cx="200" cy="320" fill="#0D9488" r="4"></circle>
-                <circle cx="90" cy="260" fill="#0D9488" r="4"></circle>
-                <circle cx="80" cy="130" fill="#0D9488" r="4"></circle>
-                {/* Labels */}
-                <text fill="#434654" fontFamily="Inter" fontSize="12" fontWeight="500" textAnchor="middle" x="200" y="35">Data Structs</text>
-                <text fill="#434654" fontFamily="Inter" fontSize="12" fontWeight="500" textAnchor="start" x="345" y="125">Algorithms</text>
-                <text fill="#434654" fontFamily="Inter" fontSize="12" fontWeight="500" textAnchor="start" x="345" y="280">Sys Design</text>
-                <text fill="#434654" fontFamily="Inter" fontSize="12" fontWeight="500" textAnchor="middle" x="200" y="375">Testing</text>
-                <text fill="#434654" fontFamily="Inter" fontSize="12" fontWeight="500" textAnchor="end" x="55" y="280">Frontend</text>
-                <text fill="#434654" fontFamily="Inter" fontSize="12" fontWeight="500" textAnchor="end" x="55" y="125">Backend</text>
-              </svg>
-            </div>
+            <RadarChart />
           </div>
-          {/* Stats & Checklist (Right) */}
-          <div className="md:col-span-5 flex flex-col gap-lg">
-            {/* Mastery Stats Card */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
-              <div className="border-b border-outline-variant pb-2 mb-4">
-                <h2 className="font-headline-md text-headline-md text-on-surface">Mastery Stats</h2>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-primary-container/10 rounded-lg border border-primary-fixed">
-                  <span className="material-symbols-outlined text-primary mb-2" style={{fontVariationSettings: "'wght' 300, 'FILL' 1"}}>trending_up</span>
-                  <div className="font-headline-lg text-headline-lg text-primary mb-1">92%</div>
-                  <div className="font-label-sm text-label-sm text-on-surface-variant">Increase in Coding Fluency</div>
+
+          {/* Right Column */}
+          <div className="lg:col-span-5 flex flex-col gap-5">
+            {/* Mastery Stats */}
+            <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-5">
+              <h2 className="text-white font-bold text-base mb-4">Hakimiyet İstatistikleri</h2>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 text-center">
+                  <span className="material-symbols-outlined text-primary text-2xl mb-1 block" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
+                  <p className="text-primary text-2xl font-black">92%</p>
+                  <p className="text-slate-400 text-xs mt-1">Kodlama Akıcılığı Artışı</p>
                 </div>
-                <div className="p-3 bg-secondary-container/10 rounded-lg border border-secondary-fixed">
-                  <span className="material-symbols-outlined text-secondary mb-2" style={{fontVariationSettings: "'wght' 300, 'FILL' 1"}}>task_alt</span>
-                  <div className="font-headline-lg text-headline-lg text-secondary mb-1">85%</div>
-                  <div className="font-label-sm text-label-sm text-on-surface-variant">Overall Completion Rate</div>
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
+                  <span className="material-symbols-outlined text-emerald-400 text-2xl mb-1 block" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
+                  <p className="text-emerald-400 text-2xl font-black">85%</p>
+                  <p className="text-slate-400 text-xs mt-1">Genel Tamamlanma Oranı</p>
                 </div>
               </div>
             </div>
-            {/* Competency Checklist Card */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex-1">
-              <div className="border-b border-outline-variant pb-2 mb-4 flex justify-between items-center">
-                <h2 className="font-headline-md text-headline-md text-on-surface">Competency Checklist</h2>
-                <span className="font-label-sm text-label-sm px-2 py-1 bg-surface-container-high rounded text-on-surface-variant">12/15 Core</span>
+
+            {/* Competency Checklist */}
+            <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-5 flex-1">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-white font-bold text-base">Yetkinlik Listesi</h2>
+                <span className="text-xs font-bold px-2 py-1 bg-white/5 text-slate-400 rounded-lg border border-white/10">
+                  {COMPETENCIES.filter(c => c.done).length}/{COMPETENCIES.length} Temel
+                </span>
               </div>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-secondary mt-0.5" style={{fontVariationSettings: "'wght' 400, 'FILL' 1"}}>check_circle</span>
-                  <div>
-                    <p className="font-label-md text-label-md text-on-surface">Advanced Graph Algorithms</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Mastered Dijkstra's and A* implementations.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-secondary mt-0.5" style={{fontVariationSettings: "'wght' 400, 'FILL' 1"}}>check_circle</span>
-                  <div>
-                    <p className="font-label-md text-label-md text-on-surface">React State Management</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Proficient with Context API and Redux Toolkit.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-secondary mt-0.5" style={{fontVariationSettings: "'wght' 400, 'FILL' 1"}}>check_circle</span>
-                  <div>
-                    <p className="font-label-md text-label-md text-on-surface">RESTful API Design</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Consistently applies proper verbs and status codes.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 opacity-60">
-                  <span className="material-symbols-outlined text-outline mt-0.5" style={{fontVariationSettings: "'wght' 300, 'FILL' 0"}}>radio_button_unchecked</span>
-                  <div>
-                    <p className="font-label-md text-label-md text-on-surface">Microservices Architecture</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">In progress. Focus on inter-service communication needed.</p>
-                  </div>
-                </li>
+                {COMPETENCIES.map((c, i) => (
+                  <li key={i} className={`flex items-start gap-3 ${!c.done ? 'opacity-60' : ''}`}>
+                    <span
+                      className={`material-symbols-outlined text-[20px] mt-0.5 shrink-0 ${c.done ? 'text-emerald-400' : 'text-slate-500'}`}
+                      style={{ fontVariationSettings: c.done ? "'FILL' 1" : "'FILL' 0" }}
+                    >
+                      {c.done ? 'check_circle' : 'radio_button_unchecked'}
+                    </span>
+                    <div>
+                      <p className={`text-sm font-semibold ${c.done ? 'text-white' : 'text-slate-400'}`}>{c.label}</p>
+                      <p className="text-slate-500 text-xs mt-0.5">{c.detail}</p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
-        {/* Bottom Section: Recommended Next Steps */}
-        <div>
-          <h2 className="font-headline-md text-headline-md text-on-surface mb-4">Recommended Next Steps</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            {/* Course Card 1 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:border-primary transition-colors cursor-pointer group">
-              <div className="h-32 mb-4 rounded-lg bg-surface-container overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-surface-tint/10 to-surface-tint/5 mix-blend-multiply"></div>
-                <span className="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary opacity-20 text-5xl" style={{fontVariationSettings: "'wght' 300"}}>policy</span>
+
+        {/* Skill Progress Bars */}
+        <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-6">
+          <h2 className="text-white font-bold text-lg mb-5">Beceri Gelişim Detayı</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {SKILLS.map(skill => (
+              <div key={skill.name}>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-slate-300 text-sm font-medium">{skill.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-600 text-xs">{skill.initial}% → </span>
+                    <span className="text-white text-sm font-bold">{skill.current}%</span>
+                  </div>
+                </div>
+                <div className="w-full h-2.5 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${skill.current}%`, backgroundColor: skill.color }} />
+                </div>
               </div>
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-label-sm text-label-sm text-primary px-2 py-1 bg-primary-container/20 rounded">AI Alignment</span>
-                <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style={{fontVariationSettings: "'wght' 300"}}>arrow_forward</span>
-              </div>
-              <h3 className="font-label-md text-label-md text-on-surface mb-1">AI Ethics III</h3>
-              <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Deep dive into bias mitigation and transparent modeling techniques for production ML systems.</p>
-            </div>
-            {/* Course Card 2 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:border-primary transition-colors cursor-pointer group">
-              <div className="h-32 mb-4 rounded-lg bg-surface-container overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-secondary/5 mix-blend-multiply"></div>
-                <span className="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-secondary opacity-20 text-5xl" style={{fontVariationSettings: "'wght' 300"}}>architecture</span>
-              </div>
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-label-sm text-label-sm text-secondary px-2 py-1 bg-secondary-container/20 rounded">Practical App</span>
-                <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style={{fontVariationSettings: "'wght' 300"}}>arrow_forward</span>
-              </div>
-              <h3 className="font-label-md text-label-md text-on-surface mb-1">Real-world Project Seminar</h3>
-              <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Capstone project simulating a startup environment to bridge the gap in Microservices architecture.</p>
-            </div>
-            {/* Course Card 3 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:border-primary transition-colors cursor-pointer group">
-              <div className="h-32 mb-4 rounded-lg bg-surface-container overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-tertiary/10 to-tertiary/5 mix-blend-multiply"></div>
-                <span className="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-tertiary opacity-20 text-5xl" style={{fontVariationSettings: "'wght' 300"}}>cloud</span>
-              </div>
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-label-sm text-label-sm text-tertiary px-2 py-1 bg-tertiary-container/20 rounded">Infrastructure</span>
-                <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" style={{fontVariationSettings: "'wght' 300"}}>arrow_forward</span>
-              </div>
-              <h3 className="font-label-md text-label-md text-on-surface mb-1">Cloud Deployment Ops</h3>
-              <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Master container orchestration and CI/CD pipelines to strengthen backend deployment skills.</p>
-            </div>
+            ))}
           </div>
         </div>
+
+        {/* Recommendations */}
+        <div>
+          <h2 className="text-white font-bold text-lg mb-4">Yapay Zeka Önerilen Sonraki Adımlar</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {RECOMMENDATIONS.map((rec) => (
+              <div key={rec.title} className="bg-[#1E293B] border border-white/10 rounded-2xl p-5 hover:border-primary/30 transition-all cursor-pointer group">
+                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                  <span className="material-symbols-outlined text-slate-400 group-hover:text-primary text-2xl transition-colors">{rec.icon}</span>
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${rec.color}`}>{rec.tag}</span>
+                  <span className="material-symbols-outlined text-slate-600 group-hover:text-primary transition-colors text-[18px]">arrow_forward</span>
+                </div>
+                <h3 className="text-white font-bold text-sm mb-2 group-hover:text-primary transition-colors">{rec.title}</h3>
+                <p className="text-slate-400 text-xs leading-relaxed">{rec.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );

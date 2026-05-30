@@ -1,180 +1,410 @@
-import { useQuery } from '@tanstack/react-query';
-import api from '../../lib/api';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../../store/authStore';
 
-export const Roadmap = () => {
-  const { data: roadmap, isLoading } = useQuery({
-    queryKey: ['roadmap', 1],
-    queryFn: async () => {
-      // Fetching first user's roadmap just for demo
-      const response = await api.get('/roadmap/1');
-      return response.data;
-    }
-  });
+const ROADMAP_DATA = [
+  {
+    id: 1,
+    title: 'Veri Yapıları',
+    description: 'Array, LinkedList, Stack, Queue, Tree ve Graph yapılarına hakim ol.',
+    status: 'completed',
+    mastery: 91,
+    estimatedTime: '8 saat',
+    category: 'Temel',
+    icon: 'data_object',
+  },
+  {
+    id: 2,
+    title: 'Ayrık Matematik',
+    description: 'Mantık, kümeler, kombinatorik ve ispat teknikleri.',
+    status: 'completed',
+    mastery: 85,
+    estimatedTime: '6 saat',
+    category: 'Temel',
+    icon: 'functions',
+  },
+  {
+    id: 3,
+    title: 'Graf Teorisi',
+    description: 'Düğüm ve kenar ilişkilerini, yönlü/yönsüz grafları ve traversal algoritmalarını öğren.',
+    status: 'active',
+    mastery: 45,
+    estimatedTime: '10 saat',
+    category: 'Orta Seviye',
+    icon: 'hub',
+    aiInsight: 'Son quiz sonuçlarına göre komşuluk matrislerine odaklanmanı öneriyoruz. Spanning tree konusunda güçlü gözüküyorsun!',
+  },
+  {
+    id: 4,
+    title: 'Olasılık Temelleri',
+    description: 'Koşullu olasılık, Bayes teoremi ve dağılım fonksiyonları.',
+    status: 'gap',
+    mastery: 12,
+    estimatedTime: '8 saat',
+    category: 'Orta Seviye',
+    icon: 'analytics',
+    gapReason: 'Son sınavda %34 düşüş tespit edildi. Bu boşluğu kapatmadan ilerlemeni önermiyoruz.',
+  },
+  {
+    id: 5,
+    title: 'Sinir Ağları',
+    description: 'Yapay sinir ağları, aktivasyon fonksiyonları, ileri ve geri yayılım.',
+    status: 'locked',
+    mastery: 0,
+    estimatedTime: '14 saat',
+    category: 'İleri Seviye',
+    icon: 'psychology',
+    prerequisite: 'Graf Teorisi ve Olasılık Temelleri tamamlanmalı',
+  },
+  {
+    id: 6,
+    title: 'Makine Öğrenmesi',
+    description: 'Denetimli/denetimsiz öğrenme, model değerlendirme ve hiperparametre ayarı.',
+    status: 'locked',
+    mastery: 0,
+    estimatedTime: '20 saat',
+    category: 'İleri Seviye',
+    icon: 'model_training',
+    prerequisite: 'Sinir Ağları tamamlanmalı',
+  },
+];
 
-  if (isLoading) return <div className="p-8">Roadmap yükleniyor...</div>;
+const statusConfig = {
+  completed: {
+    bg: 'bg-emerald-500/20',
+    border: 'border-emerald-500/40',
+    iconBg: 'bg-emerald-500',
+    badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    badgeText: '✓ Tamamlandı',
+    lineColor: 'bg-emerald-500',
+  },
+  active: {
+    bg: 'bg-primary/10',
+    border: 'border-primary/50',
+    iconBg: 'bg-primary',
+    badge: 'bg-primary/10 text-primary border-primary/20',
+    badgeText: '▶ Devam Ediyor',
+    lineColor: 'bg-primary',
+  },
+  gap: {
+    bg: 'bg-red-500/10',
+    border: 'border-red-500/40',
+    iconBg: 'bg-red-500',
+    badge: 'bg-red-500/10 text-red-400 border-red-500/20',
+    badgeText: '⚠ Bilgi Boşluğu',
+    lineColor: 'bg-red-500',
+  },
+  locked: {
+    bg: 'bg-white/5',
+    border: 'border-white/10',
+    iconBg: 'bg-slate-600',
+    badge: 'bg-white/5 text-slate-500 border-white/10',
+    badgeText: '🔒 Kilitli',
+    lineColor: 'bg-slate-700',
+  },
+};
 
+const MasteryBar = ({ percent, status }) => {
+  const colors = {
+    completed: 'bg-emerald-500',
+    active: 'bg-primary',
+    gap: 'bg-red-500',
+    locked: 'bg-slate-600',
+  };
   return (
-    <div className="h-[calc(100vh-64px)] w-full flex bg-surface-bright bg-dot-pattern overflow-hidden relative">
-      <style dangerouslySetInnerHTML={{__html: `
-        .bg-dot-pattern {
-            background-image: radial-gradient(var(--tw-colors-outline-variant) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .graph-line {
-            stroke: var(--tw-colors-outline-variant);
-            stroke-width: 1px;
-            stroke-dasharray: 4 4;
-            fill: none;
-        }
-      `}} />
-      {/* Knowledge Graph Canvas */}
-      <section className="flex-1 relative">
-        {/* SVG Overlay for Connection Lines */}
-        <svg aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-0">
-          {/* Data Structures to Graph Theory */}
-          <path className="graph-line" d="M 250 200 L 450 350"></path>
-          {/* Discrete Math to Graph Theory */}
-          <path className="graph-line" d="M 200 450 L 450 350"></path>
-          {/* Graph Theory to Probability (Gap) */}
-          <path className="graph-line" d="M 450 350 L 500 600" stroke="var(--tw-colors-error)" strokeOpacity="0.3"></path>
-          {/* Graph Theory to Neural Networks */}
-          <path className="graph-line" d="M 450 350 L 750 400"></path>
-          {/* Probability to Neural Networks */}
-          <path className="graph-line" d="M 500 600 L 750 400"></path>
-        </svg>
-        {/* Node: Data Structures (Mastered) */}
-        <button className="absolute top-[200px] left-[250px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
-          <div className="w-16 h-16 rounded-full bg-surface border-2 border-secondary flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] group-hover:bg-secondary-container transition-colors">
-            <span className="material-symbols-outlined text-secondary" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
-          </div>
-          <span className="mt-sm font-label-sm text-label-sm text-on-surface px-2 py-1 bg-surface border border-outline-variant rounded-DEFAULT shadow-sm whitespace-nowrap">Data Structures</span>
-        </button>
-        {/* Node: Discrete Math (Mastered) */}
-        <button className="absolute top-[450px] left-[200px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
-          <div className="w-16 h-16 rounded-full bg-surface border-2 border-secondary flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] group-hover:bg-secondary-container transition-colors">
-            <span className="material-symbols-outlined text-secondary" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
-          </div>
-          <span className="mt-sm font-label-sm text-label-sm text-on-surface px-2 py-1 bg-surface border border-outline-variant rounded-DEFAULT shadow-sm whitespace-nowrap">Discrete Math</span>
-        </button>
-        {/* Node: Graph Theory (Current - Active) */}
-        <button className="absolute top-[350px] left-[450px] -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center group focus:outline-none">
-          <div className="w-20 h-20 rounded-full bg-primary border-2 border-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-4 ring-primary/20">
-            <span className="material-symbols-outlined text-on-primary text-[32px]">hub</span>
-          </div>
-          <span className="mt-sm font-label-sm text-label-sm font-bold text-primary px-3 py-1 bg-surface border border-primary rounded-DEFAULT shadow-sm whitespace-nowrap">Graph Theory</span>
-        </button>
-        {/* Node: Probability (Gap - Red) */}
-        <button className="absolute top-[600px] left-[500px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
-          <div className="w-16 h-16 rounded-full bg-surface border-2 border-error flex items-center justify-center border-dashed group-hover:bg-error-container transition-colors">
-            <span className="material-symbols-outlined text-error">warning</span>
-          </div>
-          <span className="mt-sm font-label-sm text-label-sm text-error px-2 py-1 bg-surface border border-error rounded-DEFAULT shadow-sm whitespace-nowrap">Probability Gap</span>
-        </button>
-        {/* Node: Neural Networks (Upcoming - Gray) */}
-        <button className="absolute top-[400px] left-[750px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center group focus:outline-none">
-          <div className="w-16 h-16 rounded-full bg-surface-container-low border-2 border-outline-variant flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
-            <span className="material-symbols-outlined text-outline">lock</span>
-          </div>
-          <span className="mt-sm font-label-sm text-label-sm text-outline px-2 py-1 bg-surface-container-low border border-outline-variant rounded-DEFAULT shadow-sm whitespace-nowrap">Neural Networks</span>
-        </button>
-        {/* Canvas Controls (Bottom Right) */}
-        <div className="absolute bottom-lg right-lg flex flex-col gap-xs bg-surface border border-outline-variant p-1 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
-          <button className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-DEFAULT transition-colors"><span className="material-symbols-outlined text-[20px]">add</span></button>
-          <div className="h-[1px] bg-outline-variant w-full my-1"></div>
-          <button className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-DEFAULT transition-colors"><span className="material-symbols-outlined text-[20px]">remove</span></button>
-          <div className="h-[1px] bg-outline-variant w-full my-1"></div>
-          <button className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-DEFAULT transition-colors"><span className="material-symbols-outlined text-[20px]">fit_screen</span></button>
-        </div>
-      </section>
-      {/* Right Detail Panel */}
-      <aside className="w-[340px] bg-surface border-l border-outline-variant flex flex-col h-full z-30 shadow-[-4px_0_24px_rgba(0,0,0,0.02)]">
-        {/* Panel Header */}
-        <div className="p-lg border-b border-outline-variant">
-          <div className="flex items-center gap-2 mb-xs">
-            <span className="w-2 h-2 rounded-full bg-primary"></span>
-            <span className="font-label-sm text-label-sm text-primary uppercase tracking-wider">Current Focus</span>
-          </div>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface">
-            {roadmap?.nodes[0]?.title || 'Graph Theory'}
-          </h2>
-          <p className="font-body-sm text-body-sm text-on-surface-variant mt-sm">
-            {roadmap?.nodes[0]?.description || 'Understand networks, routing, and relationships through nodes and edges.'}
-          </p>
-        </div>
-        {/* Panel Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-lg space-y-lg">
-          {/* AI Insights */}
-          <div className="bg-surface-bright border border-outline-variant rounded-lg overflow-hidden">
-            <div className="bg-secondary-fixed-dim/20 px-md py-sm border-b border-outline-variant flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary text-[18px]">psychology</span>
-              <h3 className="font-label-md text-label-md font-semibold text-on-secondary-container">AI Insight</h3>
-            </div>
-            <div className="p-md">
-              <p className="font-body-sm text-body-sm text-on-surface">Based on your recent quiz scores, <strong className="font-medium">focus heavily on adjacency matrices</strong> before proceeding to spanning trees. You showed slight hesitation in array representations.</p>
-            </div>
-          </div>
-          {/* Stats Grid (Bento style) */}
-          <div className="grid grid-cols-2 gap-sm">
-            <div className="bg-surface-container-low border border-outline-variant rounded-lg p-md">
-              <span className="material-symbols-outlined text-outline mb-xs block">schedule</span>
-              <div className="font-label-sm text-label-sm text-outline uppercase">Est. Time</div>
-              <div className="font-body-lg text-body-lg text-on-surface font-medium">4h 30m</div>
-            </div>
-            <div className="bg-surface-container-low border border-outline-variant rounded-lg p-md">
-              <span className="material-symbols-outlined text-outline mb-xs block">trending_up</span>
-              <div className="font-label-sm text-label-sm text-outline uppercase">Difficulty</div>
-              <div className="font-body-lg text-body-lg text-on-surface font-medium">High</div>
-            </div>
-          </div>
-          {/* Progress Track */}
-          <div>
-            <div className="flex justify-between items-center mb-sm">
-              <h3 className="font-label-md text-label-md text-on-surface font-semibold">Module Progress</h3>
-              <span className="font-mono text-mono text-primary">25%</span>
-            </div>
-            <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full w-1/4"></div>
-            </div>
-          </div>
-          {/* Prerequisites */}
-          <div>
-            <h3 className="font-label-md text-label-md text-on-surface font-semibold border-b border-outline-variant pb-xs mb-sm">Prerequisites</h3>
-            <ul className="space-y-sm">
-              <li className="flex items-start gap-sm">
-                <span className="material-symbols-outlined text-secondary text-[18px] mt-[2px]" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
-                <div>
-                  <div className="font-body-sm text-body-sm text-on-surface">Data Structures</div>
-                  <div className="font-label-sm text-label-sm text-on-surface-variant">Mastered • Oct 12</div>
-                </div>
-              </li>
-              <li className="flex items-start gap-sm">
-                <span className="material-symbols-outlined text-secondary text-[18px] mt-[2px]" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
-                <div>
-                  <div className="font-body-sm text-body-sm text-on-surface">Discrete Mathematics</div>
-                  <div className="font-label-sm text-label-sm text-on-surface-variant">Mastered • Oct 20</div>
-                </div>
-              </li>
-              <li className="flex items-start gap-sm bg-error-container/30 p-2 rounded-DEFAULT -mx-2 border border-error-container">
-                <span className="material-symbols-outlined text-error text-[18px] mt-[2px]">warning</span>
-                <div>
-                  <div className="font-body-sm text-body-sm text-error font-medium">Probability Basics</div>
-                  <div className="font-label-sm text-label-sm text-error/80">Skill gap detected</div>
-                  <a className="font-label-sm text-label-sm text-primary underline mt-xs inline-block" href="#">Review Module</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-        {/* Panel Footer Actions */}
-        <div className="p-lg border-t border-outline-variant bg-surface-container-lowest">
-          <button className="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-md text-label-md font-semibold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2">
-            Continue Learning
-            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-          </button>
-        </div>
-      </aside>
+    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all duration-1000 ${colors[status]}`}
+        style={{ width: `${percent}%` }}
+      />
     </div>
   );
 };
 
-export default Roadmap;
+const LearningRoadmap = () => {
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const [selectedNode, setSelectedNode] = useState(ROADMAP_DATA.find(n => n.status === 'active'));
+
+  const completedCount = ROADMAP_DATA.filter(n => n.status === 'completed').length;
+  const totalCount = ROADMAP_DATA.length;
+  const overallProgress = Math.round((completedCount / totalCount) * 100);
+
+  return (
+    <div className="h-full flex flex-col overflow-hidden">
+      
+      {/* Page Header */}
+      <div className="px-6 pt-6 pb-4 border-b border-white/5 shrink-0">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-black text-white tracking-tight">Öğrenme Yol Haritam</h1>
+            <p className="text-slate-400 text-sm mt-1">
+              Yapay zeka tarafından senin için kişiselleştirildi • {completedCount}/{totalCount} modül tamamlandı
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Overall Progress */}
+            <div className="flex items-center gap-3 bg-[#1E293B] px-4 py-2.5 rounded-xl border border-white/10">
+              <div className="w-10 h-10 relative flex items-center justify-center">
+                <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="#ffffff10" strokeWidth="3" />
+                  <circle
+                    cx="18" cy="18" r="15" fill="none"
+                    stroke="#1A56DB" strokeWidth="3"
+                    strokeDasharray={`${overallProgress * 0.94} 94`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="absolute text-[10px] font-black text-white">{overallProgress}%</span>
+              </div>
+              <div>
+                <p className="text-white text-sm font-bold">Genel İlerleme</p>
+                <p className="text-slate-400 text-xs">{completedCount} tamamlandı</p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/assessment/diagnostic')}
+              className="flex items-center gap-2 bg-gradient-to-r from-primary to-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all text-sm active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[18px]">quiz</span>
+              Seviye Tespit
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+
+        {/* Timeline */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-2xl mx-auto">
+            {ROADMAP_DATA.map((node, idx) => {
+              const cfg = statusConfig[node.status];
+              const isSelected = selectedNode?.id === node.id;
+              const isLast = idx === ROADMAP_DATA.length - 1;
+
+              return (
+                <div key={node.id} className="flex gap-4">
+                  {/* Timeline Connector */}
+                  <div className="flex flex-col items-center shrink-0">
+                    {/* Icon Circle */}
+                    <button
+                      onClick={() => setSelectedNode(node)}
+                      className={`w-12 h-12 rounded-full ${cfg.iconBg} flex items-center justify-center shrink-0 shadow-lg transition-all duration-200 ${
+                        isSelected ? 'ring-4 ring-white/20 scale-110' : 'hover:scale-105'
+                      } ${node.status === 'locked' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                      <span className="material-symbols-outlined text-white text-[22px]">
+                        {node.status === 'locked' ? 'lock' : node.status === 'completed' ? 'check' : node.icon}
+                      </span>
+                    </button>
+                    {/* Connector Line */}
+                    {!isLast && (
+                      <div className={`w-0.5 flex-1 my-2 min-h-[24px] rounded-full ${cfg.lineColor} ${node.status === 'locked' ? 'opacity-20' : ''}`} />
+                    )}
+                  </div>
+
+                  {/* Card */}
+                  <div className={`flex-1 mb-4 rounded-2xl border p-5 cursor-pointer transition-all duration-200 ${cfg.bg} ${cfg.border} ${
+                    isSelected ? 'shadow-xl scale-[1.01]' : 'hover:scale-[1.005] hover:brightness-110'
+                  } ${node.status === 'locked' ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    onClick={() => node.status !== 'locked' && setSelectedNode(node)}
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${cfg.badge}`}>
+                            {cfg.badgeText}
+                          </span>
+                          <span className="text-slate-500 text-[10px] font-medium">{node.category}</span>
+                        </div>
+                        <h3 className={`text-lg font-bold ${node.status === 'locked' ? 'text-slate-500' : 'text-white'}`}>
+                          {node.title}
+                        </h3>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className={`text-2xl font-black ${
+                          node.status === 'completed' ? 'text-emerald-400' :
+                          node.status === 'active' ? 'text-primary' :
+                          node.status === 'gap' ? 'text-red-400' : 'text-slate-600'
+                        }`}>{node.mastery}%</p>
+                        <p className="text-slate-500 text-[10px]">Hakimiyet</p>
+                      </div>
+                    </div>
+
+                    <p className={`text-sm mb-3 leading-relaxed ${node.status === 'locked' ? 'text-slate-600' : 'text-slate-400'}`}>
+                      {node.description}
+                    </p>
+
+                    {/* Mastery Bar */}
+                    <MasteryBar percent={node.mastery} status={node.status} />
+
+                    {/* Bottom row */}
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-slate-500 text-xs flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">schedule</span>
+                        {node.estimatedTime}
+                      </span>
+                      {node.status === 'active' && (
+                        <button
+                          onClick={e => { e.stopPropagation(); navigate('/courses'); }}
+                          className="text-primary text-xs font-bold hover:text-indigo-300 transition-colors flex items-center gap-1"
+                        >
+                          Devam Et
+                          <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </button>
+                      )}
+                      {node.status === 'gap' && (
+                        <button
+                          onClick={e => { e.stopPropagation(); navigate('/assessment/diagnostic'); }}
+                          className="text-red-400 text-xs font-bold hover:text-red-300 transition-colors flex items-center gap-1"
+                        >
+                          Değerlendir
+                          <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </button>
+                      )}
+                      {node.status === 'locked' && (
+                        <span className="text-slate-600 text-xs">{node.prerequisite}</span>
+                      )}
+                    </div>
+
+                    {/* AI Insight or Gap Warning */}
+                    {node.aiInsight && (
+                      <div className="mt-3 pt-3 border-t border-primary/20 flex items-start gap-2">
+                        <span className="material-symbols-outlined text-primary text-[16px] mt-0.5 shrink-0">psychology</span>
+                        <p className="text-primary/80 text-xs leading-relaxed">{node.aiInsight}</p>
+                      </div>
+                    )}
+                    {node.gapReason && (
+                      <div className="mt-3 pt-3 border-t border-red-500/20 flex items-start gap-2">
+                        <span className="material-symbols-outlined text-red-400 text-[16px] mt-0.5 shrink-0">warning</span>
+                        <p className="text-red-400/80 text-xs leading-relaxed">{node.gapReason}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right Detail Panel */}
+        {selectedNode && (
+          <aside className="w-80 bg-[#0F172A] border-l border-white/5 flex flex-col overflow-y-auto shrink-0">
+            <div className="p-5 border-b border-white/5">
+              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-2">Seçili Modül</p>
+              <div className={`w-14 h-14 rounded-2xl ${statusConfig[selectedNode.status].iconBg} flex items-center justify-center mb-3 shadow-lg`}>
+                <span className="material-symbols-outlined text-white text-2xl">{selectedNode.icon}</span>
+              </div>
+              <h2 className="text-white font-black text-xl mb-1">{selectedNode.title}</h2>
+              <span className={`text-xs font-bold px-2 py-1 rounded-md border ${statusConfig[selectedNode.status].badge}`}>
+                {statusConfig[selectedNode.status].badgeText}
+              </span>
+            </div>
+
+            <div className="p-5 space-y-5 flex-1">
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[#1E293B] rounded-xl p-3 text-center border border-white/5">
+                  <p className={`text-2xl font-black ${
+                    selectedNode.status === 'completed' ? 'text-emerald-400' :
+                    selectedNode.status === 'active' ? 'text-primary' :
+                    selectedNode.status === 'gap' ? 'text-red-400' : 'text-slate-600'
+                  }`}>{selectedNode.mastery}%</p>
+                  <p className="text-slate-500 text-[10px] mt-1">Hakimiyet</p>
+                </div>
+                <div className="bg-[#1E293B] rounded-xl p-3 text-center border border-white/5">
+                  <p className="text-white font-black text-sm mt-1">{selectedNode.estimatedTime}</p>
+                  <p className="text-slate-500 text-[10px] mt-1">Süre</p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-2">Açıklama</p>
+                <p className="text-slate-300 text-sm leading-relaxed">{selectedNode.description}</p>
+              </div>
+
+              {/* AI Insight */}
+              {selectedNode.aiInsight && (
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-primary text-[18px]">psychology</span>
+                    <p className="text-primary text-xs font-bold">AI Önerisi</p>
+                  </div>
+                  <p className="text-slate-300 text-xs leading-relaxed">{selectedNode.aiInsight}</p>
+                </div>
+              )}
+
+              {/* Gap Warning */}
+              {selectedNode.gapReason && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-red-400 text-[18px]">warning</span>
+                    <p className="text-red-400 text-xs font-bold">Dikkat</p>
+                  </div>
+                  <p className="text-slate-300 text-xs leading-relaxed">{selectedNode.gapReason}</p>
+                </div>
+              )}
+
+              {/* Prerequisite */}
+              {selectedNode.prerequisite && (
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-slate-400 text-[18px]">lock</span>
+                    <p className="text-slate-400 text-xs font-bold">Ön Koşul</p>
+                  </div>
+                  <p className="text-slate-500 text-xs leading-relaxed">{selectedNode.prerequisite}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Action Button */}
+            <div className="p-5 border-t border-white/5">
+              {selectedNode.status === 'active' && (
+                <button
+                  onClick={() => navigate('/courses')}
+                  className="w-full bg-gradient-to-r from-primary to-indigo-600 text-white py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                  Öğrenmeye Devam Et
+                </button>
+              )}
+              {selectedNode.status === 'gap' && (
+                <button
+                  onClick={() => navigate('/assessment/diagnostic')}
+                  className="w-full bg-red-500/20 text-red-400 border border-red-500/30 py-3 rounded-xl font-bold hover:bg-red-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">quiz</span>
+                  Boşluğu Değerlendir
+                </button>
+              )}
+              {selectedNode.status === 'completed' && (
+                <button
+                  onClick={() => navigate('/courses')}
+                  className="w-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 py-3 rounded-xl font-bold hover:bg-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">replay</span>
+                  Tekrar Gözden Geçir
+                </button>
+              )}
+              {selectedNode.status === 'locked' && (
+                <button
+                  disabled
+                  className="w-full bg-white/5 text-slate-600 border border-white/5 py-3 rounded-xl font-bold cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">lock</span>
+                  Ön Koşulları Tamamla
+                </button>
+              )}
+            </div>
+          </aside>
+        )}
+
+      </div>
+    </div>
+  );
+};
+
+export default LearningRoadmap;
