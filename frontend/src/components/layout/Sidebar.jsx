@@ -1,14 +1,25 @@
 
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, BookOpen, PieChart, Settings, HelpCircle, User } from 'lucide-react';
+import { LayoutDashboard, Map, BookOpen, PieChart, Settings, HelpCircle, User, Video } from 'lucide-react';
+import useAuthStore from '../../store/authStore';
 
 const Sidebar = () => {
-  const navItems = [
+  const { user } = useAuthStore();
+  const isInstructor = user?.role === 'instructor';
+
+  const studentNavItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Roadmap', path: '/roadmap', icon: Map },
     { name: 'Courses', path: '/courses', icon: BookOpen },
     { name: 'Reports', path: '/reports', icon: PieChart },
   ];
+
+  const instructorNavItems = [
+    { name: 'Analytics & Revenue', path: '/instructor/dashboard', icon: PieChart },
+    { name: 'Course Manager', path: '/instructor/courses', icon: Video },
+  ];
+
+  const navItems = isInstructor ? instructorNavItems : studentNavItems;
 
   const bottomItems = [
     { name: 'Profile', path: '/profile', icon: User },

@@ -1,6 +1,7 @@
-import React from 'react';
+import useAuthStore from '../../store/authStore';
 
 export const Dashboard = () => {
+  const { user } = useAuthStore();
   return (
     <div className="p-lg h-full overflow-y-auto w-full relative">
       <div className="max-w-7xl mx-auto space-y-lg pb-xl">
@@ -9,9 +10,9 @@ export const Dashboard = () => {
           {/* Left Card */}
           <div className="lg:col-span-2 bg-gradient-to-br from-[#1A56DB] to-[#003fb1] rounded-xl p-lg relative overflow-hidden text-on-primary">
             <div className="relative z-10">
-              <h2 className="font-headline-lg text-headline-lg mb-sm">Welcome back, Alex.</h2>
+              <h2 className="font-headline-lg text-headline-lg mb-sm">Hoş geldin, {user?.full_name?.split(' ')[0] || 'Öğrenci'}.</h2>
               <p className="font-body-md text-body-md opacity-90 max-w-md mb-md">
-                Your AI roadmap has been updated. Resume where you left off.
+                Yapay Zeka yol haritan güncellendi. Kaldığın yerden devam et.
               </p>
               <button className="bg-surface-container-lowest text-primary px-6 py-3 rounded-lg font-label-md text-label-md hover:bg-surface transition-colors flex items-center gap-2">
                 <span>Continue Learning</span>

@@ -2,6 +2,33 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict
 from datetime import datetime
 
+class AttachmentBase(BaseModel):
+    file_name: str
+    file_url: str
+
+class AttachmentRead(AttachmentBase):
+    id: str
+    video_id: str
+    
+    class Config:
+        from_attributes = True
+
+class ReviewBase(BaseModel):
+    rating: int
+    comment: Optional[str] = None
+
+class ReviewCreate(ReviewBase):
+    pass
+
+class ReviewRead(ReviewBase):
+    id: str
+    course_id: str
+    user_id: str
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 class VideoBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -16,6 +43,7 @@ class VideoCreate(VideoBase):
 class VideoRead(VideoBase):
     id: str
     section_id: str
+    attachments: List[AttachmentRead] = []
     
     class Config:
         from_attributes = True
@@ -64,6 +92,7 @@ class CourseRead(CourseBase):
     is_published: bool
     created_at: datetime
     sections: List[SectionRead] = []
+    reviews: List[ReviewRead] = []
     
     class Config:
         from_attributes = True

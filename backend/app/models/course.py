@@ -23,6 +23,7 @@ class Course(Base):
     instructor = relationship("User", foreign_keys=[instructor_id])
     sections = relationship("Section", back_populates="course", cascade="all, delete-orphan")
     enrollments = relationship("Enrollment", back_populates="course")
+    reviews = relationship("Review", back_populates="course", cascade="all, delete-orphan")
 
 class Section(Base):
     __tablename__ = "sections"
@@ -45,6 +46,7 @@ class Video(Base):
     order_index = Column(Integer, default=0)
     is_preview = Column(Boolean, default=False)
     section = relationship("Section", back_populates="videos")
+    attachments = relationship("Attachment", back_populates="video", cascade="all, delete-orphan")
 
 class Enrollment(Base):
     __tablename__ = "enrollments"
@@ -54,3 +56,25 @@ class Enrollment(Base):
     enrolled_at = Column(DateTime, default=datetime.utcnow)
     completed_videos = Column(JSON, default=list)  # [video_id, ...]
     course = relationship("Course", back_populates="enrollments")
+
+class Review(Base):
+    __tablename__ = "reviews"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    course_id = Column(String, ForeignKey("courses.id"), nullable=False)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    rating = Column(Integer, default=5)
+    comment = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    course = relationship("Course", back_populates="reviews")
+    user = relationship("User")
+
+class Attachment(Base):
+    __tablename__ = "attachments"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    video_id = Column(String, ForeignKey("videos.id"), nullable=False)
+    file_name = Column(String, nullable=False)
+    file_url = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    video = relationship("Video", back_populates="attachments")

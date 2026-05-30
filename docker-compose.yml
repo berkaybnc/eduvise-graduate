@@ -1,18 +1,123 @@
 version: '3.8'
 
 services:
-  backend:
+  api-gateway:
     build:
-      context: ./backend
+      context: ./services/api-gateway
       dockerfile: Dockerfile
-    container_name: eduvise_backend
+    container_name: eduvise_api_gateway
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
-      - /app/venv
+    depends_on:
+      - auth-service
+      - course-service
+      - ai-service
+      - analytics-service
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: eduvise_postgres
     environment:
-      - DATABASE_URL=sqlite:///./eduvise.db
-      - SECRET_KEY=change-this-to-random-256bit-string
-      - UPLOAD_DIR=./uploads
-    command: sh -c "python seed.py && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: eduviseskills
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: eduvise_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: eduvise_auth_service
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./services/auth-service:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/eduviseskills
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=super-secret-auth-key-256
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  course-service:
+    build:
+      context: ./services/course-service
+      dockerfile: Dockerfile
+    container_name: eduvise_course_service
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./services/course-service:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/eduviseskills
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  ai-service:
+    build:
+      context: ./services/ai-service
+      dockerfile: Dockerfile
+    container_name: eduvise_ai_service
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./services/ai-service:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  analytics-service:
+    build:
+      context: ./services/analytics-service
+      dockerfile: Dockerfile
+    container_name: eduvise_analytics_service
+    ports:
+      - "8004:8000"
+    volumes:
+      - ./services/analytics-service:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/eduviseskills
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  pgdata:
+  redisdata:

@@ -1,4 +1,18 @@
+import { useQuery } from '@tanstack/react-query';
+import api from '../../lib/api';
+
 export const Roadmap = () => {
+  const { data: roadmap, isLoading } = useQuery({
+    queryKey: ['roadmap', 1],
+    queryFn: async () => {
+      // Fetching first user's roadmap just for demo
+      const response = await api.get('/roadmap/1');
+      return response.data;
+    }
+  });
+
+  if (isLoading) return <div className="p-8">Roadmap yükleniyor...</div>;
+
   return (
     <div className="h-[calc(100vh-64px)] w-full flex bg-surface-bright bg-dot-pattern overflow-hidden relative">
       <style dangerouslySetInnerHTML={{__html: `
@@ -80,8 +94,12 @@ export const Roadmap = () => {
             <span className="w-2 h-2 rounded-full bg-primary"></span>
             <span className="font-label-sm text-label-sm text-primary uppercase tracking-wider">Current Focus</span>
           </div>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface">Graph Theory</h2>
-          <p className="font-body-sm text-body-sm text-on-surface-variant mt-sm">Understand networks, routing, and relationships through nodes and edges.</p>
+          <h2 className="font-headline-lg text-headline-lg text-on-surface">
+            {roadmap?.nodes[0]?.title || 'Graph Theory'}
+          </h2>
+          <p className="font-body-sm text-body-sm text-on-surface-variant mt-sm">
+            {roadmap?.nodes[0]?.description || 'Understand networks, routing, and relationships through nodes and edges.'}
+          </p>
         </div>
         {/* Panel Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-lg space-y-lg">

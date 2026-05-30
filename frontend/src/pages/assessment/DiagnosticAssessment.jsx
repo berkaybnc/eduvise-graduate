@@ -1,6 +1,26 @@
-import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../lib/api';
 
 export const DiagnosticAssessment = () => {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      // API call to real endpoint
+      await api.post('/assessments/diagnostic/submit', {
+        answers: { "q12": "C" }
+      });
+      alert("Test sonuçlarınız başarıyla yapay zeka tarafından analiz edildi!");
+      navigate('/roadmap');
+    } catch {
+      alert("Gönderim sırasında hata oluştu!");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <div className="flex flex-col w-full h-[calc(100vh-64px)]">
       {/* Top Navigation (Diagnostic specific) */}
@@ -65,7 +85,13 @@ export const DiagnosticAssessment = () => {
             </div>
             <div className="mt-lg pt-md flex justify-between items-center">
               <button className="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Skip</button>
-              <button className="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">Submit Answer</button>
+              <button 
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm disabled:opacity-50"
+              >
+                {isSubmitting ? 'Analyzing...' : 'Submit Answer'}
+              </button>
             </div>
           </div>
         </div>

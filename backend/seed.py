@@ -1,6 +1,6 @@
 from app.database import SessionLocal, Base, engine
 from app.models.user import User, UserRole
-from app.models.course import Course, Section, Video
+from app.models.course import Course, Section, Video, Review, Attachment
 from app.core.security import hash_password
 
 def seed_db():
@@ -27,6 +27,14 @@ def seed_db():
     
     v1 = Video(section_id=s1.id, title="Python Nedir?", video_url="https://example.com/video1.mp4")
     db.add(v1)
+    db.commit()
+    
+    a1 = Attachment(video_id=v1.id, file_name="Python_Giris_Notlari.pdf", file_url="https://example.com/notes.pdf")
+    db.add(a1)
+    db.commit()
+    
+    r1 = Review(course_id=c1.id, user_id=student1.id, rating=5, comment="Harika bir giriş kursu!")
+    db.add(r1)
     db.commit()
     
     print("Seed data created successfully.")

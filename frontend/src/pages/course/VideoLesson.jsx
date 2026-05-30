@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const Learn = () => {
   return (
@@ -43,6 +42,52 @@ export const Learn = () => {
             <button className="mt-sm text-label-sm font-label-sm text-secondary hover:underline flex items-center gap-xs">
               Review Priority Queues <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </button>
+          </div>
+        </div>
+
+        {/* Downloads & Resources */}
+        <div className="mt-8">
+          <h3 className="text-lg font-bold mb-4">Ders Kaynakları</h3>
+          <div className="flex gap-4">
+            <button className="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors">
+              <span className="material-symbols-outlined text-secondary">picture_as_pdf</span>
+              <span className="font-bold text-sm">Sunum_Notlari.pdf</span>
+              <span className="material-symbols-outlined text-sm ml-2">download</span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors">
+              <span className="material-symbols-outlined text-tertiary">folder_zip</span>
+              <span className="font-bold text-sm">Kaynak_Kodlar.zip</span>
+              <span className="material-symbols-outlined text-sm ml-2">download</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Reviews and Ratings */}
+        <div className="mt-8 border-t border-outline-variant pt-8">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold">Öğrenci Değerlendirmeleri</h3>
+            <button className="text-primary font-bold hover:underline flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">edit</span>
+              Değerlendir
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">A</div>
+                <span className="font-bold">Ahmet Yılmaz</span>
+                <span className="text-secondary ml-auto text-sm">⭐⭐⭐⭐⭐</span>
+              </div>
+              <p className="text-on-surface-variant text-sm">Eğitmen konuyu harika anlatmış. Verdiği notlar çok işime yaradı.</p>
+            </div>
+            <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-sm">M</div>
+                <span className="font-bold">Mehmet K.</span>
+                <span className="text-secondary ml-auto text-sm">⭐⭐⭐⭐</span>
+              </div>
+              <p className="text-on-surface-variant text-sm">İyi bir kurs ancak bazı yerler hızlı geçilmiş.</p>
+            </div>
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.models.course import Course, Section, Video, Enrollment
+from app.models.course import Course, Section, Video, Enrollment, Review, Attachment
 from app.models.user import User
-from app.schemas.course import CourseCreate, CourseRead, CourseUpdate, SectionCreate, VideoCreate
+from app.schemas.course import CourseCreate, CourseRead, CourseUpdate, SectionCreate, VideoCreate, ReviewCreate, ReviewRead, AttachmentRead
 from app.core.dependencies import get_current_user, require_instructor
 
 router = APIRouter()
@@ -73,3 +73,22 @@ def complete_video(video_id: str, course_id: str, db: Session = Depends(get_db),
             enrollment.completed_videos = completed
             db.commit()
     return {"message": "Video tamamlandı"}
+
+@router.post("/{course_id}/reviews", response_model=ReviewRead)
+def add_review(course_id: str, review: ReviewCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    new_review = Review(
+        course_id=course_id,
+        user_id=current_user.id,
+        rating=review.rating,
+        comment=review.comment
+    )
+    db.add(new_review)
+    db.commit()
+    db.refresh(new_review)
+    return new_review
+
+@router.get("/{course_id}/reviews", response_model=List[ReviewRead])
+def get_reviews(course_id: str, db: Session = Depends(get_db)):
+    reviews = db.query(Review).filter(Review.course_id == course_id).all()
+    return reviews
+

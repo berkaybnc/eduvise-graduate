@@ -1,9 +1,15 @@
-
-import { Search, Bell, Sparkles, Settings } from 'lucide-react';
+import { Search, Bell, Sparkles, Settings, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../../store/authStore';
 
 const TopBar = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className="bg-surface h-16 border-b border-border flex items-center justify-between px-6">
@@ -34,21 +40,21 @@ const TopBar = () => {
         
         <div className="h-6 w-px bg-border mx-2"></div>
         
-        <a href="#" className="text-sm font-medium text-text-secondary hover:text-text-primary">
-          Support
-        </a>
-        
         <button 
           onClick={() => navigate('/assessment/diagnostic')}
-          className="ml-4 bg-primary text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
+          className="bg-primary text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
         >
           + New Goal
         </button>
         
-        <div className="ml-4 flex items-center">
+        <div className="ml-4 flex items-center gap-3">
+          <span className="text-sm font-medium text-text-primary">{user?.full_name || 'Kullanıcı'}</span>
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-medium">
-            A
+            {user?.full_name ? user.full_name[0].toUpperCase() : 'U'}
           </div>
+          <button onClick={handleLogout} className="text-text-muted hover:text-error ml-2" title="Çıkış Yap">
+            <LogOut className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </header>

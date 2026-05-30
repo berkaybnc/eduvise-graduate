@@ -1,26 +1,53 @@
+
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import api from '../../lib/api';
+
 export const CourseDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { data: course, isLoading, error } = useQuery({
+    queryKey: ['course', id],
+    queryFn: async () => {
+      const response = await api.get(`/courses/${id}`);
+      return response.data;
+    }
+  });
+
+  const handleEnroll = async () => {
+    try {
+      await api.post(`/courses/${id}/enroll`);
+      alert("Başarıyla kayıt olundu!");
+      navigate('/dashboard');
+    } catch {
+      alert("Kayıt olurken bir hata oluştu veya zaten kayıtlısınız.");
+    }
+  };
+
+  if (isLoading) return <div className="p-8">Yükleniyor...</div>;
+  if (error || !course) return <div className="p-8 text-error">Kurs bulunamadı!</div>;
+
   return (
     <div className="w-full max-w-max-content-width mx-auto pb-xl">
       {/* Hero Section */}
       <section className="w-full bg-surface-variant border-b border-outline-variant">
         <div className="p-lg md:p-xl flex flex-col md:flex-row gap-lg md:gap-xl items-center">
           {/* Hero Image */}
-          <div className="w-full md:w-1/2 aspect-video rounded-lg overflow-hidden border border-outline shadow-sm relative group bg-surface-container">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary-container/20 to-secondary-container/20 mix-blend-overlay z-10"></div>
-            <img alt="Abstract representation of a complex network graph, glowing nodes connected by precise lines." className="w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYdXTEszFQQpCOBp8Sgd6coZM9uQU5IrjrEI7ILX1c8zTMeX7NfMk9HuJ5oj_l05z6unycg3reUUtetq52_q_vc9ASa0Z3WhBk9zUtPPBa1v2I7age-LBPF8DDIcl_yuKQY9PNJp_o6c2LReQ4_jQSHH9jngn1ARESojEJhjHy_K2P8pfOuXC7o7VY-ynWSQmjersGZgtBq0qGj6kbnoBRhnQSllLPgnXCUmuCey3-d9k5JXPeo9UNd8nXadT8Uu15BXle1MyhyJlC"/>
+          <div className="w-full md:w-1/2 aspect-video rounded-lg overflow-hidden border border-outline shadow-sm relative group bg-gradient-to-r from-blue-500 to-purple-500">
           </div>
           {/* Hero Content */}
           <div className="w-full md:w-1/2 flex flex-col items-start">
             <div className="flex items-center gap-xs mb-sm">
-              <span className="bg-tertiary-container/10 text-tertiary px-sm py-[2px] rounded-DEFAULT text-label-sm font-label-sm font-semibold border border-tertiary/20">Advanced</span>
+              <span className="bg-tertiary-container/10 text-tertiary px-sm py-[2px] rounded-DEFAULT text-label-sm font-label-sm font-semibold border border-tertiary/20">{course.category}</span>
               <span className="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-xs">
                 <span className="material-symbols-outlined text-[16px]" style={{fontVariationSettings: "'FILL' 1", color: "#eab308"}}>star</span>
-                4.9 (1.2k reviews)
+                Yeni
               </span>
             </div>
-            <h2 className="text-headline-lg font-headline-lg text-on-surface mb-sm">Advanced Graph Theory</h2>
+            <h2 className="text-headline-lg font-headline-lg text-on-surface mb-sm">{course.title}</h2>
             <p className="text-body-lg font-body-lg text-on-surface-variant mb-md max-w-xl">
-              Master complex network structures, traversal algorithms, and real-world applications of modern graph theory.
+              {course.description}
             </p>
             <div className="flex items-center gap-md mb-lg">
               <div className="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-outline-variant">
@@ -31,7 +58,7 @@ export const CourseDetail = () => {
                 <p className="text-label-sm font-label-sm text-on-surface-variant">Lead AI Researcher, EduVise</p>
               </div>
             </div>
-            <button className="bg-primary text-on-primary px-xl py-md rounded-DEFAULT text-label-md font-label-md font-semibold hover:bg-surface-tint transition-all shadow-sm hover:shadow active:scale-95 flex items-center gap-sm">
+            <button onClick={handleEnroll} className="bg-primary text-on-primary px-xl py-md rounded-DEFAULT text-label-md font-label-md font-semibold hover:bg-surface-tint transition-all shadow-sm hover:shadow active:scale-95 flex items-center gap-sm">
               Enroll Now
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -107,7 +134,7 @@ export const CourseDetail = () => {
               </div>
               <span className="bg-error-container text-on-error-container px-sm py-xs rounded-DEFAULT text-label-sm font-label-sm font-semibold">30% OFF</span>
             </div>
-            <button className="w-full bg-primary text-on-primary py-md rounded-DEFAULT text-label-md font-label-md font-bold hover:bg-surface-tint transition-all shadow-sm active:scale-95">
+            <button onClick={handleEnroll} className="w-full bg-primary text-on-primary py-md rounded-DEFAULT text-label-md font-label-md font-bold hover:bg-surface-tint transition-all shadow-sm active:scale-95">
               Enroll Now
             </button>
             <p className="text-center text-label-sm font-label-sm text-on-surface-variant mt-[-8px]">30-Day Money-Back Guarantee</p>

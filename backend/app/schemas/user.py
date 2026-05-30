@@ -9,6 +9,7 @@ class UserBase(BaseModel):
     role: UserRole = UserRole.student
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
+    interests: Optional[str] = None
 
 class UserCreate(UserBase):
     password: str
@@ -17,6 +18,7 @@ class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
+    interests: Optional[str] = None
 
 class UserRead(UserBase):
     id: str

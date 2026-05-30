@@ -20,7 +20,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         hashed_password=hashed_pwd,
         role=user.role,
         avatar_url=user.avatar_url,
-        bio=user.bio
+        bio=user.bio,
+        interests=user.interests
     )
     db.add(new_user)
     db.commit()
@@ -60,6 +61,8 @@ def update_profile(user_update: UserUpdate, db: Session = Depends(get_db), curre
         current_user.avatar_url = user_update.avatar_url
     if user_update.bio:
         current_user.bio = user_update.bio
+    if user_update.interests:
+        current_user.interests = user_update.interests
     db.commit()
     db.refresh(current_user)
     return current_user

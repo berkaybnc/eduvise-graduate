@@ -13,8 +13,20 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await api.post('/auth/login', { email, password });
-      setAuth({ email }, response.data.access_token);
-      navigate('/dashboard');
+      const token = response.data.access_token;
+      
+      // Geçici olarak tokeni manuel header'a ekleyip me isteği atalım
+      const meResponse = await api.get('/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setAuth(meResponse.data, token);
+
+      if (!meResponse.data.interests && meResponse.data.role === 'student') {
+        navigate('/onboarding');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       alert('Giriş başarısız');
     }
