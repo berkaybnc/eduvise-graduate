@@ -1,11 +1,74 @@
-import { Search, Bell } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Search, Bell, CheckCircle2, Circle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
+import api from '../../lib/api';
 
 const TopBar = () => {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
   const isInstructor = user?.role === 'instructor';
+  
+  const [notifications, setNotifications] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Fetch initial notifications
+  useEffect(() => {
+    if (!token) return;
+    
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get('/notifications/');
+        setNotifications(res.data);
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+      }
+    };
+    fetchNotifications();
+  }, [token]);
+
+  // WebSocket Connection
+  useEffect(() => {
+    if (!token) return;
+    
+    // Create WebSocket connection
+    const wsUrl = `ws://localhost:8000/notifications/ws?token=${token}`;
+    const ws = new WebSocket(wsUrl);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      // Prepend the new notification
+      setNotifications(prev => [data, ...prev]);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [token]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const markAsRead = async (id, isRead) => {
+    if (isRead) return;
+    try {
+      await api.put(`/notifications/${id}/read`);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <header className="bg-[#0F172A]/95 backdrop-blur-xl h-16 border-b border-white/5 flex items-center justify-between px-6 shrink-0">
@@ -26,10 +89,61 @@ const TopBar = () => {
       {/* Right Actions */}
       <div className="flex items-center gap-3">
         {/* Notification Bell */}
-        <button className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#0F172A]" />
-        </button>
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={() => setShowDropdown(!showDropdown)}
+            className={`relative p-2 rounded-xl transition-all border ${showDropdown ? 'bg-white/10 border-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10 border-transparent hover:border-white/10'}`}
+          >
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#0F172A]" />
+            )}
+          </button>
+
+          {/* Notification Dropdown */}
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-80 bg-[#1E293B] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[400px]">
+              <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/20">
+                <h3 className="text-white font-bold text-sm">Bildirimler</h3>
+                {unreadCount > 0 && (
+                  <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {unreadCount} Yeni
+                  </span>
+                )}
+              </div>
+              <div className="overflow-y-auto flex-1">
+                {notifications.length === 0 ? (
+                  <div className="p-8 text-center text-slate-400 text-sm">
+                    Henüz bildiriminiz yok.
+                  </div>
+                ) : (
+                  notifications.map(notif => (
+                    <div 
+                      key={notif.id} 
+                      onClick={() => markAsRead(notif.id, notif.is_read)}
+                      className={`p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors flex gap-3 ${!notif.is_read ? 'bg-white/[0.02]' : 'opacity-70'}`}
+                    >
+                      <div className={`mt-0.5 shrink-0 ${!notif.is_read ? 'text-emerald-400' : 'text-slate-500'}`}>
+                        {!notif.is_read ? <Circle className="h-2 w-2 fill-emerald-400" /> : <CheckCircle2 className="h-4 w-4" />}
+                      </div>
+                      <div>
+                        <p className={`text-sm ${!notif.is_read ? 'text-white font-semibold' : 'text-slate-300'}`}>
+                          {notif.title}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                          {notif.message}
+                        </p>
+                        <p className="text-[10px] text-slate-500 mt-2">
+                          {new Date(notif.created_at).toLocaleString('tr-TR')}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* AI Quick Action */}
         <button
@@ -53,8 +167,12 @@ const TopBar = () => {
 
         {/* User Avatar */}
         <div className="flex items-center gap-2 pl-3 border-l border-white/10">
-          <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-lg">
-            {user?.full_name ? user.full_name[0].toUpperCase() : 'E'}
+          <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-lg overflow-hidden">
+            {user?.avatar_url ? (
+              <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              user?.full_name ? user.full_name[0].toUpperCase() : 'E'
+            )}
           </div>
         </div>
       </div>

@@ -97,9 +97,12 @@ export const Marketplace = () => {
                 {/* Kart Hover Efekti Glow */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/10 group-hover:to-transparent transition-all duration-500 z-0"></div>
                 
-                {/* Kurs Görseli (Gradient Mock) */}
-                <div className={`h-48 w-full bg-gradient-to-br ${course.image || 'from-slate-700 to-slate-900'} relative z-10 overflow-hidden`}>
-                  <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full flex items-center gap-1">
+                {/* Kurs Görseli */}
+                <div className={`h-48 w-full relative z-10 overflow-hidden ${course.thumbnail_url ? '' : `bg-gradient-to-br ${course.image || 'from-slate-700 to-slate-900'}`}`}>
+                  {course.thumbnail_url && (
+                    <img src={course.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
+                  )}
+                  <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full flex items-center gap-1 z-20">
                     <span className="material-symbols-outlined text-yellow-400 text-sm">star</span>
                     <span className="text-white text-xs font-bold">{course.rating || '4.5'}</span>
                   </div>

@@ -39,12 +39,9 @@ const Auth = () => {
     
     try {
       if (isLogin) {
-        const loginData = new URLSearchParams();
-        loginData.append('username', formData.email);
-        loginData.append('password', formData.password);
-
-        const response = await api.post('/auth/login', loginData, {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        const response = await api.post('/auth/login', {
+          email: formData.email,
+          password: formData.password,
         });
         const token = response.data.access_token;
         
@@ -54,13 +51,14 @@ const Auth = () => {
         
         setAuth(meResponse.data, token);
 
-        if (!meResponse.data.interests && meResponse.data.role === 'student') {
+        if (meResponse.data.role === 'instructor') {
+          navigate('/instructor/dashboard');
+        } else if (!meResponse.data.interests && meResponse.data.role === 'student') {
           navigate('/onboarding');
         } else {
           navigate('/dashboard');
         }
       } else {
-        await api.post('/auth/register', { ...formData, role: selectedRole });
         setIsLogin(true);
         setSelectedRole('');
         window.history.pushState(null, '', '/login');

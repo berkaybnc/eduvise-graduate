@@ -50,12 +50,18 @@ export const CourseDetail = () => {
               {course.description}
             </p>
             <div className="flex items-center gap-md mb-lg">
-              <div className="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-outline-variant">
-                <img alt="Dr. Sarah Chen" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw25fRhGLlRMIIlHIeb3jrnrohK8PDbdo5zvsbkX14CNEUJqFM39IaJG3-s4sHhbiEfCvwGfxlSY9sy5D9K5k_rIaKxENOi0dFTtoCOgqT6VCY5WaUiYO8RO9rE1-yMtEtKHGoQy_5c5T-v1Kp-5luw3hExe_KZM_tlS7PBI9tBPSiDht0c1FpPhYxNZEhpvTETJycnkGZFdr5Q-fP4a0dUbEqwpPMndIEKhNbqLIoxu2rh7pNMhlQlGb8n9Ee4WQh4O_5J1rYCGuo"/>
+              <div className="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-outline-variant flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-on-surface-variant">person</span>
               </div>
-              <div>
-                <p className="text-label-md font-label-md text-on-surface">Dr. Sarah Chen</p>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">Lead AI Researcher, EduVise</p>
+              <div 
+                className="cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigate(`/instructor/${course.instructor_id}`)}
+              >
+                <p className="text-label-md font-label-md text-on-surface hover:text-primary transition-colors flex items-center gap-1">
+                  Eğitmen
+                  <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                </p>
+                <p className="text-label-sm font-label-sm text-on-surface-variant">Profilini İncele</p>
               </div>
             </div>
             <button onClick={handleEnroll} className="bg-primary text-on-primary px-xl py-md rounded-DEFAULT text-label-md font-label-md font-semibold hover:bg-surface-tint transition-all shadow-sm hover:shadow active:scale-95 flex items-center gap-sm">
@@ -164,17 +170,21 @@ export const CourseDetail = () => {
           {/* Instructor Bio */}
           <div>
             <h3 className="text-headline-md font-headline-md text-on-surface border-b border-outline-variant pb-sm mb-md">About the Instructor</h3>
-            <div className="flex gap-md items-start">
-              <div className="w-16 h-16 rounded-full bg-surface-container overflow-hidden border border-outline-variant shrink-0">
-                <img alt="Dr. Sarah Chen thumbnail" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjIzup3AmaOnH6vD0MXTE6miOLYKRI5d_NhGoqw5OpF_o5IXeZueSTOEE2vZGyxQ6FDY4P3RdFB_DjgjLBPAybq-uBUjltdepnsfSIuYJlY5fO1KZH8LqkPmycH7DdTHkhn9z-Ao91E4BXeoWU_bF3qcmFilHMOXwyjGlTZ4xMgO5sFspiCMdB4SuMRcCCzIP0hCHqBaOaT7o_s5CJEeC0JLUu-gqtsB7l5Y8jWURbjsqCPe76kNiskmwpn4mMOSzaO00a-PgKQ3b2"/>
+            <div 
+              className="flex gap-md items-start p-4 rounded-xl border border-outline-variant hover:border-primary/50 hover:bg-surface-container-lowest cursor-pointer transition-all group"
+              onClick={() => navigate(`/instructor/${course.instructor_id}`)}
+            >
+              <div className="w-16 h-16 rounded-full bg-surface-container overflow-hidden border border-outline-variant shrink-0 flex items-center justify-center group-hover:border-primary/30 transition-colors">
+                <span className="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-primary transition-colors">person</span>
               </div>
-              <div className="flex flex-col gap-xs">
-                <h4 className="text-label-md font-label-md text-on-surface font-semibold">Dr. Sarah Chen</h4>
-                <div className="flex items-center gap-sm text-label-sm font-label-sm text-on-surface-variant">
-                  <span className="flex items-center gap-xs"><span className="material-symbols-outlined text-[14px]">star</span> 4.9 Rating</span>
-                  <span className="flex items-center gap-xs"><span className="material-symbols-outlined text-[14px]">group</span> 12k Students</span>
-                </div>
-                <p className="text-body-sm font-body-sm text-on-surface-variant mt-sm">Dr. Chen holds a Ph.D. in Computer Science from MIT, specializing in algorithmic graph theory. She has over 10 years of experience making complex mathematical concepts accessible to engineers.</p>
+              <div className="flex flex-col gap-xs flex-1">
+                <h4 className="text-label-md font-label-md text-on-surface font-semibold group-hover:text-primary flex items-center gap-2 transition-colors">
+                  Eğitmen
+                  <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                </h4>
+                <p className="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  Eğitmenin profiline giderek diğer kurslarını inceleyebilir ve hakkında daha fazla bilgi edinebilirsiniz.
+                </p>
               </div>
             </div>
           </div>

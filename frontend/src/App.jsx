@@ -14,8 +14,19 @@ import Auth from './pages/auth/Auth';
 import Onboarding from './pages/auth/Onboarding';
 import CourseManager from './pages/instructor/CourseManager';
 import InstructorDashboard from './pages/instructor/InstructorDashboard';
+import InstructorProfile from './pages/instructor/InstructorProfile';
+import InstructorSettings from './pages/instructor/InstructorSettings';
+import useAuthStore from './store/authStore';
 
 import ProtectedRoute from './components/ProtectedRoute';
+
+const IndexRedirect = () => {
+  const { user } = useAuthStore();
+  if (user?.role === 'instructor') {
+    return <Navigate to="/instructor/dashboard" />;
+  }
+  return <Navigate to="/dashboard" />;
+};
 
 const MainLayout = () => {
   return (
@@ -40,7 +51,7 @@ function App() {
         
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/" element={<IndexRedirect />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<StudentDashboard />} />
             <Route path="/courses" element={<Marketplace />} />
@@ -54,6 +65,8 @@ function App() {
             {/* Instructor Routes */}
             <Route path="/instructor/dashboard" element={<InstructorDashboard />} />
             <Route path="/instructor/courses" element={<CourseManager />} />
+            <Route path="/instructor/settings" element={<InstructorSettings />} />
+            <Route path="/instructor/:id" element={<InstructorProfile />} />
           </Route>
         </Route>
       </Routes>

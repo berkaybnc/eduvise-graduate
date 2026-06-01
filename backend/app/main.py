@@ -9,6 +9,7 @@ from app.api.assessments import router as assessments_router
 from app.api.roadmap import router as roadmap_router
 from app.api.ai import router as ai_router
 from app.api.instructor import router as instructor_router
+from app.api.notifications import router as notifications_router
 
 app = FastAPI(title="EduVise API", version="1.0.0")
 
@@ -29,3 +30,4 @@ app.include_router(assessments_router, prefix="/assessments", tags=["assessments
 app.include_router(roadmap_router, prefix="/roadmap", tags=["roadmap"])
 app.include_router(ai_router, prefix="/ai", tags=["ai"])
 app.include_router(instructor_router, prefix="/instructor", tags=["instructor"])
+app.include_router(notifications_router, prefix="/notifications", tags=["notifications"])

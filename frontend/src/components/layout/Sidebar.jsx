@@ -12,6 +12,7 @@ const studentNav = [
 const instructorNav = [
   { name: 'Analiz & Gelir', path: '/instructor/dashboard', icon: 'bar_chart' },
   { name: 'Kurs Yöneticisi', path: '/instructor/courses', icon: 'video_library' },
+  { name: 'Profil Ayarları', path: '/instructor/settings', icon: 'person' },
 ];
 
 const Sidebar = () => {
@@ -36,16 +37,11 @@ const Sidebar = () => {
 
       {/* Logo */}
       <div className="px-6 pt-6 pb-4 relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-tr from-primary to-indigo-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg">
-            E
-          </div>
-          <div>
-            <span className="text-white font-black text-lg tracking-tight">EduVise</span>
-            <p className="text-slate-500 text-xs">
-              {isInstructor ? 'Eğitmen Paneli' : 'Adaptif Öğrenme'}
-            </p>
-          </div>
+        <div className="flex flex-col items-start gap-1">
+          <img src="/logo.png" alt="EduVise Logo" className="h-10 object-contain drop-shadow-lg" />
+          <p className="text-slate-500 text-[10px] uppercase tracking-wider font-bold ml-1">
+            {isInstructor ? 'Eğitmen Paneli' : 'AI Adaptive Learning'}
+          </p>
         </div>
       </div>
 
@@ -85,8 +81,12 @@ const Sidebar = () => {
       {/* User Card */}
       <div className="p-4 relative z-10">
         <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 mb-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
-            {initials}
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
+            {user?.avatar_url ? (
+              <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              initials
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-sm font-semibold truncate">{user?.full_name || 'Kullanıcı'}</p>

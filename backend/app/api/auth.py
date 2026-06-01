@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserRead, UserUpdate, Token
+from app.schemas.user import UserCreate, UserLogin, UserRead, UserUpdate, Token
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token
 from app.core.dependencies import get_current_user
 
@@ -32,12 +32,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 @router.post("/login", response_model=Token)
-def login(user_data: dict, db: Session = Depends(get_db)):
-    # Basic login (in real world use OAuth2PasswordRequestForm)
-    email = user_data.get("email")
-    password = user_data.get("password")
-    user = db.query(User).filter(User.email == email).first()
-    if not user or not verify_password(password, user.hashed_password):
+def login(user_data: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == user_data.email).first()
+    if not user or not verify_password(user_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Geçersiz email veya şifre")
         
     access_token = create_access_token(data={"sub": user.id})
