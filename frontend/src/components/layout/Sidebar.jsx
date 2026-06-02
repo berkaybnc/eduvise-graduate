@@ -6,6 +6,7 @@ const studentNav = [
   { name: 'Öğrenme Yolu', path: '/roadmap', icon: 'map' },
   { name: 'Eğitimler', path: '/courses', icon: 'school' },
   { name: 'Raporlarım', path: '/reports', icon: 'bar_chart' },
+  { name: 'Liderlik Tablosu', path: '/leaderboard', icon: 'emoji_events' },
   { name: 'Değerlendirme', path: '/assessment/diagnostic', icon: 'quiz' },
 ];
 

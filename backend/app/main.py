@@ -10,6 +10,8 @@ from app.api.roadmap import router as roadmap_router
 from app.api.ai import router as ai_router
 from app.api.instructor import router as instructor_router
 from app.api.notifications import router as notifications_router
+from app.api.gamification import router as gamification_router
+from app.api.forum import router as forum_router
 
 app = FastAPI(title="EduVise API", version="1.0.0")
 
@@ -31,3 +33,5 @@ app.include_router(roadmap_router, prefix="/roadmap", tags=["roadmap"])
 app.include_router(ai_router, prefix="/ai", tags=["ai"])
 app.include_router(instructor_router, prefix="/instructor", tags=["instructor"])
 app.include_router(notifications_router, prefix="/notifications", tags=["notifications"])
+app.include_router(gamification_router, prefix="/gamification", tags=["gamification"])
+app.include_router(forum_router, prefix="/forum", tags=["forum"])

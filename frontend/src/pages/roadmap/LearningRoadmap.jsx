@@ -1,73 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../store/authStore';
-
-const ROADMAP_DATA = [
-  {
-    id: 1,
-    title: 'Veri Yapıları',
-    description: 'Array, LinkedList, Stack, Queue, Tree ve Graph yapılarına hakim ol.',
-    status: 'completed',
-    mastery: 91,
-    estimatedTime: '8 saat',
-    category: 'Temel',
-    icon: 'data_object',
-  },
-  {
-    id: 2,
-    title: 'Ayrık Matematik',
-    description: 'Mantık, kümeler, kombinatorik ve ispat teknikleri.',
-    status: 'completed',
-    mastery: 85,
-    estimatedTime: '6 saat',
-    category: 'Temel',
-    icon: 'functions',
-  },
-  {
-    id: 3,
-    title: 'Graf Teorisi',
-    description: 'Düğüm ve kenar ilişkilerini, yönlü/yönsüz grafları ve traversal algoritmalarını öğren.',
-    status: 'active',
-    mastery: 45,
-    estimatedTime: '10 saat',
-    category: 'Orta Seviye',
-    icon: 'hub',
-    aiInsight: 'Son quiz sonuçlarına göre komşuluk matrislerine odaklanmanı öneriyoruz. Spanning tree konusunda güçlü gözüküyorsun!',
-  },
-  {
-    id: 4,
-    title: 'Olasılık Temelleri',
-    description: 'Koşullu olasılık, Bayes teoremi ve dağılım fonksiyonları.',
-    status: 'gap',
-    mastery: 12,
-    estimatedTime: '8 saat',
-    category: 'Orta Seviye',
-    icon: 'analytics',
-    gapReason: 'Son sınavda %34 düşüş tespit edildi. Bu boşluğu kapatmadan ilerlemeni önermiyoruz.',
-  },
-  {
-    id: 5,
-    title: 'Sinir Ağları',
-    description: 'Yapay sinir ağları, aktivasyon fonksiyonları, ileri ve geri yayılım.',
-    status: 'locked',
-    mastery: 0,
-    estimatedTime: '14 saat',
-    category: 'İleri Seviye',
-    icon: 'psychology',
-    prerequisite: 'Graf Teorisi ve Olasılık Temelleri tamamlanmalı',
-  },
-  {
-    id: 6,
-    title: 'Makine Öğrenmesi',
-    description: 'Denetimli/denetimsiz öğrenme, model değerlendirme ve hiperparametre ayarı.',
-    status: 'locked',
-    mastery: 0,
-    estimatedTime: '20 saat',
-    category: 'İleri Seviye',
-    icon: 'model_training',
-    prerequisite: 'Sinir Ağları tamamlanmalı',
-  },
-];
+import { useQuery } from '@tanstack/react-query';
+import api from '../../lib/api';
 
 const statusConfig = {
   completed: {
@@ -122,13 +56,31 @@ const MasteryBar = ({ percent, status }) => {
 };
 
 const LearningRoadmap = () => {
-  const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [selectedNode, setSelectedNode] = useState(ROADMAP_DATA.find(n => n.status === 'active'));
 
-  const completedCount = ROADMAP_DATA.filter(n => n.status === 'completed').length;
-  const totalCount = ROADMAP_DATA.length;
-  const overallProgress = Math.round((completedCount / totalCount) * 100);
+  const { data: nodes = [], isLoading } = useQuery({
+    queryKey: ['activeRoadmap'],
+    queryFn: async () => {
+      const res = await api.get('/roadmap/dashboard/active');
+      return res.data.nodes || [];
+    }
+  });
+
+  const [selectedNodeId, setSelectedNodeId] = useState(null);
+
+  const selectedNode = nodes.find(n => n.id === selectedNodeId) || nodes.find(n => n.status === 'active') || nodes[0] || null;
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  const completedCount = nodes.filter(n => n.status === 'completed').length;
+  const totalCount = nodes.length;
+  const overallProgress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -179,10 +131,17 @@ const LearningRoadmap = () => {
         {/* Timeline */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-2xl mx-auto">
-            {ROADMAP_DATA.map((node, idx) => {
+            {nodes.length === 0 ? (
+              <div className="text-center py-20">
+                <span className="material-symbols-outlined text-6xl text-slate-600 mb-4">route</span>
+                <p className="text-slate-400">Henüz aktif bir yol haritanız bulunmuyor.</p>
+                <button onClick={() => navigate('/courses')} className="mt-4 text-primary hover:underline">Eğitimleri Keşfet</button>
+              </div>
+            ) : (
+              nodes.map((node, idx) => {
               const cfg = statusConfig[node.status];
               const isSelected = selectedNode?.id === node.id;
-              const isLast = idx === ROADMAP_DATA.length - 1;
+              const isLast = idx === nodes.length - 1;
 
               return (
                 <div key={node.id} className="flex gap-4">
@@ -190,7 +149,7 @@ const LearningRoadmap = () => {
                   <div className="flex flex-col items-center shrink-0">
                     {/* Icon Circle */}
                     <button
-                      onClick={() => setSelectedNode(node)}
+                      onClick={() => setSelectedNodeId(node.id)}
                       className={`w-12 h-12 rounded-full ${cfg.iconBg} flex items-center justify-center shrink-0 shadow-lg transition-all duration-200 ${
                         isSelected ? 'ring-4 ring-white/20 scale-110' : 'hover:scale-105'
                       } ${node.status === 'locked' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
@@ -209,7 +168,7 @@ const LearningRoadmap = () => {
                   <div className={`flex-1 mb-4 rounded-2xl border p-5 cursor-pointer transition-all duration-200 ${cfg.bg} ${cfg.border} ${
                     isSelected ? 'shadow-xl scale-[1.01]' : 'hover:scale-[1.005] hover:brightness-110'
                   } ${node.status === 'locked' ? 'opacity-60 cursor-not-allowed' : ''}`}
-                    onClick={() => node.status !== 'locked' && setSelectedNode(node)}
+                    onClick={() => node.status !== 'locked' && setSelectedNodeId(node.id)}
                   >
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex-1">
@@ -285,7 +244,7 @@ const LearningRoadmap = () => {
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
         </div>
 

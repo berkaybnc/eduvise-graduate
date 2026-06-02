@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import FileUploadZone from '../../components/FileUploadZone';
 
@@ -37,6 +37,7 @@ const StepIndicator = ({ step }) => {
 // ─── Ana Bileşen ─────────────────────────────────────────────────────────────
 const CourseManager = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(location.state?.openCreateTab ? 'create' : 'courses');
   const [courses, setCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
@@ -51,6 +52,9 @@ const CourseManager = () => {
   const [savingCourse, setSavingCourse] = useState(false);
   const [publishingCourse, setPublishingCourse] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  const [addingExercise, setAddingExercise] = useState(false);
+  const [exerciseForm, setExerciseForm] = useState({ title: '', description: '', language: 'python', initial_code: '', test_code: '' });
 
   // Video ekleme/düzenleme state (hangi section için)
   const [addingVideoFor, setAddingVideoFor] = useState(null);
@@ -79,6 +83,8 @@ const CourseManager = () => {
     setErrorMsg('');
     setAddingVideoFor(null);
     setEditingVideoId(null);
+    setAddingExercise(false);
+    setExerciseForm({ title: '', description: '', language: 'python', initial_code: '', test_code: '' });
   };
 
   const handleEditCourse = (course) => {
@@ -131,6 +137,22 @@ const CourseManager = () => {
     }
   };
 
+  const handleSaveExercise = async () => {
+    if (!exerciseForm.title || !exerciseForm.description || !exerciseForm.test_code) {
+      setErrorMsg('Ödev başlığı, açıklaması ve beklenen çıktı zorunludur.');
+      return;
+    }
+    try {
+      await api.post(`/courses/${createdCourse.id}/coding-exercises`, exerciseForm);
+      setAddingExercise(false);
+      setExerciseForm({ title: '', description: '', language: 'python', initial_code: '', test_code: '' });
+      setErrorMsg('');
+      alert('Kodlama ödevi başarıyla eklendi!');
+    } catch (err) {
+      setErrorMsg(err?.response?.data?.detail || 'Kodlama ödevi kaydedilemedi.');
+    }
+  };
+
   // Video kaydet / güncelle
   const handleSaveVideo = async () => {
     if (!videoForm.title || !videoForm.video_url) { setErrorMsg('Video başlığı ve dosyası/URL zorunludur.'); return; }
@@ -140,10 +162,12 @@ const CourseManager = () => {
           title: videoForm.title,
           video_url: videoForm.video_url,
           is_preview: videoForm.is_preview,
+          doc_url: pendingDocUrl,
+          doc_name: pendingDocName
         });
         setSections(prev => prev.map(s =>
           s.id === addingVideoFor
-            ? { ...s, videos: s.videos.map(v => v.id === editingVideoId ? { ...v, ...res.data } : v) }
+            ? { ...s, videos: s.videos.map(v => v.id === editingVideoId ? { ...v, ...res.data, attachments: pendingDocUrl ? [{ id: 'temp', file_url: pendingDocUrl, file_name: pendingDocName || 'Ders Notu' }] : v.attachments } : v) }
             : s
         ));
       } else {
@@ -153,10 +177,12 @@ const CourseManager = () => {
           duration_seconds: 0,
           order_index: 0,
           is_preview: videoForm.is_preview,
+          doc_url: pendingDocUrl,
+          doc_name: pendingDocName
         });
         setSections(prev => prev.map(s =>
           s.id === addingVideoFor
-            ? { ...s, videos: [...s.videos, { ...res.data, doc_url: pendingDocUrl, doc_name: pendingDocName }] }
+            ? { ...s, videos: [...s.videos, { ...res.data, attachments: pendingDocUrl ? [{ id: 'temp', file_url: pendingDocUrl, file_name: pendingDocName || 'Ders Notu' }] : [] }] }
             : s
         ));
       }
@@ -174,6 +200,13 @@ const CourseManager = () => {
     setAddingVideoFor(sectionId);
     setEditingVideoId(video.id);
     setVideoForm({ title: video.title, video_url: video.video_url, is_preview: video.is_preview });
+    if (video.attachments && video.attachments.length > 0) {
+      setPendingDocUrl(video.attachments[0].file_url);
+      setPendingDocName(video.attachments[0].file_name);
+    } else {
+      setPendingDocUrl('');
+      setPendingDocName('');
+    }
   };
 
   const handleDeleteVideo = async (sectionId, videoId) => {
@@ -333,6 +366,13 @@ const CourseManager = () => {
                       <div className="flex items-center justify-between pt-3 border-t border-white/5">
                         <span className="text-slate-500 text-xs">{LEVELS.find(l => l.value === course.level)?.label || course.level}</span>
                         <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => navigate(`/instructor/courses/${course.id}/students`)}
+                            className="flex items-center gap-1 text-primary text-xs font-bold hover:text-indigo-400 transition-colors"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">group</span>
+                            Öğrenciler
+                          </button>
                           <button
                             onClick={() => handleEditCourse(course)}
                             className="flex items-center gap-1 text-emerald-400 text-xs font-bold hover:text-emerald-300 transition-colors"
@@ -507,7 +547,7 @@ const CourseManager = () => {
                         <span className="material-symbols-outlined text-primary text-sm">play_circle</span>
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-sm font-semibold truncate">{v.title}</p>
-                          {v.doc_name && <p className="text-slate-500 text-xs flex items-center gap-1 mt-0.5"><span className="material-symbols-outlined text-[12px]">attach_file</span>{v.doc_name}</p>}
+                          {v.attachments && v.attachments.length > 0 && <p className="text-slate-500 text-xs flex items-center gap-1 mt-0.5"><span className="material-symbols-outlined text-[12px]">attach_file</span>{v.attachments[0].file_name}</p>}
                         </div>
                         {v.is_preview && <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md">Önizleme</span>}
                         <div className="opacity-0 group-hover/video:opacity-100 flex items-center gap-2 transition-all">
@@ -591,6 +631,35 @@ const CourseManager = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Yeni kodlama ödevi ekle */}
+                {addingExercise ? (
+                  <div className="bg-[#1E293B] border border-primary/30 rounded-2xl p-5 space-y-4">
+                    <h4 className="text-white font-bold flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary">code</span>
+                      Yeni Kodlama Ödevi Ekle
+                    </h4>
+                    <input type="text" placeholder="Ödev Başlığı *" value={exerciseForm.title} onChange={e => setExerciseForm(p => ({ ...p, title: e.target.value }))} className="w-full p-2.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm focus:outline-none focus:border-primary/50" />
+                    <textarea placeholder="Görev Açıklaması *" rows={3} value={exerciseForm.description} onChange={e => setExerciseForm(p => ({ ...p, description: e.target.value }))} className="w-full p-2.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm focus:outline-none focus:border-primary/50" />
+                    <div className="grid grid-cols-2 gap-3">
+                      <select value={exerciseForm.language} onChange={e => setExerciseForm(p => ({ ...p, language: e.target.value }))} className="w-full p-2.5 bg-[#0F172A] rounded-lg border border-white/10 text-white text-sm focus:outline-none focus:border-primary/50">
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                      </select>
+                      <input type="text" placeholder="Beklenen Çıktı (Test Code) *" value={exerciseForm.test_code} onChange={e => setExerciseForm(p => ({ ...p, test_code: e.target.value }))} className="w-full p-2.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm focus:outline-none focus:border-primary/50" />
+                    </div>
+                    <textarea placeholder="Başlangıç Kodu (Opsiyonel)" rows={3} value={exerciseForm.initial_code} onChange={e => setExerciseForm(p => ({ ...p, initial_code: e.target.value }))} className="w-full p-2.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm font-mono focus:outline-none focus:border-primary/50" />
+                    <div className="flex gap-2">
+                      <button type="button" onClick={() => { setAddingExercise(false); setErrorMsg(''); }} className="flex-1 py-2 rounded-lg text-slate-400 hover:text-white border border-white/10 text-sm font-semibold transition-all">İptal</button>
+                      <button type="button" onClick={handleSaveExercise} className="flex-1 py-2 rounded-lg bg-primary text-white text-sm font-bold hover:bg-indigo-600 transition-all">Kaydet</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => setAddingExercise(true)} className="w-full py-4 bg-[#1E293B] border border-dashed border-primary/30 rounded-2xl text-primary font-semibold flex items-center justify-center gap-2 hover:bg-primary/5 transition-all">
+                    <span className="material-symbols-outlined text-[20px]">code</span>
+                    Bu Kurs İçin Kodlama Ödevi Ekle
+                  </button>
+                )}
 
                 <div className="flex gap-3">
                   <button type="button" onClick={() => setStep(2)} disabled={sections.length === 0}

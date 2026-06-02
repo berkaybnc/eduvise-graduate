@@ -2,6 +2,7 @@ import anthropic
 import json
 from app.config import settings
 from app.models.roadmap import LearningRoadmap
+from app.models.course import Enrollment, Course
 from sqlalchemy.orm import Session
 import uuid
 
@@ -151,5 +152,499 @@ async def generate_counseling_report(user_id: str, course_id: str, db: Session) 
         return {"overall_score": 0.0, "detailed_narrative": "Analiz başarısız."}
 
 async def get_ai_chat_response(message: str, student_context: dict, history: list):
-    # Streaming is requested but for simplicity in MVP we mock or use basic sync structure.
-    return "AI Asistan (Mock): Bu konuda size şöyle yardımcı olabilirim..."
+    course_title = student_context.get("course_title", "Bilinmeyen Kurs")
+    video_title = student_context.get("video_title", "Bilinmeyen Video")
+    
+    prompt = f"""
+    Sen EduVise platformunda bir 'Yapay Zeka Öğrenme Asistanı'sın.
+    Şu anda öğrenci '{course_title}' kursunda '{video_title}' adlı videoyu izliyor.
+    Amacın öğrencinin sorduğu soruya bu bağlamda yardımcı olmak, gerekirse konuyu daha basit bir dille açıklamak veya pratik yapması için sorular sormaktır.
+    
+    Öğrencinin mesajı: {message}
+    """
+    try:
+        if not settings.ANTHROPIC_API_KEY:
+            return f"AI Asistan (Mock): '{video_title}' konusuyla ilgili size şöyle yardımcı olabilirim: ..."
+            
+        response = await client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=1000,
+            system="Sen yardımsever ve teşvik edici bir eğitim asistanısın.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.content[0].text
+    except Exception as e:
+        print(f"Chat AI Error: {e}")
+        return "Üzgünüm, şu anda yanıt veremiyorum. Lütfen daha sonra tekrar deneyin."
+
+async def generate_diagnostic_questions(course_title: str, course_category: str, course_sections: list) -> dict:
+    section_titles = [s.title for s in course_sections] if course_sections else []
+    prompt = f"""
+    Sen uzman bir eğitim danışmanısın. Aşağıda verilen kursa kayıt olmak isteyen bir öğrenci için 3 adet çoktan seçmeli 'Önkoşul Seviye Tespit Sınavı' (Prerequisite Diagnostic Test) hazırlamalısın.
+    Kurs Adı: {course_title}
+    Kategori: {course_category}
+    Bölümler: {section_titles}
+    
+    ÖNEMLİ: Sorular kursun İÇERİĞİNİ değil, bu kursu ANLAYABİLMEK İÇİN BİLİNMESİ GEREKEN ÖNKOŞUL temel bilgileri ölçmelidir.
+    Ayrıca öğrenci eğer bu testi geçemezse ona sunulacak bir "Önkoşul Yol Haritası" metni (prerequisite_roadmap) oluşturmalısın. Bu metin, öğrenciye bu kursu almadan önce hangi konuları öğrenmesi gerektiğini tavsiye eden teşvik edici bir mesaj olmalıdır.
+    
+    Lütfen SADECE aşağıdaki formatta bir JSON objesi döndür. Herhangi bir ekstra açıklama ekleme:
+    {{
+      "questions": [
+        {{
+          "id": 1,
+          "question": "Önkoşul bilgi sorusu 1",
+          "options": ["Seçenek A", "Seçenek B", "Seçenek C", "Seçenek D"],
+          "correct": 0
+        }},
+        ...
+      ],
+      "prerequisite_roadmap": "Bu eğitime katılmadan önce şu temel konuları öğrenmeniz faydalı olacaktır: 1. Konu A, 2. Konu B..."
+    }}
+    "correct" alanı 0 ile 3 arasında doğru şıkkın indeksini (0-indexed) belirtmelidir.
+    """
+    
+    try:
+        if not settings.ANTHROPIC_API_KEY:
+            # Gelişmiş Mock Verisi (Ücretsiz alternatif)
+            cat_lower = course_category.lower()
+            
+            if "web" in cat_lower or "frontend" in cat_lower:
+                questions = [
+                    {
+                        "id": 1,
+                        "question": "Aşağıdakilerden hangisi bir HTML belgesinin ana yapısal etiketlerinden biridir?",
+                        "options": ["<style>", "<body>", "<script>", "<meta>"],
+                        "correct": 1
+                    },
+                    {
+                        "id": 2,
+                        "question": "CSS'de bir elementin arka plan rengini değiştirmek için hangi özellik kullanılır?",
+                        "options": ["color", "bg-color", "background-color", "fill"],
+                        "correct": 2
+                    },
+                    {
+                        "id": 3,
+                        "question": "JavaScript'te bir değişken tanımlamak için aşağıdakilerden hangisi kullanılmaz?",
+                        "options": ["var", "let", "const", "def"],
+                        "correct": 3
+                    }
+                ]
+                roadmap_msg = f"{course_title} eğitimine başlamadan önce temel HTML, CSS ve JavaScript mantığını gözden geçirmeniz faydalı olacaktır."
+            
+            elif "yapay zeka" in cat_lower or "makine" in cat_lower or "ai" in cat_lower:
+                questions = [
+                    {
+                        "id": 1,
+                        "question": "Python'da veri analizi için en yaygın kullanılan kütüphane aşağıdakilerden hangisidir?",
+                        "options": ["Django", "Flask", "Pandas", "Requests"],
+                        "correct": 2
+                    },
+                    {
+                        "id": 2,
+                        "question": "Makine öğrenmesinde 'Overfitting' (Aşırı Öğrenme) ne anlama gelir?",
+                        "options": ["Modelin eğitim verisini ezberleyip yeni verilerde başarısız olması", "Modelin çok hızlı eğitilmesi", "Modelin yetersiz veri ile eğitilmesi", "Modelin çok az parametreye sahip olması"],
+                        "correct": 0
+                    },
+                    {
+                        "id": 3,
+                        "question": "Aşağıdakilerden hangisi bir sınıflandırma (classification) algoritmasıdır?",
+                        "options": ["K-Means", "Doğrusal Regresyon", "PCA", "Lojistik Regresyon"],
+                        "correct": 3
+                    }
+                ]
+                roadmap_msg = f"{course_title} eğitimine başlamadan önce temel Python programlama ve istatistik kavramlarını tekrar etmeniz önerilir."
+                
+            elif "oyun" in cat_lower or "unity" in cat_lower:
+                questions = [
+                    {
+                        "id": 1,
+                        "question": "3D oyun motorlarında nesnelerin uzaydaki pozisyonunu, dönüşünü ve boyutunu tutan bileşen (component) nedir?",
+                        "options": ["Rigidbody", "Collider", "Transform", "Mesh Renderer"],
+                        "correct": 2
+                    },
+                    {
+                        "id": 2,
+                        "question": "Aşağıdakilerden hangisi oyun geliştirmede sıklıkla kullanılan bir programlama dilidir?",
+                        "options": ["HTML", "C#", "SQL", "PHP"],
+                        "correct": 1
+                    },
+                    {
+                        "id": 3,
+                        "question": "Oyun motorlarında fiziksel çarpışmaları algılamak için hangi bileşen kullanılır?",
+                        "options": ["Camera", "Light", "Collider", "Material"],
+                        "correct": 2
+                    }
+                ]
+                roadmap_msg = f"Oyun geliştirme süreçlerine dalmadan önce temel C# programlama yapısını ve vektör matematiğini kavramanız hızınızı artıracaktır."
+            
+            elif "mobil" in cat_lower or "flutter" in cat_lower:
+                questions = [
+                    {
+                        "id": 1,
+                        "question": "Mobil uygulama geliştirmede 'State' kavramı neyi ifade eder?",
+                        "options": ["Uygulamanın veritabanını", "Arayüzün o anki durumunu ve verilerini", "Sunucu bağlantısını", "Telefonun batarya durumunu"],
+                        "correct": 1
+                    },
+                    {
+                        "id": 2,
+                        "question": "Aşağıdakilerden hangisi nesne yönelimli programlamanın (OOP) temel prensiplerinden biri değildir?",
+                        "options": ["Kalıtım (Inheritance)", "Çok biçimlilik (Polymorphism)", "Kapsülleme (Encapsulation)", "Senkronizasyon (Synchronization)"],
+                        "correct": 3
+                    },
+                    {
+                        "id": 3,
+                        "question": "Cross-platform (çapraz platform) mobil geliştirme ne anlama gelir?",
+                        "options": ["Sadece iOS için uygulama geliştirmek", "Tek bir kod tabanı ile hem iOS hem Android uygulaması üretebilmek", "Uygulamayı sunucu olmadan çalıştırmak", "Sadece tabletler için uygulama yapmak"],
+                        "correct": 1
+                    }
+                ]
+                roadmap_msg = "Mobil uygulamalar geliştirmeye başlamadan önce Nesne Yönelimli Programlama (OOP) mantığına aşina olmalısınız."
+                
+            else: # Genel Yazılım / Diğer
+                questions = [
+                    {
+                        "id": 1,
+                        "question": "Bir programlama dilinde kod bloklarını tekrarlı olarak çalıştırmak için hangi yapı kullanılır?",
+                        "options": ["If-Else koşulu", "Döngüler (Loops)", "Değişkenler (Variables)", "Diziler (Arrays)"],
+                        "correct": 1
+                    },
+                    {
+                        "id": 2,
+                        "question": "Aşağıdakilerden hangisi bir versiyon kontrol sistemidir?",
+                        "options": ["Git", "Docker", "Node.js", "MySQL"],
+                        "correct": 0
+                    },
+                    {
+                        "id": 3,
+                        "question": "Bir fonksiyonun kendi kendini çağırmasına (tekrar etmesine) ne ad verilir?",
+                        "options": ["Iteration", "Recursion", "Overloading", "Inheritance"],
+                        "correct": 1
+                    }
+                ]
+                roadmap_msg = f"{course_title} eğitimini almadan önce programlamaya giriş mantığını ve temel veri yapılarını bilmeniz gerekmektedir."
+
+            return {
+                "questions": questions,
+                "prerequisite_roadmap": roadmap_msg
+            }
+            
+        response = await client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=1000,
+            system="Sadece JSON çıktısı üret.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return json.loads(response.content[0].text)
+    except Exception as e:
+        print(f"AI Diagnostic Q Error: {e}")
+        return {
+            "questions": [
+                {
+                    "id": 1,
+                    "question": f"{course_title} önkoşulu nedir?",
+                    "options": ["A", "B", "C", "D"],
+                    "correct": 0
+                }
+            ],
+            "prerequisite_roadmap": "API Hatası, varsayılan uyarı."
+        }
+
+async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
+    enrollments = db.query(Enrollment).filter(Enrollment.user_id == user_id).all()
+    
+    if not enrollments:
+        # Öğrencinin hiç kursu yok
+        return {
+            "has_data": False,
+            "message": "Henüz hiçbir kursa kayıtlı değilsiniz. Analiz için eğitimlere başlamanız gerekmektedir."
+        }
+
+    course_details = []
+    total_videos = 0
+    total_completed = 0
+    all_tags = []
+
+    for enr in enrollments:
+        c = enr.course
+        if not c: continue
+        
+        comp = enr.completed_videos or []
+        total_completed += len(comp)
+        
+        c_vids = 0
+        for sec in c.sections:
+            c_vids += len(sec.videos)
+        total_videos += c_vids
+        
+        if c.tags:
+            all_tags.extend(c.tags)
+            
+        course_details.append(f"{c.title} (İlerleme: {len(comp)}/{c_vids})")
+
+    overall_completion = int((total_completed / total_videos) * 100) if total_videos > 0 else 0
+    unique_tags = list(set(all_tags))
+    
+    prompt = f"""
+    Sen uzman bir AI Eğitim Danışmanısın. Öğrencinin kayıtlı olduğu kursları ve tamamlanma oranlarını inceleyerek, Frontend tarafında görselleştirilecek bir JSON Raporu oluşturmalısın.
+    
+    Öğrencinin Kursları: {', '.join(course_details)}
+    Genel Tamamlanma Oranı: %{overall_completion}
+    Öğrencinin İlgilendiği Konular (Etiketler): {', '.join(unique_tags)}
+    
+    Lütfen SADECE aşağıdaki yapıda, ekstra açıklama olmadan geçerli bir JSON döndür:
+    {{
+      "has_data": true,
+      "stats": {{
+        "coding_fluency": 88,
+        "completion_rate": {overall_completion}
+      }},
+      "skills": [
+        {{ "name": "Algoritmalar", "initial": 30, "current": 80, "color": "#1A56DB" }},
+        {{ "name": "Konu 2", "initial": 20, "current": 60, "color": "#10B981" }},
+        {{ "name": "Konu 3", "initial": 20, "current": 60, "color": "#F59E0B" }}
+      ],
+      "competencies": [
+        {{ "label": "Temel Python", "detail": "Değişkenler ve döngüler anlaşıldı.", "done": true }},
+        {{ "label": "API Tasarımı", "detail": "Geliştirilmesi gerekiyor.", "done": false }}
+      ],
+      "recommendations": [
+        {{ "tag": "AI", "color": "text-primary bg-primary/10 border-primary/20", "title": "İleri Yapay Zeka", "desc": "Bu kursu almanı öneririm.", "icon": "psychology" }}
+      ],
+      "detailed_narrative": "Buraya öğrencinin gidişatını, güçlü yanlarını ve motivasyonunu anlatan, cesaretlendirici, 3-4 paragraflık, **bold** kelimeler içeren Markdown formatında Türkçe bir açıklama yaz."
+    }}
+    
+    Kurallar:
+    1. 'skills' kısmında EN AZ 3, en fazla 6 adet yetkinlik/konu olsun. (Eğer öğrencinin konusu azsa "Problem Çözme", "Analitik Düşünme" gibi genel beceriler ekle). İlk (initial) seviye ile mevcut (current) seviye arasında mantıklı bir gelişim yaz. Renkler hex formatında olsun (Örn: #F59E0B).
+    2. 'competencies' kısmında öğrencinin kurslarına göre 4-5 adet hedef belirle, bazılarını done: true bazılarını done: false yap.
+    3. 'recommendations' kısmında öğrenciye uygun 3 adet yeni eğitim önerisi yaz.
+    4. 'detailed_narrative' kısmı öğrencinin anlayacağı samimi bir dilde olmalı.
+    5. SADECE JSON ver.
+    """
+    
+    try:
+        if not settings.ANTHROPIC_API_KEY:
+            return {
+                "has_data": True,
+                "stats": {
+                    "coding_fluency": 75,
+                    "completion_rate": overall_completion
+                },
+                "skills": [
+                    { "name": unique_tags[0] if len(unique_tags) > 0 else "Veri Bilimi", "initial": 20, "current": 70, "color": "#1A56DB" },
+                    { "name": unique_tags[1] if len(unique_tags) > 1 else "Python", "initial": 40, "current": 85, "color": "#10B981" },
+                    { "name": "Problem Çözme", "initial": 30, "current": 75, "color": "#F59E0B" }
+                ],
+                "competencies": [
+                    { "label": "Temel Eğitimi Tamamlama", "detail": "Başlangıç seviyesi konuları bitirildi.", "done": True },
+                    { "label": "İleri Seviye Proje", "detail": "Henüz pratik proje yapılmadı.", "done": False }
+                ],
+                "recommendations": [
+                    { "tag": "Pratik", "color": "text-primary bg-primary/10 border-primary/20", "title": "Proje Odaklı Öğrenme", "desc": "Öğrendiklerinizi uygulamak için mini projeler yapın.", "icon": "build" }
+                ],
+                "detailed_narrative": "Öğrenme yolculuğunuzda şu ana kadar **harika bir ilerleme** kaydettiniz. Başlangıç seviyesindeki konuları kavramanız, ileriki aşamalarda çok işinize yarayacaktır. Gelecek adımlarda daha çok pratik yaparak becerilerinizi pekiştirebilirsiniz!"
+            }
+            
+        response = await client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=1500,
+            system="Sadece JSON çıktısı üret.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return json.loads(response.content[0].text)
+    except Exception as e:
+        print(f"Global Report AI Error: {e}")
+        return {
+            "has_data": False,
+            "message": "Rapor oluşturulurken bir hata meydana geldi."
+        }
+
+async def generate_field_diagnostic_questions(field: str) -> dict:
+    import os
+    import json
+    
+    # Gerçek soruları barındıran JSON dosyasının yolu
+    file_path = os.path.join(os.path.dirname(__file__), 'questions.json')
+    
+    questions = []
+    roadmap_msg = f"{field} alanındaki kariyerinize başlamadan önce bu kapsamlı sınav ile temel yetkinliklerinizi ölçüyoruz."
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+        field_lower = field.lower()
+        if "frontend" in field_lower or "web" in field_lower:
+            questions = data.get("frontend", [])
+        elif "siber" in field_lower or "cyber" in field_lower:
+            questions = data.get("siber", [])
+        elif "backend" in field_lower or "sunucu" in field_lower:
+            questions = data.get("backend", [])
+        else:
+            questions = data.get("default", [])
+            
+    except Exception as e:
+        print(f"Soru dosyası okuma hatası: {e}")
+        questions = [
+             {
+                "id": 1,
+                "question": f"{field} alanı ile ilgili temel kavram aşağıdakilerden hangisidir?",
+                "options": ["A", "B", "C", "D"],
+                "correct": 0,
+                "category": "Genel",
+                "difficulty": "Orta"
+            }
+        ]
+
+    return {
+        "questions": questions,
+        "prerequisite_roadmap": roadmap_msg
+    }
+
+async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_result: dict, all_courses: list, db: Session) -> dict:
+    ordered_topics = []
+    nodes = {}
+    
+    # Tüm kursları zorluk sırasına göre veya isimlerine göre diz
+    # Normalde AI, diagnostic_result'a göre eşleştirme yapar.
+    is_first = True
+    
+    # Seçilen alana uyan kursları bul (basit string eşleştirme mock)
+    relevant_courses = [c for c in all_courses if target_field.lower() in c.category.lower() or target_field.lower() in c.title.lower()]
+    
+    # Eğer o alana ait kurs yoksa genel birkaç kurs önerelim
+    if not relevant_courses:
+        relevant_courses = all_courses[:3]
+        
+    for course in relevant_courses:
+        topic = course.title
+        ordered_topics.append(topic)
+        
+        status = "active" if is_first else "locked"
+        is_first = False
+            
+        nodes[topic] = {
+            "status": status,
+            "mastery_score": 0.0,
+            "video_ids": [], # Gerçekte kurs videoları buraya konur
+            "remedial_video_ids": [],
+            "reason": f"{target_field} alanı için önerilen kurs",
+            "course_id": course.id,
+            "thumbnail": course.thumbnail_url
+        }
+    
+    roadmap_data = {
+        "ordered_topics": ordered_topics,
+        "nodes": nodes
+    }
+    
+    roadmap = LearningRoadmap(
+        user_id=user_id,
+        course_id=None,
+        target_field=target_field,
+        roadmap_data=roadmap_data
+    )
+    db.add(roadmap)
+    db.commit()
+    db.refresh(roadmap)
+    return roadmap_data
+
+async def generate_final_exam_questions(course_title: str, course_description: str) -> dict:
+    prompt = f"""
+    Sen uzman bir eğitimcisin. Aşağıda detayları verilen kursu başarıyla bitiren bir öğrencinin, 
+    bu kurstaki konuları öğrenip öğrenmediğini ölçmek için 10 soruluk bir 'Bitirme Sınavı' (Final Exam) hazırlamalısın.
+    
+    Kurs Adı: {course_title}
+    Kurs Açıklaması: {course_description}
+    
+    ÖNEMLİ: Sorular, öğrencinin kursu başarıyla tamamladığını ispatlaması için ortalamanın üzerinde (Orta-Zor seviye) olmalıdır. 
+    Lütfen SADECE aşağıdaki formatta bir JSON objesi döndür. Ekstra açıklama yapma:
+    {{
+      "questions": [
+        {{
+          "id": 1,
+          "question": "Soru metni...",
+          "options": ["A", "B", "C", "D"],
+          "correct": 0
+        }}
+      ]
+    }}
+    "correct" alanı 0 ile 3 arasında doğru şıkkın indeksini belirtmelidir. Tam 10 soru üret.
+    """
+    try:
+        if not settings.ANTHROPIC_API_KEY:
+            # Mock 10 questions for testing if API key is missing
+            questions = []
+            for i in range(1, 11):
+                questions.append({
+                    "id": i,
+                    "question": f"{course_title} ile ilgili Bitirme Sorusu {i}",
+                    "options": ["Doğru Cevap", "Yanlış 1", "Yanlış 2", "Yanlış 3"],
+                    "correct": 0
+                })
+            return {"questions": questions}
+
+        response = await client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=2000,
+            system="Sadece JSON çıktısı üret.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return json.loads(response.content[0].text)
+    except Exception as e:
+        print(f"AI Final Exam Q Error: {e}")
+        return {"questions": []}
+
+async def generate_forum_reply(title: str, content: str, course_title: str) -> str:
+    prompt = f"""
+    Sen EduVise platformunda bir 'Yapay Zeka Öğrenme Asistanı'sın.
+    Şu anda '{course_title}' adlı kursun Topluluk Forumundayız.
+    Öğrencinin sorduğu soruya bu bağlamda en iyi cevabı ver.
+    Cevabın kibar, eğitici ve doğrudan konuya yönelik olmalı. Gerekirse kod veya örneklerle açıkla.
+    
+    Öğrencinin Başlığı: {title}
+    Öğrencinin Sorusu: {content}
+    """
+    try:
+        if not settings.ANTHROPIC_API_KEY:
+            return f"Merhaba! {course_title} kursundaki bu konuya şöyle yardımcı olabilirim... (Mock AI Yanıtı)"
+            
+        response = await client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=1000,
+            system="Sen yardımsever ve teşvik edici bir eğitim asistanısın.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.content[0].text
+    except Exception as e:
+        print(f"Forum AI Error: {e}")
+        return "Şu anda yanıt veremiyorum. Eğitmenler en kısa sürede dönüş yapacaktır."
+
+async def generate_instructor_insights(stats_data: dict) -> str:
+    prompt = f"""
+    Sen EduVise platformunda uzman bir Eğitim Danışmanı ve Veri Analisti AI'sın.
+    Bir eğitmen, kurslarının performansını artırmak için senden analiz ve tavsiyeler istiyor.
+    Aşağıda eğitmenin kurslarına ait özet veriler (öğrenci sayıları, puanlar, gelirler, vs.) bulunmaktadır:
+    
+    Veri: {json.dumps(stats_data, ensure_ascii=False)}
+    
+    Lütfen eğitmene hitaben, samimi ve profesyonel bir dille (Türkçe) Markdown formatında bir rapor hazırla.
+    Raporun içinde şunlar yer almalı:
+    1. Öne Çıkan Başarılar (Eğitmenin neyi iyi yaptığı)
+    2. Gelişim Alanları (Hangi kurslarda düşüş var veya neresi iyileştirilebilir)
+    3. Stratejik Tavsiyeler (Geliri veya öğrenci memnuniyetini artırmak için spesifik ve uygulanabilir öneriler)
+    """
+    try:
+        if not settings.ANTHROPIC_API_KEY:
+            return "### AI Asistanınız Diyor ki\n\n(Mock Veri) Kurslarınız harika gidiyor! Gelirinizi artırmak için daha fazla kurs eklemeyi düşünebilirsiniz."
+            
+        response = await client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=1500,
+            system="Sen profesyonel bir veri analisti ve eğitim danışmanısın. Raporlarını Markdown formatında yaz.",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.content[0].text
+    except Exception as e:
+        print(f"Instructor Insights AI Error: {e}")
+        return "Şu anda veri analizi yapılamıyor. Lütfen daha sonra tekrar deneyin."

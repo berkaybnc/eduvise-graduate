@@ -71,7 +71,7 @@ const TopBar = () => {
   };
 
   return (
-    <header className="bg-[#0F172A]/95 backdrop-blur-xl h-16 border-b border-white/5 flex items-center justify-between px-6 shrink-0">
+    <header className="bg-[#0F172A]/95 backdrop-blur-xl h-16 border-b border-white/5 flex items-center justify-between px-6 shrink-0 relative z-50">
       {/* Search */}
       <div className="flex-1 flex items-center max-w-md">
         <div className="relative w-full">
@@ -144,6 +144,21 @@ const TopBar = () => {
             </div>
           )}
         </div>
+        
+        {/* Gamification Stats (Only for Students) */}
+        {!isInstructor && (
+          <div className="flex items-center gap-3 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl mr-2">
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-orange-500 text-[18px]">local_fire_department</span>
+              <span className="text-white font-bold text-sm">{user?.streak_days || 0}</span>
+            </div>
+            <div className="w-px h-4 bg-white/20"></div>
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-yellow-400 text-[18px]">stars</span>
+              <span className="text-white font-bold text-sm">{user?.xp || 0} XP</span>
+            </div>
+          </div>
+        )}
 
         {/* AI Quick Action */}
         <button

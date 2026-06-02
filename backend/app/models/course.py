@@ -78,3 +78,28 @@ class Attachment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     video = relationship("Video", back_populates="attachments")
+
+class Certificate(Base):
+    __tablename__ = "certificates"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    course_id = Column(String, ForeignKey("courses.id"), nullable=False)
+    issued_at = Column(DateTime, default=datetime.utcnow)
+    certificate_code = Column(String, unique=True, nullable=False, default=lambda: str(uuid.uuid4()).split('-')[0].upper())
+    
+    user = relationship("User")
+    course = relationship("Course")
+
+class CodingExercise(Base):
+    __tablename__ = "coding_exercises"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    course_id = Column(String, ForeignKey("courses.id"), nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(Text, nullable=False)
+    language = Column(String, default="python")
+    initial_code = Column(Text, default="")
+    test_code = Column(Text, default="")
+    solution_code = Column(Text, default="")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    course = relationship("Course")

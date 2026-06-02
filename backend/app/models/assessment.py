@@ -25,7 +25,7 @@ class Assessment(Base):
     __tablename__ = "assessments"
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    course_id = Column(String, ForeignKey("courses.id"), nullable=False)
+    course_id = Column(String, ForeignKey("courses.id"), nullable=True)
     type = Column(String, nullable=False)
     answers = Column(JSON, default=dict)  # {question_id: selected_option_index}
     topic_scores = Column(JSON, default=dict)  # {topic: score 0.0-1.0}

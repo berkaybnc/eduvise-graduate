@@ -38,7 +38,8 @@ class VideoBase(BaseModel):
     is_preview: bool = False
 
 class VideoCreate(VideoBase):
-    pass
+    doc_url: Optional[str] = None
+    doc_name: Optional[str] = None
 
 class VideoRead(VideoBase):
     id: str
@@ -105,3 +106,28 @@ class CourseListRead(CourseBase):
     
     class Config:
         from_attributes = True
+
+class EnrolledCourseRead(BaseModel):
+    course: CourseRead
+    completed_videos: List[str]
+    enrolled_at: datetime
+
+class CodingExerciseBase(BaseModel):
+    title: str
+    description: str
+    language: str = "python"
+    initial_code: str = ""
+    test_code: str = ""
+    solution_code: str = ""
+
+class CodingExerciseCreate(CodingExerciseBase):
+    pass
+
+class CodingExerciseRead(CodingExerciseBase):
+    id: str
+    course_id: str
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+

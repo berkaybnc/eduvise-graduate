@@ -27,6 +27,9 @@ class UserUpdate(BaseModel):
 class UserRead(UserBase):
     id: str
     is_active: bool
+    xp: int = 0
+    streak_days: int = 0
+    badges: str = "[]"
     created_at: datetime
     
     class Config:

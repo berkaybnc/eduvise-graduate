@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum, Boolean, DateTime
+from sqlalchemy import Column, String, Enum, Boolean, DateTime, Integer
 from app.database import Base
 import uuid, enum
 from datetime import datetime
@@ -19,5 +19,9 @@ class User(Base):
     avatar_url = Column(String, nullable=True)
     bio = Column(String, nullable=True)
     interests = Column(String, nullable=True)
+    badges = Column(String, default="[]")  # JSON list of badges: [{"name": "İlk Adım", "icon": "local_fire_department"}]
+    xp = Column(Integer, default=0)
+    streak_days = Column(Integer, default=0)
+    last_login_date = Column(String, nullable=True) # YYYY-MM-DD
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

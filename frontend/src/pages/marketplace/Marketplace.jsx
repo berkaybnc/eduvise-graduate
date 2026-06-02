@@ -5,11 +5,11 @@ import api from '../../lib/api';
 
 const CATEGORIES = [
   { id: 'all', label: 'Tüm Eğitimler', icon: 'grid_view' },
-  { id: 'cyber', label: 'Siber Güvenlik', icon: 'security' },
-  { id: 'software', label: 'Yazılım', icon: 'code' },
-  { id: 'data', label: 'Veri Bilimi', icon: 'database' },
-  { id: 'ai', label: 'Yapay Zeka', icon: 'psychology' },
-  { id: 'design', label: 'Tasarım', icon: 'palette' }
+  { id: 'Siber Güvenlik', label: 'Siber Güvenlik', icon: 'security' },
+  { id: 'Yazılım', label: 'Yazılım', icon: 'code' },
+  { id: 'Veri Bilimi', label: 'Veri Bilimi', icon: 'database' },
+  { id: 'Yapay Zeka', label: 'Yapay Zeka', icon: 'psychology' },
+  { id: 'Tasarım', label: 'Tasarım', icon: 'palette' }
 ];
 
 export const Marketplace = () => {
@@ -19,18 +19,8 @@ export const Marketplace = () => {
   const { data: courses, isLoading, error } = useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
-      // Mock veriyi şimdilik manuel döndürelim (gerçek endpoint bağlanana kadar)
-      try {
-        const response = await api.get('/courses/');
-        return response.data;
-      } catch {
-        return [
-          { id: 1, title: 'İleri Seviye Yapay Zeka', category: 'ai', level: 'İleri', students: 1240, rating: 4.8, image: 'from-blue-600 to-indigo-900' },
-          { id: 2, title: 'Siber Güvenliğe Giriş', category: 'cyber', level: 'Başlangıç', students: 3400, rating: 4.9, image: 'from-emerald-500 to-teal-800' },
-          { id: 3, title: 'Modern React ve Next.js', category: 'software', level: 'Orta', students: 5120, rating: 4.7, image: 'from-orange-500 to-red-800' },
-          { id: 4, title: 'Veri Bilimi Masterclass', category: 'data', level: 'İleri', students: 890, rating: 4.6, image: 'from-purple-500 to-fuchsia-800' },
-        ];
-      }
+      const response = await api.get('/courses/');
+      return response.data;
     }
   });
 
@@ -90,7 +80,7 @@ export const Marketplace = () => {
             {courses?.filter(c => selectedCategory === 'all' || c.category === selectedCategory).map((course, idx) => (
               <div 
                 key={course.id} 
-                onClick={() => navigate(`/courses/${course.id}/diagnostic`)}
+                onClick={() => navigate(`/courses/${course.id}`)}
                 className="group relative bg-[#1E293B] border border-white/10 rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-500 cursor-pointer animate-fade-in-up"
                 style={{ animationDelay: `${0.3 + (idx * 0.1)}s` }}
               >
@@ -104,7 +94,7 @@ export const Marketplace = () => {
                   )}
                   <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full flex items-center gap-1 z-20">
                     <span className="material-symbols-outlined text-yellow-400 text-sm">star</span>
-                    <span className="text-white text-xs font-bold">{course.rating || '4.5'}</span>
+                    <span className="text-white text-xs font-bold">{course.reviews?.length > 0 ? (course.reviews.reduce((acc, r) => acc + r.rating, 0) / course.reviews.length).toFixed(1) : '5.0'}</span>
                   </div>
                   
                   {/* Hover Image Scale */}

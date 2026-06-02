@@ -25,20 +25,32 @@ const InstructorDashboard = () => {
   const { user } = useAuthStore();
   const firstName = user?.full_name?.split(' ')[0] || 'Eğitmen';
   const [stats, setStats] = useState(null);
+  const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    api.get('/instructor/stats')
-      .then(res => {
-        if (!cancelled) {
-          setStats(res.data);
-          setLoading(false);
+    
+    const fetchDashboardData = async () => {
+      try {
+        const statsRes = await api.get('/instructor/stats');
+        if (!cancelled) setStats(statsRes.data);
+        
+        // Fetch AI Insights in parallel or sequentially
+        try {
+          const insightsRes = await api.get('/instructor/ai-insights');
+          if (!cancelled) setInsights(insightsRes.data.report);
+        } catch (err) {
+          console.error("AI Insights hatası:", err);
         }
-      })
-      .catch(() => {
+      } catch (err) {
+        console.error(err);
+      } finally {
         if (!cancelled) setLoading(false);
-      });
+      }
+    };
+    
+    fetchDashboardData();
     return () => { cancelled = true; };
   }, []);
 
@@ -113,7 +125,7 @@ const InstructorDashboard = () => {
                 <p className="text-slate-400 text-sm text-center py-4">Henüz kurs verisi bulunmuyor.</p>
               ) : (
                 safeStats.course_performance.map((course) => (
-                  <div key={course.name} className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-all">
+                  <div key={course.id || course.name} className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <span className="material-symbols-outlined text-primary text-[18px]">laptop_chromebook</span>
                     </div>
@@ -164,6 +176,32 @@ const InstructorDashboard = () => {
                 ))
               )}
             </div>
+          </div>
+        </div>
+
+        {/* AI Insights Section */}
+        <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+          <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-6 relative z-10">
+            <span className="material-symbols-outlined text-primary">smart_toy</span>
+            Yapay Zeka Asistanınız Diyor ki:
+          </h2>
+          <div className="relative z-10">
+            {insights ? (
+              <div className="prose prose-invert prose-emerald max-w-none prose-headings:text-white prose-strong:text-white prose-a:text-emerald-400">
+                <div dangerouslySetInnerHTML={{ 
+                  __html: insights
+                    .replace(/### (.*?)\n/g, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br/>') 
+                }} />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+                <span className="material-symbols-outlined text-4xl mb-3 opacity-50">analytics</span>
+                <p>Verileriniz analiz ediliyor veya yeterli veri bulunmuyor...</p>
+              </div>
+            )}
           </div>
         </div>
 

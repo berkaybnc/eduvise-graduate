@@ -37,6 +37,21 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     if not user or not verify_password(user_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Geçersiz email veya şifre")
         
+    from datetime import datetime
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    if user.last_login_date != today_str:
+        if user.last_login_date:
+            last_date = datetime.strptime(user.last_login_date, "%Y-%m-%d")
+            delta = (datetime.utcnow() - last_date).days
+            if delta == 1:
+                user.streak_days = (user.streak_days or 0) + 1
+            else:
+                user.streak_days = 1
+        else:
+            user.streak_days = 1
+        user.last_login_date = today_str
+        db.commit()
+        
     access_token = create_access_token(data={"sub": user.id})
     refresh_token = create_refresh_token(data={"sub": user.id})
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
@@ -46,11 +61,27 @@ def refresh_token(token_data: dict):
     # normally decode refresh token and issue new access token
     pass
 
-@router.get("/me", response_model=UserRead)
-def get_me(current_user: User = Depends(get_current_user)):
-    return current_user
+@router.get("/me")
+async def get_me(current_user: User = Depends(get_current_user)):
+    import json
+    try:
+        badges_list = json.loads(current_user.badges) if current_user.badges else []
+    except:
+        badges_list = []
+        
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "full_name": current_user.full_name,
+        "role": current_user.role,
+        "avatar_url": current_user.avatar_url,
+        "bio": current_user.bio,
+        "badges": badges_list,
+        "xp": current_user.xp or 0,
+        "streak_days": current_user.streak_days or 0
+    }
 
-@router.put("/profile", response_model=UserRead)
+@router.put("/profile")
 def update_profile(user_update: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if user_update.full_name:
         current_user.full_name = user_update.full_name
@@ -62,4 +93,21 @@ def update_profile(user_update: UserUpdate, db: Session = Depends(get_db), curre
         current_user.interests = user_update.interests
     db.commit()
     db.refresh(current_user)
-    return current_user
+    
+    import json
+    try:
+        badges_list = json.loads(current_user.badges) if current_user.badges else []
+    except:
+        badges_list = []
+        
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "full_name": current_user.full_name,
+        "role": current_user.role,
+        "avatar_url": current_user.avatar_url,
+        "bio": current_user.bio,
+        "badges": badges_list,
+        "xp": current_user.xp or 0,
+        "streak_days": current_user.streak_days or 0
+    }

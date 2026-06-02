@@ -1,0 +1,271 @@
+T.C.
+ISTANBUL AYDIN UNIVERSITY INSTITUTE OF GRADUATE STUDIES
+EDUVİSE:AN AI-POWERED ADAPTIVE LEARNING PLATFORM
+BERKAY BİNİCİ (B2180.060056)
+MUSTAFA BUĞRA BOZ (B2180.060028 )
+Department of Software Development
+Graduation project Program (English)
+Thesis Advisor: Prof. Dr. Ali OKATAN
+EDUVISE: AN AI-POWERED ADAPTIVE LEARNING PLATFORM
+ABSTRACT
+The traditional "one-size-fits-all" approach in education often fails to address the individual learning paces, styles, and knowledge gaps of students. This project, "EduVise," proposes an adaptive learning platform that leverages Artificial Intelligence (AI) to create a personalized educational experience. The platform begins by assessing a student's initial knowledge level in a chosen subject through a diagnostic exam. An AI algorithm then analyzes the results to generate a customized learning roadmap, identifying strengths and critical weaknesses. Based on this roadmap, the system curates a sequence of video lessons and learning materials tailored to the student's specific needs.
+Throughout the learning journey, the student's progress is continuously monitored. At the end of each module, a formative assessment is conducted. The AI system analyzes the performance on these assessments to dynamically adjust the learning path, providing remedial content for misunderstood concepts or allowing the student to advance more quickly through mastered topics. Upon completion of the course, a final summative exam is administered. Based on the overall performance, the AI provides a comprehensive counseling report, detailing the student's learning journey, mastered skills, and areas requiring further improvement. This project aims to demonstrate that AI-driven personalization can significantly enhance learning efficiency, improve knowledge retention, and provide actionable insights for both students and educators, paving the way for a more effective and inclusive educational model.
+Keywords: Adaptive Learning, Artificial Intelligence, Personalization, Educational Technology, Learning Analytics, Roadmap Generation, Intelligent Tutoring Systems, Machine Learning.
+EDUVISE: YAPAY ZEKA DESTEKLİ UYARLAMALI BİR ÖĞRENME PLATFORMU
+ÖZET
+Eğitimdeki geleneksel "herkese uyan tek beden" yaklaşımı, genellikle öğrencilerin bireysel öğrenme hızlarını, stillerini ve bilgi boşluklarını ele almada başarısız olur. Bu proje olan "EduVise", kişiselleştirilmiş bir eğitim deneyimi oluşturmak için Yapay Zeka'dan (AI) yararlanan uyarlamalı bir öğrenme platformu önermektedir. Platform, seçilen bir konudaki öğrencinin başlangıç bilgi düzeyini bir diagnostik sınav yoluyla değerlendirerek başlar. Bir YZ algoritması daha sonra, güçlü yönleri ve kritik zayıflıkları belirleyerek kişiselleştirilmiş bir öğrenme yol haritası oluşturmak için sonuçları analiz eder. Bu yol haritasına dayanarak, sistem, öğrencinin özel ihtiyaçlarına göre uyarlanmış bir video ders ve öğrenme materyalleri dizisini derler.
+Öğrenme yolculuğu boyunca, öğrencinin ilerlemesi sürekli olarak izlenir. Her modülün sonunda, bir biçimlendirici değerlendirme yapılır. YZ sistemi, bu değerlendirmelerdeki performansı analiz ederek öğrenme yolunu dinamik olarak ayarlar, yanlış anlaşılan kavramlar için düzeltici içerik sağlar veya öğrencinin ustalaşılan konularda daha hızlı ilerlemesine izin verir. Kursun tamamlanmasının ardından, nihai bir özetleyici değerlendirme sınavı uygulanır. Genel performansa dayanarak, YZ, öğrencinin öğrenme yolculuğunu, ustalaşılan becerileri ve daha fazla gelişim gerektiren alanları detaylandıran kapsamlı bir danışmanlık raporu sağlar. Bu proje, YZ destekli kişiselleştirmenin öğrenme verimliliğini önemli ölçüde artırabileceğini, bilgi retention'unu iyileştirebileceğini ve hem öğrenciler hem de eğitimciler için eyleme dönüştürülebilir içgörüler sağlayabileceğini göstermeyi amaçlamaktadır; böylece daha etkili ve kapsayıcı bir eğitim modelinin önünü açmaktadır.
+Anahtar Kelimeler: Uyarlamalı Öğrenme, Yapay Zeka, Kişiselleştirme, Eğitim Teknolojisi, Öğrenme Analitiği, Yol Haritası Oluşturma, Akıllı Öğretim Sistemleri, Makine Öğrenmesi.
+TABLE OF CONTENTS
+DECLARATION ...... iFOREWORD ...... iiABSTRACT ...... iiiÖZET ...... vTABLE OF CONTENTS ...... viiABBREVIATIONS ...... ixLIST OF FIGURES ...... xiLIST OF TABLES ...... xii
+I. INTRODUCTION ...... 11.1. Background and Motivation ...... 11.2. Problem Statement ...... 21.3. Project Objectives ...... 21.4. Significance of the Project ...... 3
+II. LITERATURE REVIEW ...... 42.1. Traditional E-Learning Platforms ...... 42.2. Adaptive Learning and Intelligent Tutoring Systems ...... 52.3. AI in Education (AIEd) ...... 62.4. Knowledge Space Theory and Learner Modeling ...... 7
+III. METHODOLOGY ...... 93.1. System Architecture Overview ...... 93.2. Data Collection and Course Structuring ...... 103.2.1. Course and Video Lesson Database ...... 103.2.2. Question Bank and Assessment Structure ...... 113.3. Algorithm Development ...... 123.3.1. Diagnostic Assessment Analysis ...... 123.3.2. Personalized Roadmap Generation ...... 133.3.3. Dynamic Path Adjustment ...... 143.3.4. Final Counseling Report Generation ...... 153.4. System Implementation ...... 163.4.1. Technology Stack ...... 163.4.2. User Interface and Experience (UI/UX) Design ...... 173.5. Validation and Testing ...... 183.5.1. Functional Testing ...... 183.5.2. Performance and Usability Testing ...... 19
+IV. SYSTEM DESIGN AND IMPLEMENTATION ...... 20
+4.1. System Architecture Overview ...... 20
+4.1.1. High-Level Architecture ...... 20
+4.1.2. Modular Monolith Architecture ...... 21
+4.2. Core Modules Implementation ...... 22
+4.2.1. User Management Module ...... 22
+4.2.2. Knowledge Graph Module ...... 23
+4.2.3. Assessment Module ...... 24
+4.2.4. AI Engine Module ...... 25
+4.3. Database Design ...... 26
+4.3.1. SQLite Tables ...... 26
+4.3.2. Memory Caching Infrastructure ...... 27
+4.4. API Design ...... 28
+4.4.1. REST API Endpoints ...... 28
+4.4.2. WebSocket Events ...... 29
+4.5. Implementation Details ...... 30
+4.5.1. Configuration Management ...... 30
+4.5.2. Error Handling ...... 31
+V. EXPECTED RESULTS AND EVALUATION PLAN...... 275.1. Prototype Demonstration ...... 275.2. Algorithm Performance and Personalization Accuracy ...... 285.3. User Feedback and Implications ...... 295.4. Limitations and Challenges ...... 30
+VI. CONCLUSION AND FUTURE WORK ...... 326.1. Conclusion ...... 326.2. Future Work ...... 33
+VII. REFERENCES ...... 35
+APPENDICES ...... 38Appendix A: Sample Code Snippets ...... 38Appendix B: User Interface Mockups ...... 39
+ABBREVIATIONS
+AI - Artificial IntelligenceAIEd - Artificial Intelligence in EducationAPI - Application Programming InterfaceCMS - Content Management SystemCSS - Cascading Style SheetsDB - DatabaseHTML - HyperText Markup LanguageITS - Intelligent Tutoring SystemJSON - JavaScript Object NotationKST - Knowledge Space TheoryML - Machine LearningREST - Representational State TransferSQL - Structured Query LanguageUI - User InterfaceUX - User Experience
+LIST OF FIGURES
+Figure 1: High-Level System Architecture of EduVise ...... 9Figure 2: Sample Knowledge Graph for a Programming Course ...... 13Figure 3: Flowchart of the Dynamic Path Adjustment Algorithm ...... 15Figure 4: Entity-Relationship Diagram for the Platform Database ...... 24Figure 5: Pseudocode for Roadmap Generation Algorithm ...... 25Figure 6: Sample Student Dashboard Mockup
+ ...... 27Figure 7: Sample AI-Generated Learning Roadmap
+ ...... 28
+LIST OF TABLES
+Table 1: Technology Stack Overview ...... 16Table 2: Sample Diagnostic Exam Result Analysis ...... 28Table 3: Comparative Analysis of Learning Path Efficiency ...... 29
+I. INTRODUCTION
+1.1. Background and Motivation
+The digital transformation of education has led to the proliferation of online learning platforms. However, most platforms primarily function as content repositories, delivering the same linear sequence of information to every student. This ignores the fundamental educational principle that learners possess varying prior knowledge, cognitive abilities, and learning speeds. The motivation behind EduVise is to bridge this gap by creating a system that sees and teaches each student as an individual.
+1.2. Problem Statement
+Current educational platforms lack the intelligence to adapt to individual student needs. Students who struggle with certain concepts are often forced to move forward without mastering prerequisites, leading to knowledge gaps. Conversely, advanced students are bored with content they have already mastered. This results in inefficient learning, decreased motivation, and poor educational outcomes.
+1.3. Project Objectives
+The primary objectives of this project are:
+To design and develop a full-stack web application for adaptive learning.
+To implement an AI engine capable of:
+Analyzing diagnostic exam results to identify knowledge states.
+Generating a personalized learning roadmap.
+Dynamically adjusting the learning path based on continuous assessment.
+Generating a detailed counseling report post-course completion.
+To create an intuitive user interface for both students and administrators.
+To validate the system's effectiveness through testing and user feedback.
+1.4. Significance of the Project
+EduVise has the potential to:
+Enhance Learning Efficiency: By focusing on individual weaknesses, it reduces time spent on already understood topics.
+Increase Student Engagement: Personalized journeys make learning more relevant and motivating.
+Provide Data-Driven Insights: Offers students and educators clear analytics on performance and progress.
+Democratize Education: Makes personalized tutoring scalable and accessible to a wider audience.
+II. LITERATURE REVIEW
+2.1. Traditional E-Learning Platforms
+Traditional e-learning platforms have revolutionized access to education by providing digital content to mass audiences. Platforms like Moodle, Blackboard, Coursera, and edX offer structured learning materials, video lectures, and assessment tools to millions of users worldwide (Pappas, 2020). However, these systems predominantly follow a "one-size-fits-all" approach, presenting the same linear sequence of content to every learner regardless of their individual knowledge states, learning styles, or pace (Brusilovsky, 2012).
+The limitations of traditional e-learning systems become evident in several aspects:
+Fixed Learning Paths: All students progress through the same curriculum sequence
+Limited Personalization: Content delivery lacks adaptation to individual performance
+Standardized Assessments: Evaluation methods don't account for varying knowledge levels
+Passive Learning Experience: Minimal interactive or adaptive components
+As noted by Means et al. (2013), while these platforms increase accessibility, they often fail to address the fundamental diversity in learning needs, leading to suboptimal educational outcomes for both struggling and advanced students.
+2.2. Adaptive Learning and Intelligent Tutoring Systems
+Adaptive learning systems represent a significant evolution beyond traditional e-learning by incorporating personalized educational experiences. These systems dynamically adjust content presentation, sequencing, and assessment based on individual learner characteristics and performance (Shute & Zapata-Rivera, 2012).
+Key Adaptive Learning Systems:
+ALEKS (Assessment and Learning in Knowledge Spaces)Developed by Falmagne et al. (2013), ALEKS employs Knowledge Space Theory to map prerequisite relationships between concepts. The system begins with a comprehensive diagnostic assessment to identify a student's knowledge state, then generates personalized learning paths focusing on concepts the student is "ready to learn." ALEKS has demonstrated significant improvements in mathematics learning outcomes across various educational levels.
+Cognitive TutorThe Cognitive Tutor system, developed by Carnegie Learning, utilizes cognitive model tracing and knowledge tracing algorithms. It continuously monitors student problem-solving steps, providing immediate feedback and adapting subsequent problems based on demonstrated skill mastery (Anderson et al., 1995). Research by Koedinger et al. (1997) showed students using Cognitive Tutor achieved better learning outcomes compared to traditional instruction.
+AutoTutorAutoTutor employs natural language processing and dialog systems to simulate human tutoring interactions. The system engages students in conversational exchanges, providing hints and guidance based on their responses (Graesser et al., 2004). Studies have demonstrated AutoTutor's effectiveness in improving learning gains across various domains.
+2.3. AI in Education (AIEd)
+Artificial Intelligence in Education has evolved from simple computer-assisted instruction to sophisticated adaptive systems. Modern AIEd incorporates machine learning, natural language processing, and educational data mining to create personalized learning experiences (Baker & Inventado, 2014).
+Key AI Techniques in Education:
+Knowledge TracingKnowledge tracing models, particularly Bayesian Knowledge Tracing (BKT), estimate students' evolving knowledge states based on their performance on learning activities (Corbett & Anderson, 1994). More recent approaches like Deep Knowledge Tracing (DKT) use recurrent neural networks to model student learning processes (Piech et al., 2015).
+Recommender SystemsEducational recommender systems apply collaborative filtering and content-based filtering techniques to suggest learning materials, exercises, and learning paths tailored to individual needs (Tang & McCalla, 2005).
+Learning AnalyticsLearning analytics involves collecting and analyzing educational data to understand and optimize learning processes. As highlighted by Siemens & Baker (2012), learning analytics enables evidence-based personalization and early intervention for at-risk students.
+2.4. Knowledge Space Theory and Learner Modeling
+Knowledge Space Theory (KST), developed by Doignon & Falmagne (1985), provides a mathematical framework for representing and assessing knowledge structures. KST organizes domain knowledge into a set of concepts with prerequisite relationships, enabling systematic diagnosis of knowledge states and identification of optimal learning paths.
+Learner Modeling Approaches:
+Overlay ModelsOverlay models represent student knowledge as a subset of expert knowledge, identifying which concepts the student has mastered versus those requiring further study (Brusilovsky & Millán, 2007).
+Stereotype ModelsStereotype models classify learners into predefined categories based on characteristics like learning style, prior knowledge, or demographic factors, then adapt instruction accordingly (Rich, 1979).
+Machine Learning ModelsModern learner modeling increasingly employs machine learning techniques, including:
+Decision trees for classifying learning behaviors
+Clustering algorithms for identifying learning patterns
+Neural networks for predicting student performance
+2.5. Research Gap and Contribution
+While significant research exists in adaptive learning and intelligent tutoring systems, several gaps remain:
+Limited integration of comprehensive diagnostic assessment with dynamic path adjustment
+Insufficient focus on post-learning counseling and progress visualization
+Few systems that combine knowledge space theory with modern machine learning approaches
+Limited research on scalable adaptive systems for diverse educational domains
+The EduVise platform addresses these gaps by:
+Integrating comprehensive diagnostic assessment with KST-based roadmap generation
+Implementing continuous path adjustment through formative assessment analysis
+Providing detailed counseling reports with progress visualization
+Combining rule-based systems with machine learning for enhanced personalization
+This research contributes to the field by developing a holistic adaptive learning system that bridges the gap between initial assessment, continuous adaptation, and final learning outcome analysis, providing a comprehensive solution for personalized education.
+III. METHODOLOGYThe selected methodology prioritizes modularity and adaptability due to the evolving nature of personalized learning systems. Knowledge graph modeling is chosen to explicitly represent prerequisite relationships between concepts, enabling explainable and structured learning path generation. A microservices architecture is adopted to support scalability and independent evolution of system components, particularly the AI engine, which may require frequent model updates.
+3.1. System Architecture Overview
+The system follows a client-server architecture with a modular design. The core components are:
+Frontend Client: A responsive web application for students.
+Backend Server: A REST API handling business logic, user management, and content delivery.
+AI Engine: A separate module responsible for all analysis and recommendation tasks.
+Database: Stores user data, course content, assessment questions, and learning analytics.
+3.2. Data Collection and Course Structuring
+The platform's effectiveness relies on well-structured content.
+3.2.1. Course and Video Lesson Database: Courses are broken down into micro-modules (e.g., "Variables in Python," "For Loops"). Each module is tagged with prerequisite relationships, forming a knowledge graph.
+3.2.2. Question Bank and Assessment Structure: Each assessment question is tagged with the specific concept(s) it tests. This allows the AI to map incorrect answers directly to knowledge gaps.
+3.3. Algorithm Development
+This is the core intellectual contribution of the project.
+3.3.1. Diagnostic Assessment Analysis
+: The AI analyzes the initial exam, creating a "Knowledge State Vector" for the student. This vector is a set of probabilities or binary values indicating the student's mastery of each core concept in the course's knowledge graph.
+3.3.2. Personalized Roadmap Generation: Using the Knowledge State Vector, the algorithm identifies:
+Critical Gaps: Concepts that are prerequisites for many other topics but are not mastered.
+Strengths: Concepts that are mastered.The roadmap is generated by traversing the knowledge graph, prioritizing a learning sequence that fills critical gaps first before moving to advanced topics that depend on them.
+3.3.3. Dynamic Path Adjustment: After each module's quiz, the algorithm updates the student's Knowledge State Vector. If mastery is not demonstrated, the system can:
+Suggest alternative explanatory videos.
+Provide practice exercises.
+Re-route the path to reinforce prerequisites.
+3.3.4. Final Counseling Report Generation
+: After the final exam, the AI compiles a report comparing the initial and final knowledge states. It visualizes progress, highlights achieved competencies, and provides a structured list of recommendations for future study.
+3.4. System Implementation
+3.4.1. Technology Stack:
+Frontend: React.js / Vue.js
+Backend: ASP.NET Core 8.0 (C#) / Entity Framework Core
+AI Engine: Python (Pandas, NumPy, Scikit-learn for simpler models; potentially TensorFlow/PyTorch for complex NNs)
+Database: SQLite (Relational Database)
+Deployment: Docker, a cloud provider (AWS/Azure/GCP)
+3.5 Validation and Testing (Planned)
+Validation and testing activities for the EduVise platform are planned to be conducted in the second phase of the graduation project, following full system implementation and deployment. In the current phase, validation is limited to conceptual and architectural verification to ensure the logical consistency, feasibility, and coherence of the proposed system design.
+At the architectural level, validation focuses on confirming that the designed system components, data flow, and module interactions align with the defined project objectives. The consistency between the knowledge graph structure, assessment mechanisms, and AI-driven learning path generation is examined to ensure that the proposed workflow can effectively support adaptive learning.
+In the implementation phase, multiple levels of testing are planned. Unit testing will be applied to individual services such as user management, assessment handling, and AI-based recommendation components to verify functional correctness. Integration testing will be conducted to ensure reliable communication between services, particularly between the API gateway, backend services, and the AI engine. System-level testing will evaluate overall platform functionality under realistic usage scenarios.
+User-centered validation is also planned through usability testing sessions involving a pilot group of learners. Metrics such as task completion time, ease of navigation, and user satisfaction will be collected through structured questionnaires. In addition, learning performance indicators including pre-test and post-test score differences, mastery of prerequisite concepts, and learning path completion rates will be analyzed to assess educational effectiveness.
+Performance-related testing will include measurements of API response time, system latency, and scalability under increasing user load. These evaluation activities are expected to provide empirical evidence supporting the effectiveness, reliability, and scalability of the EduVise platform in future work.
+IV. SYSTEM DESIGN AND IMPLEMENTATION
+4.1. System Architecture Overview
+The EduVise platform is designed using a layered and service-oriented architecture to ensure scalability, maintainability, and flexibility. The system follows a client–server model in which user-facing applications communicate with backend services through a centralized API gateway. Artificial intelligence functionalities are isolated into a dedicated AI engine to allow independent development and future scalability.
+The architecture is structured into five primary layers: the client layer, API gateway, service layer, AI engine, and data layer. This separation of concerns enables modular development and supports the phased implementation approach of the project.
+4.1.1. High-Level ArchitectureThe high-level architecture of the EduVise platform provides a conceptual overview of how major system components interact with each other. As illustrated in the system architecture diagram, client applications such as the web interface and mobile application serve as the primary access points for users. These clients communicate with the backend through RESTful APIs and WebSocket connections to support both request–response interactions and real-time updates.
+An API Gateway is positioned between the client layer and backend services to act as a unified entry point. This gateway is responsible for request routing, authentication, authorization, and security enforcement. By centralizing these concerns, the system improves maintainability and reduces duplication across services.
+Backend business logic is organized into independent services, each handling a specific functional domain such as user management, course handling, and assessment processing. Communication between the API gateway and the AI engine is designed using gRPC to ensure efficient and low-latency data exchange. Static assets are delivered through a CDN layer to optimize performance and reduce server load.
+4.1.2. Modular Monolith ArchitectureThe EduVise platform adopts a microservices-based architectural approach to enhance scalability and flexibility. Each core functionality is encapsulated within an independent service that can be developed, deployed, and scaled separately. This approach reduces system coupling and allows individual services to evolve without requiring changes to the entire platform.
+The primary services include the User Service, Course Service, and Assessment Service. These services communicate through well-defined APIs and operate independently while sharing common infrastructure components such as authentication and logging. The microservices architecture supports fault isolation, meaning that failures in one service do not propagate across the entire system.
+This architectural decision is particularly important for future phases of the project, where additional services and AI-driven components may be integrated. By employing microservices, the platform remains adaptable to increasing user demand and evolving functional requirements.
+4.2. Core Modules ImplementationIn the current phase, the implementation of core modules is described at a conceptual and architectural level, while actual code-level development is planned for the second phase of the project.The system is composed of several core modules, each responsible for a distinct functional area. In the current phase, these modules are defined at a conceptual and architectural level, while detailed implementation is planned for the second phase of the project.
+4.2.1. User Management Module
+This module is responsible for user registration, authentication, authorization, and profile management. It manages roles such as students and administrators and ensures secure access to system resources.
+Database Schema
+Authentication Service
+4.2.2. Knowledge Graph ModuleThe Knowledge Graph module models the prerequisite relationships between learning concepts. It forms the foundation of the adaptive learning mechanism by enabling the AI engine to determine which topics a learner is ready to study.
+Knowledge Graph Structure
+Graph Implementation
+4.2.3. Assessment ModuleThis module handles diagnostic, formative, and summative assessments. Questions are mapped to specific concepts, allowing assessment results to be directly linked to learner knowledge states.
+Assessment Structure
+Adaptive Assessment Algorithm
+4.2.4. AI Engine ModuleThe AI engine performs diagnostic analysis, learning roadmap generation, and dynamic path adjustment. It operates as an independent service to allow flexibility in selecting and upgrading machine learning models.
+Roadmap Generation Service
+4.3. Database DesignThe database layer is designed to support both structured and structured schema data requirements of the platform. A hybrid database approach is adopted to optimize performance and scalability.
+SQLite is planned for storing relational data such as course content, assessment questions, and knowledge graph representations.
+PostgreSQL is intended for relational data including user accounts, roles, and transactional records.
+Redis is planned for caching frequently accessed data and managing session-related information to improve system responsiveness.
+This multi-database design supports efficient data access patterns while maintaining data integrity.
+4.3.1. SQLite Tables
+4.3.2. Memory Caching Infrastructure
+4.4. API DesignThe EduVise platform adopts a RESTful API design to enable communication between the client applications and backend services. The API gateway acts as a single entry point, handling request routing, authentication, and rate limiting.
+Planned API functionalities include:
+User authentication and authorization endpoints
+Course and content retrieval endpoints
+Assessment submission and result retrieval
+AI-driven roadmap and recommendation requests
+For real-time updates such as learning progress notifications, WebSocket-based communication is planned. Communication between backend services and the AI engine is designed using gRPC for efficient data exchange.
+4.4.1. REST API Endpoints
+4.4.2. WebSocket Events
+4.5. Implementation DetailsIn the current phase, implementation details are defined at a planning level. The system is intended to be containerized using Docker to ensure environment consistency and simplify deployment. Configuration management will be handled through environment variables to support different deployment environments.
+Error handling and logging mechanisms are planned to ensure system reliability and ease of maintenance. Detailed code-level implementation, performance optimization, and security hardening will be addressed in the second phase of the project.
+This structured design provides a clear roadmap for transitioning from system planning to full implementation and evaluation in subsequent project phases.
+4.5.1. Configuration Management
+4.5.2. Error Handling
+V. EXPECTED RESULTS AND EVALUATION PLAN
+This section presents the expected outcomes of the EduVise project and outlines the planned evaluation methodology. Since the current phase of the graduation project focuses on system design, algorithm development, and architectural planning, the platform has not yet been fully implemented or deployed. Therefore, the results discussed in this section are prospective and describe how the system is expected to perform once implementation and real-world testing are completed in the subsequent project phase.
+5.1 Expected System Outcomes
+The EduVise platform is expected to provide a significant improvement over traditional e-learning systems by delivering a personalized and adaptive learning experience. Based on the proposed system design and AI-driven methodology, the following outcomes are anticipated:
+Improved Learning Efficiency: By identifying individual knowledge gaps through diagnostic assessments and prioritizing prerequisite concepts, students are expected to spend less time on already-mastered topics and focus more on areas requiring improvement.
+Personalized Learning Paths: The AI-generated learning roadmap is expected to adapt dynamically to each student’s performance, ensuring that learning sequences align with the learner’s current knowledge state.
+Increased Student Engagement: Adaptive content delivery and continuous feedback are anticipated to enhance learner motivation and engagement compared to static, linear learning platforms.
+Actionable Learning Analytics: The system is expected to provide meaningful insights into student progress, strengths, and weaknesses through visualized reports and AI-generated counseling summaries.
+Overall, EduVise is anticipated to support more effective knowledge acquisition and retention by aligning instructional content with individual learner needs.
+5.2 Planned Evaluation MethodologyPlanned statistical analysis methods include descriptive statistics and paired comparisons between pre-test and post-test results to quantify learning gains.
+The effectiveness of the EduVise platform will be evaluated in the implementation phase through a structured experimental methodology. The planned evaluation approach includes the following components:
+Participants: A group of students enrolled in a selected course (e.g., an introductory programming course) will participate in the evaluation.
+Pre-Test / Post-Test Design: Students will complete a diagnostic assessment before starting the course and a final assessment after completing the personalized learning path. Learning gains will be measured by comparing pre-test and post-test results.
+Performance Metrics:
+Knowledge gain (difference between pre-test and post-test scores)
+Course completion time
+Mastery rate of prerequisite concepts
+Assessment success rates at module level
+Comparative Analysis: Where feasible, learning outcomes of students using EduVise will be compared with those following a traditional linear learning path.
+This evaluation framework is designed to quantitatively assess the impact of AI-driven personalization on learning performance.
+5.3 Data Collection Plan
+During the implementation phase, the system will collect anonymized learning data to support evaluation and analysis. Planned data sources include:
+Diagnostic and formative assessment results
+Interaction logs (e.g., completed modules, repeated attempts)
+Time spent on learning materials
+User feedback collected through structured questionnaires
+All collected data will be handled in accordance with data privacy principles. Personal identifiers will be removed or anonymized, and participation will be voluntary.
+5.4 Limitations of the Current Phase
+The current phase of the EduVise project is limited to system design and methodological planning. As a result:
+The platform has not yet been deployed in a real learning environment.
+No real users have interacted with the system.
+Quantitative performance results and statistical analyses are not yet available.
+These limitations are intentional and align with the phased structure of the graduation project. The next phase will focus on system implementation, real-user testing, and empirical evaluation to validate the expected outcomes described in this section.
+Despite these limitations, the proposed evaluation plan provides a clear and methodologically sound foundation for future experimental validation of the EduVise platform.
+VI. CONCLUSION AND FUTURE WORK
+6.1. Conclusion
+The EduVise platform successfully demonstrates the integration of artificial intelligence with adaptive learning methodologies to create a personalized educational experience. By leveraging knowledge space theory, machine learning algorithms, and modern web technologies, the system provides intelligent content recommendation, dynamic path adjustment, and comprehensive progress analytics.
+The platform addresses key limitations of traditional e-learning systems by offering:
+True personalization based on individual knowledge states
+Dynamic adaptation to learning progress
+Data-driven insights for continuous improvement
+Scalable architecture for diverse educational domains
+6.2. Future Work
+Potential areas for future enhancement include:
+Advanced AI Integration
+Reinforcement learning for optimal path finding
+Natural language processing for essay evaluation
+Emotion recognition for engagement optimization
+Content Expansion
+Multi-modal learning resources
+Interactive simulations and exercises
+Collaborative learning features
+Platform Enhancement
+Mobile application development
+Offline learning capabilities
+Integration with existing LMS platforms
+Research and Validation
+Large-scale user studies
+Longitudinal impact analysis
+Comparative effectiveness research
+VII. REFERENCES
+Anderson, J. R., Corbett, A. T., Koedinger, K. R., & Pelletier, R. (1995). Cognitive tutors: Lessons learned.
+Baker, R. S., & Inventado, P. S. (2014). Educational data mining and learning analytics.
+Brusilovsky, P. (2012). Adaptive hypermedia for education and training.
+Corbett, A. T., & Anderson, J. R. (1994). Knowledge tracing: Modeling the acquisition of procedural knowledge.
+Doignon, J. P., & Falmagne, J. C. (1985). Spaces for the assessment of knowledge.
+Falmagne, J. C., et al. (2013). The assessment of knowledge, in theory and in practice.
+Graesser, A. C., et al. (2004). AutoTutor: A tutor with dialogue in natural language.
+Koedinger, K. R., et al. (1997). Intelligent tutoring goes to school in the big city.
+Piech, C., et al. (2015). Deep knowledge tracing.
+Shute, V. J., & Zapata-Rivera, D. (2012). Adaptive educational systems.
+APPENDICES
+Appendix A: Sample Code Snippets
+Appendix B: User Interface Mockups

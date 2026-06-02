@@ -8,6 +8,7 @@ from app.models.course import Course, Section, Video, Attachment, Enrollment, Re
 from app.models.user import User, UserRole
 from app.schemas.course import CourseRead
 from app.core.dependencies import require_instructor
+from app.services.ai_engine import generate_instructor_insights
 
 router = APIRouter()
 
@@ -22,7 +23,7 @@ def get_instructor_profile(instructor_id: str, db: Session = Depends(get_db)):
         joinedload(Course.reviews)
     ).all()
     
-    total_students = db.query(func.count(Enrollment.id)).filter(Enrollment.course_id.in_([c.id for c in courses])).scalar() or 0
+    total_students = db.query(func.count(func.distinct(Enrollment.user_id))).filter(Enrollment.course_id.in_([c.id for c in courses])).scalar() or 0
     total_reviews = sum(len(c.reviews) for c in courses)
     avg_rating = sum(sum(r.rating for r in c.reviews) for c in courses) / total_reviews if total_reviews > 0 else 0.0
 
@@ -68,7 +69,7 @@ def get_instructor_stats(db: Session = Depends(get_db), current_user: User = Dep
     active_courses = len([c for c in courses if c.is_published])
     
     # Students count
-    total_students = db.query(func.count(Enrollment.id)).filter(Enrollment.course_id.in_(course_ids)).scalar() or 0
+    total_students = db.query(func.count(func.distinct(Enrollment.user_id))).filter(Enrollment.course_id.in_(course_ids)).scalar() or 0
     
     # Revenue (price * enrollments) - simplistic calculation
     # For more accuracy, we'd sum up actual transaction values. Here we multiply current price * total enrollments for each course.
@@ -76,7 +77,7 @@ def get_instructor_stats(db: Session = Depends(get_db), current_user: User = Dep
     course_performance = []
     
     for c in courses:
-        students = db.query(func.count(Enrollment.id)).filter(Enrollment.course_id == c.id).scalar() or 0
+        students = db.query(func.count(func.distinct(Enrollment.user_id))).filter(Enrollment.course_id == c.id).scalar() or 0
         revenue = students * c.price
         monthly_revenue += revenue
         
@@ -87,6 +88,7 @@ def get_instructor_stats(db: Session = Depends(get_db), current_user: User = Dep
         # Progress roughly simulated (since real completion calculation per user requires complex queries)
         # We can just return students count and revenue per course
         course_performance.append({
+            "id": c.id,
             "name": c.title,
             "students": students,
             "rating": round(avg_rating, 1),
@@ -120,4 +122,96 @@ def get_instructor_stats(db: Session = Depends(get_db), current_user: User = Dep
         "recent_reviews": recent_reviews
     }
 
+@router.get("/courses/{course_id}/students")
+def get_course_students(course_id: str, db: Session = Depends(get_db), current_user: User = Depends(require_instructor)):
+    course = db.query(Course).filter(Course.id == course_id, Course.instructor_id == current_user.id).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Kurs bulunamadı veya size ait değil.")
+        
+    enrollments = db.query(Enrollment).filter(Enrollment.course_id == course_id).all()
+    
+    from app.models.assessment import Assessment
+    
+    total_videos = sum(len(sec.videos) for sec in course.sections)
+    
+    result = []
+    for enr in enrollments:
+        user = db.query(User).filter(User.id == enr.user_id).first()
+        if not user:
+            continue
+            
+        completed_count = len(enr.completed_videos) if enr.completed_videos else 0
+        progress = int((completed_count / total_videos) * 100) if total_videos > 0 else 0
+        
+        # Get AI diagnostic results for radar chart
+        diagnostics = db.query(Assessment).filter(Assessment.user_id == user.id, Assessment.type == "diagnostic").order_by(Assessment.completed_at.desc()).first()
+        topic_scores = diagnostics.topic_scores if diagnostics and diagnostics.topic_scores else {}
+        
+        # Map to radar format
+        radar_data = []
+        for k, v in topic_scores.items():
+            radar_data.append({"subject": k, "A": int(v * 100), "fullMark": 100})
+            
+        # Get final exam score
+        finals = db.query(Assessment).filter(Assessment.user_id == user.id, Assessment.course_id == course_id, Assessment.type == "final").all()
+        best_final = max([a.overall_score for a in finals]) * 100 if finals else None
+        
+        result.append({
+            "id": user.id,
+            "name": user.full_name,
+            "avatar_url": user.avatar_url,
+            "email": user.email,
+            "progress": progress,
+            "enrolled_at": enr.enrolled_at,
+            "last_active": user.last_login_date,
+            "radar_data": radar_data,
+            "final_score": best_final
+        })
+        
+    return result
 
+@router.get("/ai-insights")
+async def get_ai_insights(db: Session = Depends(get_db), current_user: User = Depends(require_instructor)):
+    # Re-use the logic from get_instructor_stats to gather data
+    courses = db.query(Course).filter(Course.instructor_id == current_user.id).all()
+    course_ids = [c.id for c in courses]
+    
+    if not course_ids:
+        return {"report": "Analiz edilecek kurs verisi bulunamadı."}
+    
+    active_courses = len([c for c in courses if c.is_published])
+    total_students = db.query(func.count(func.distinct(Enrollment.user_id))).filter(Enrollment.course_id.in_(course_ids)).scalar() or 0
+    
+    monthly_revenue = 0.0
+    course_performance = []
+    
+    for c in courses:
+        students = db.query(func.count(func.distinct(Enrollment.user_id))).filter(Enrollment.course_id == c.id).scalar() or 0
+        revenue = students * c.price
+        monthly_revenue += revenue
+        
+        course_reviews = db.query(Review).filter(Review.course_id == c.id).all()
+        avg_rating = sum(r.rating for r in course_reviews) / len(course_reviews) if course_reviews else 0.0
+        
+        course_performance.append({
+            "name": c.title,
+            "students": students,
+            "rating": round(avg_rating, 1),
+            "revenue_try": revenue
+        })
+    
+    all_reviews = db.query(Review).filter(Review.course_id.in_(course_ids)).all()
+    average_rating = sum(r.rating for r in all_reviews) / len(all_reviews) if all_reviews else 0.0
+    
+    stats_data = {
+        "instructor_name": current_user.full_name,
+        "total_students": total_students,
+        "average_rating": round(average_rating, 1),
+        "total_revenue_try": monthly_revenue,
+        "active_courses": active_courses,
+        "course_performance": sorted(course_performance, key=lambda x: x["students"], reverse=True)
+    }
+    
+    report = await generate_instructor_insights(stats_data)
+    
+    return {"report": report}
