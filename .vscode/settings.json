@@ -1,6 +1,7 @@
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/backend/venv/Scripts/python.exe",
+  "python.defaultInterpreterPath": "c:\\Users\\rabia\\OneDrive\\Desktop\\eduvise-graduate-main\\backend\\venv\\Scripts\\python.exe",
+  "python.pythonPath": "c:\\Users\\rabia\\OneDrive\\Desktop\\eduvise-graduate-main\\backend\\venv\\Scripts\\python.exe",
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/backend"
+    "c:\\Users\\rabia\\OneDrive\\Desktop\\eduvise-graduate-main\\backend"
   ]
 }
