@@ -187,7 +187,7 @@ const Auth = () => {
         
         <div className="relative z-20">
           <div className="flex items-center gap-3 mb-16 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="w-12 h-12 bg-gradient-to-tr from-[#6366F1] to-[#8B5CF6] rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg border border-white/10">E</div>
+            <img src="/logo.png" alt="EduVise Logo" className="h-12 w-auto object-contain rounded-xl shadow-lg border border-white/10" />
             <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 tracking-tight">EduVise</span>
           </div>
           
@@ -226,7 +226,7 @@ const Auth = () => {
         <div className="w-full max-w-md z-10 animate-fade-in">
           {/* Logo (Mobil) */}
           <div className="flex lg:hidden items-center justify-center gap-3 mb-10">
-            <div className="w-12 h-12 bg-gradient-to-tr from-primary to-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg">E</div>
+            <img src="/logo.png" alt="EduVise Logo" className="h-12 w-auto object-contain rounded-xl shadow-lg" />
             <span className="text-3xl font-black text-text-primary tracking-tight">EduVise</span>
           </div>
 
