@@ -2,3 +2,7 @@ backend/uploads/
 backend/eduvise.db
 **/__pycache__/
 **/*.pyc
+backend/venv/
+.env
+backend/.env
+eduvise.db
