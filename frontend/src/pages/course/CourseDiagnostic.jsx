@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../lib/api';
+import useToastStore from '../../store/toastStore';
 
 const LEVELS = [
   { id: 'beginner', label: 'Başlangıç', desc: 'Bu konuya yeni başlıyorum', icon: 'emoji_nature', color: 'emerald' },
@@ -12,6 +13,7 @@ const LEVELS = [
 const CourseDiagnostic = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const showToast = useToastStore(state => state.showToast);
 
   const [step, setStep] = useState('level'); // 'level' | 'quiz' | 'analyzing' | 'roadmap'
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -50,7 +52,7 @@ const CourseDiagnostic = () => {
       const firstVideoId = course?.sections?.[0]?.videos?.[0]?.id || 'start';
       navigate(`/learn/${id}/${firstVideoId}`);
     } catch {
-      alert("Kayıt olurken bir hata oluştu.");
+      showToast("Kayıt olurken bir hata oluştu.", "error");
       navigate(`/courses/${id}`);
     }
   };

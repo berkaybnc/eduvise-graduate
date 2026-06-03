@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../lib/api';
+import useToastStore from '../../store/toastStore';
 import CertificateGenerator from '../../components/CertificateGenerator';
 import CourseForum from '../../components/course/CourseForum';
 import useAuthStore from '../../store/authStore';
@@ -9,6 +10,7 @@ import useAuthStore from '../../store/authStore';
 export const Learn = () => {
   const { courseId, lessonId } = useParams();
   const navigate = useNavigate();
+  const showToast = useToastStore(state => state.showToast);
 
   const [openSections, setOpenSections] = useState({});
   const [chatOpen, setChatOpen] = useState(false);
@@ -94,7 +96,7 @@ export const Learn = () => {
         // refetch user data to update badges in UI
         const userRes = await api.get('/auth/me');
         useAuthStore.getState().setUser(userRes.data);
-        alert(`Tebrikler! Yeni bir rozet kazandınız: ${res.data.awarded_badges[0].name}`);
+        showToast(`Tebrikler! Yeni bir rozet kazandınız: ${res.data.awarded_badges[0].name}`, 'success');
       }
       await refetchEnrolled();
     } catch (err) {
@@ -141,7 +143,7 @@ export const Learn = () => {
       });
       setShowCertificate(true);
     } catch (err) {
-      alert(err.response?.data?.detail || 'Sertifika oluşturulurken bir hata oluştu.');
+      showToast(err.response?.data?.detail || 'Sertifika oluşturulurken bir hata oluştu.', 'error');
     }
   };
 

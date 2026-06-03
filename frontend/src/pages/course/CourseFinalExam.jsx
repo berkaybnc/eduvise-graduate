@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../lib/api';
+import useToastStore from '../../store/toastStore';
 
 const CourseFinalExam = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const showToast = useToastStore(state => state.showToast);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -22,7 +24,7 @@ const CourseFinalExam = () => {
         setQuestions(res.data || []);
       } catch (err) {
         console.error(err);
-        alert("Sorular yüklenirken hata oluştu.");
+        showToast("Sorular yüklenirken hata oluştu.", "error");
       } finally {
         setLoading(false);
       }
@@ -38,7 +40,7 @@ const CourseFinalExam = () => {
       await api.post(`/assessments/${courseId}/final/submit`, { answers });
     } catch (err) {
       console.error(err);
-      alert("Sonuçlar gönderilemedi.");
+      showToast("Sonuçlar gönderilemedi.", "error");
     } finally {
       setSubmittingResult(false);
     }

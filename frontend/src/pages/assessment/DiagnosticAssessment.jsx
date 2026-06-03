@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
+import useToastStore from '../../store/toastStore';
 
 const DIFFICULTY_COLORS = {
   'Kolay': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
@@ -18,6 +19,7 @@ const FIELDS = [
 
 const DiagnosticAssessment = () => {
   const navigate = useNavigate();
+  const showToast = useToastStore(state => state.showToast);
   const [selectedField, setSelectedField] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -39,7 +41,7 @@ const DiagnosticAssessment = () => {
       setTimeLeft(30 * 60);
     } catch (err) {
       console.error(err);
-      alert("Sorular yüklenirken hata oluştu.");
+      showToast("Sorular yüklenirken hata oluştu.", "error");
       setSelectedField(null);
     } finally {
       setLoading(false);
@@ -57,7 +59,7 @@ const DiagnosticAssessment = () => {
       });
     } catch (err) {
       console.error(err);
-      alert("Sonuçlar gönderilemedi.");
+      showToast("Sonuçlar gönderilemedi.", "error");
     } finally {
       setGeneratingRoadmap(false);
     }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import FileUploadZone from '../../components/FileUploadZone';
+import useToastStore from '../../store/toastStore';
 
 const CATEGORIES = ['Yazılım', 'Siber Güvenlik', 'Veri Bilimi', 'Yapay Zeka', 'Tasarım', 'İş Dünyası', 'Matematik', 'Diğer'];
 const LEVELS = [
@@ -38,6 +39,7 @@ const StepIndicator = ({ step }) => {
 const CourseManager = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const showToast = useToastStore(state => state.showToast);
   const [activeTab, setActiveTab] = useState(location.state?.openCreateTab ? 'create' : 'courses');
   const [courses, setCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
@@ -147,7 +149,7 @@ const CourseManager = () => {
       setAddingExercise(false);
       setExerciseForm({ title: '', description: '', language: 'python', initial_code: '', test_code: '' });
       setErrorMsg('');
-      alert('Kodlama ödevi başarıyla eklendi!');
+      showToast('Kodlama ödevi başarıyla eklendi!', 'success');
     } catch (err) {
       setErrorMsg(err?.response?.data?.detail || 'Kodlama ödevi kaydedilemedi.');
     }
@@ -217,7 +219,7 @@ const CourseManager = () => {
         s.id === sectionId ? { ...s, videos: s.videos.filter(v => v.id !== videoId) } : s
       ));
     } catch (err) {
-      alert(err?.response?.data?.detail || 'Video silinemedi.');
+      showToast(err?.response?.data?.detail || 'Video silinemedi.', 'error');
     }
   };
 
@@ -227,7 +229,7 @@ const CourseManager = () => {
       await api.delete(`/courses/sections/${sectionId}`);
       setSections(prev => prev.filter(s => s.id !== sectionId));
     } catch (err) {
-      alert(err?.response?.data?.detail || 'Bölüm silinemedi.');
+      showToast(err?.response?.data?.detail || 'Bölüm silinemedi.', 'error');
     }
   };
 
@@ -253,7 +255,7 @@ const CourseManager = () => {
       await api.delete(`/courses/${courseId}`);
       setCourses(prev => prev.filter(c => c.id !== courseId));
     } catch (err) {
-      alert(err?.response?.data?.detail || 'Kurs silinemedi.');
+      showToast(err?.response?.data?.detail || 'Kurs silinemedi.', 'error');
     }
   };
 

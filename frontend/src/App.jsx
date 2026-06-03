@@ -22,6 +22,7 @@ import InstructorCourseStudents from './pages/instructor/InstructorCourseStudent
 import useAuthStore from './store/authStore';
 
 import ProtectedRoute from './components/ProtectedRoute';
+import Toast from './components/Toast';
 
 const IndexRedirect = () => {
   const { user } = useAuthStore();
@@ -78,6 +79,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <Toast />
     </Router>
   );
 }

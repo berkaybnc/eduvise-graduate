@@ -16,6 +16,7 @@ const Auth = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   
   const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
@@ -23,12 +24,14 @@ const Auth = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrorMsg('');
+    setSuccessMsg('');
   };
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setSelectedRole('');
     setErrorMsg('');
+    setSuccessMsg('');
     window.history.pushState(null, '', isLogin ? '/register' : '/login');
   };
 
@@ -36,6 +39,7 @@ const Auth = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMsg('');
+    setSuccessMsg('');
     
     try {
       if (isLogin) {
@@ -68,7 +72,7 @@ const Auth = () => {
         setIsLogin(true);
         setSelectedRole('');
         window.history.pushState(null, '', '/login');
-        alert('Kayıt başarılı! Lütfen giriş yapın.');
+        setSuccessMsg('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
       }
     } catch (error) {
       console.error('Auth Error:', error);
@@ -148,6 +152,14 @@ const Auth = () => {
             <div className="mb-6 p-4 bg-error-container/50 border border-error/20 text-error rounded-xl flex items-center gap-3 animate-fade-in">
               <span className="material-symbols-outlined text-xl">error</span>
               <span className="text-sm font-medium">{errorMsg}</span>
+            </div>
+          )}
+
+          {/* Başarı Mesajı */}
+          {successMsg && (
+            <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl flex items-center gap-3 animate-fade-in">
+              <span className="material-symbols-outlined text-xl text-emerald-400">check_circle</span>
+              <span className="text-sm font-medium">{successMsg}</span>
             </div>
           )}
 
