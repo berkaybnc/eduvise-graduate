@@ -59,6 +59,12 @@ const Auth = () => {
           navigate('/dashboard');
         }
       } else {
+        await api.post('/auth/register', {
+          email: formData.email,
+          password: formData.password,
+          full_name: formData.full_name,
+          role: selectedRole,
+        });
         setIsLogin(true);
         setSelectedRole('');
         window.history.pushState(null, '', '/login');
