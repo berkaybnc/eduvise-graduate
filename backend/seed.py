@@ -10,10 +10,12 @@ def seed_db():
     
     admin = User(email="admin@eduvise.com", full_name="Admin", hashed_password=hash_password("Admin123!"), role=UserRole.admin)
     instructor = User(email="egitmen@eduvise.com", full_name="Eğitmen", hashed_password=hash_password("Egitmen123!"), role=UserRole.instructor)
+    instructor_berkay = User(email="berkay@gmail.com", full_name="Berkay", hashed_password=hash_password("Berkay123!"), role=UserRole.instructor)
     student1 = User(email="ogrenci1@eduvise.com", full_name="Öğrenci 1", hashed_password=hash_password("Ogrenci123!"), role=UserRole.student)
     student2 = User(email="ogrenci2@eduvise.com", full_name="Öğrenci 2", hashed_password=hash_password("Ogrenci123!"), role=UserRole.student)
+    student_berkay = User(email="berkay133181@gmail.com", full_name="Berkay Student", hashed_password=hash_password("Berkay123!"), role=UserRole.student)
     
-    db.add_all([admin, instructor, student1, student2])
+    db.add_all([admin, instructor, instructor_berkay, student1, student2, student_berkay])
     db.commit()
     db.refresh(instructor)
     

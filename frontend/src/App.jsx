@@ -13,6 +13,7 @@ import LearningRoadmap from './pages/roadmap/LearningRoadmap';
 import CounselingReport from './pages/report/CounselingReport';
 import CodingExercise from './pages/course/CodingExercise';
 import Auth from './pages/auth/Auth';
+import ResetPassword from './pages/auth/ResetPassword';
 import Onboarding from './pages/auth/Onboarding';
 import CourseManager from './pages/instructor/CourseManager';
 import InstructorDashboard from './pages/instructor/InstructorDashboard';
@@ -52,6 +53,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Auth />} />
         <Route path="/register" element={<Auth />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>

@@ -9,8 +9,14 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
     UPLOAD_DIR: str = "./uploads"
     MAX_UPLOAD_SIZE_MB: int = 500
+    
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = ""
 
     class Config:
-        env_file = ".env"
+        env_file = ["backend/.env", ".env"]
 
 settings = Settings()

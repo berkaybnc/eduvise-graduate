@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserLogin, UserRead, UserUpdate, Token
+from app.schemas.user import UserCreate, UserLogin, UserRead, UserUpdate, Token, UserOTPVerify, ForgotPasswordRequest, ResetPasswordRequest
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token
 from app.core.dependencies import get_current_user
 
@@ -37,7 +37,41 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     if not user or not verify_password(user_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Geçersiz email veya şifre")
         
+    import random
+    from datetime import datetime, timedelta
+    
+    otp = f"{random.randint(10000, 99999)}"
+    user.otp_code = otp
+    user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)
+    db.commit()
+    
+    from app.core.email import send_otp_email
+    send_otp_email(user.email, otp)
+    
+    return {"status": "otp_required", "email": user.email}
+
+@router.post("/verify-otp", response_model=Token)
+def verify_otp(otp_data: UserOTPVerify, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == otp_data.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        
     from datetime import datetime
+    if not user.otp_code or not user.otp_expires_at:
+        raise HTTPException(status_code=400, detail="Doğrulama kodu oluşturulmamış")
+        
+    if datetime.utcnow() > user.otp_expires_at:
+        raise HTTPException(status_code=400, detail="Doğrulama kodunun süresi dolmuş")
+        
+    if user.otp_code != otp_data.code:
+        raise HTTPException(status_code=400, detail="Geçersiz doğrulama kodu")
+        
+    # Clear OTP
+    user.otp_code = None
+    user.otp_expires_at = None
+    db.commit()
+    
+    # Update last login and streak
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
     if user.last_login_date != today_str:
         if user.last_login_date:
@@ -54,7 +88,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
         
     access_token = create_access_token(data={"sub": user.id})
     refresh_token = create_refresh_token(data={"sub": user.id})
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer", "status": "success"}
 
 @router.post("/refresh", response_model=Token)
 def refresh_token(token_data: dict):
@@ -111,3 +145,55 @@ def update_profile(user_update: UserUpdate, db: Session = Depends(get_db), curre
         "xp": current_user.xp or 0,
         "streak_days": current_user.streak_days or 0
     }
+
+
+@router.post("/forgot-password")
+def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == req.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı")
+    
+    import uuid
+    from datetime import datetime, timedelta
+    
+    reset_token = str(uuid.uuid4())
+    user.reset_token = reset_token
+    user.reset_token_expires_at = datetime.utcnow() + timedelta(minutes=15)
+    db.commit()
+    
+    # Send email
+    from app.core.email import send_reset_email
+    reset_link = f"http://localhost:5173/reset-password?token={reset_token}&email={user.email}"
+    
+    success = send_reset_email(user.email, reset_link)
+    if not success:
+        raise HTTPException(status_code=500, detail="Şifre sıfırlama e-postası gönderilemedi")
+         
+    return {"message": "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi"}
+
+
+@router.post("/reset-password")
+def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == req.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        
+    from datetime import datetime
+    if not user.reset_token or not user.reset_token_expires_at:
+        raise HTTPException(status_code=400, detail="Şifre sıfırlama talebi bulunamadı")
+        
+    if datetime.utcnow() > user.reset_token_expires_at:
+        raise HTTPException(status_code=400, detail="Şifre sıfırlama bağlantısının süresi dolmuş")
+        
+    if user.reset_token != req.token:
+        raise HTTPException(status_code=400, detail="Geçersiz şifre sıfırlama bağlantısı")
+        
+    # Reset password
+    user.hashed_password = hash_password(req.password)
+    # Clear reset token
+    user.reset_token = None
+    user.reset_token_expires_at = None
+    db.commit()
+    
+    return {"message": "Şifreniz başarıyla güncellendi"}
+

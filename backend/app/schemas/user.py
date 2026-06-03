@@ -36,6 +36,23 @@ class UserRead(UserBase):
         from_attributes = True
 
 class Token(BaseModel):
-    access_token: str
-    refresh_token: str
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
     token_type: str = "bearer"
+    status: Optional[str] = "success"
+    email: Optional[str] = None
+
+class UserOTPVerify(BaseModel):
+    email: EmailStr
+    code: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    token: str
+    password: str
+

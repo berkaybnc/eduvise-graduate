@@ -23,5 +23,9 @@ class User(Base):
     xp = Column(Integer, default=0)
     streak_days = Column(Integer, default=0)
     last_login_date = Column(String, nullable=True) # YYYY-MM-DD
+    otp_code = Column(String, nullable=True)
+    otp_expires_at = Column(DateTime, nullable=True)
+    reset_token = Column(String, nullable=True)
+    reset_token_expires_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
