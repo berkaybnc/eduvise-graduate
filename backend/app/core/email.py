@@ -46,7 +46,7 @@ def send_otp_email(recipient_email: str, otp_code: str):
         msg.attach(MIMEText(html, 'html', 'utf-8'))
 
         # Connect to server
-        server = smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT)
+        server = smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=5)
         server.ehlo()
         server.starttls()
         server.ehlo()
@@ -112,7 +112,7 @@ def send_reset_email(recipient_email: str, reset_link: str):
         msg.attach(MIMEText(html, 'html', 'utf-8'))
 
         # Connect to server
-        server = smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT)
+        server = smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=5)
         server.ehlo()
         server.starttls()
         server.ehlo()
