@@ -12,6 +12,10 @@ from app.api.instructor import router as instructor_router
 from app.api.notifications import router as notifications_router
 from app.api.gamification import router as gamification_router
 from app.api.forum import router as forum_router
+from app.database import engine, Base
+from app import models
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="EduVise API", version="1.0.0")
 
