@@ -40,15 +40,35 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     import random
     from datetime import datetime, timedelta
     
-    otp = f"{random.randint(10000, 99999)}"
-    user.otp_code = otp
-    user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)
-    db.commit()
+    # OTP bypass
+    # otp = f"{random.randint(10000, 99999)}"
+    # user.otp_code = otp
+    # user.otp_expires_at = datetime.utcnow() + timedelta(minutes=5)
+    # db.commit()
+    # 
+    # from app.core.email import send_otp_email
+    # send_otp_email(user.email, otp)
+    # 
+    # return {"status": "otp_required", "email": user.email}
     
-    from app.core.email import send_otp_email
-    send_otp_email(user.email, otp)
-    
-    return {"status": "otp_required", "email": user.email}
+    # Update last login and streak immediately
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    if user.last_login_date != today_str:
+        if user.last_login_date:
+            last_date = datetime.strptime(user.last_login_date, "%Y-%m-%d")
+            delta = (datetime.utcnow() - last_date).days
+            if delta == 1:
+                user.streak_days = (user.streak_days or 0) + 1
+            else:
+                user.streak_days = 1
+        else:
+            user.streak_days = 1
+        user.last_login_date = today_str
+        db.commit()
+        
+    access_token = create_access_token(data={"sub": user.id})
+    refresh_token = create_refresh_token(data={"sub": user.id})
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer", "status": "success"}
 
 @router.post("/verify-otp", response_model=Token)
 def verify_otp(otp_data: UserOTPVerify, db: Session = Depends(get_db)):
