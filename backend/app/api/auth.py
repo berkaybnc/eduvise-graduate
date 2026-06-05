@@ -34,7 +34,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login", response_model=Token)
 def login(user_data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == user_data.email).first()
-    if not user or not verify_password(user_data.password, user.hashed_password):
+    if not user or not verify_password(user_data.password, str(user.hashed_password)):
         raise HTTPException(status_code=401, detail="Geçersiz email veya şifre")
         
     import random
@@ -55,7 +55,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     today_str = datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d")
     if user.last_login_date != today_str:
         if user.last_login_date:
-            last_date = datetime.strptime(user.last_login_date, "%Y-%m-%d")
+            last_date = datetime.strptime(str(user.last_login_date), "%Y-%m-%d")
             delta = (datetime.now(timezone.utc).replace(tzinfo=None) - last_date).days
             if delta == 1:
                 user.streak_days = (user.streak_days or 0) + 1
@@ -95,7 +95,7 @@ def verify_otp(otp_data: UserOTPVerify, db: Session = Depends(get_db)):
     today_str = datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d")
     if user.last_login_date != today_str:
         if user.last_login_date:
-            last_date = datetime.strptime(user.last_login_date, "%Y-%m-%d")
+            last_date = datetime.strptime(str(user.last_login_date), "%Y-%m-%d")
             delta = (datetime.now(timezone.utc).replace(tzinfo=None) - last_date).days
             if delta == 1:
                 user.streak_days = (user.streak_days or 0) + 1
@@ -119,7 +119,7 @@ def refresh_token(token_data: dict):
 async def get_me(current_user: User = Depends(get_current_user)):
     import json
     try:
-        badges_list = json.loads(current_user.badges) if current_user.badges else []
+        badges_list = json.loads(str(current_user.badges)) if current_user.badges else []
     except:
         badges_list = []
         
@@ -151,7 +151,7 @@ def update_profile(user_update: UserUpdate, db: Session = Depends(get_db), curre
     
     import json
     try:
-        badges_list = json.loads(current_user.badges) if current_user.badges else []
+        badges_list = json.loads(str(current_user.badges)) if current_user.badges else []
     except:
         badges_list = []
         
@@ -187,7 +187,7 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     from app.core.email import send_reset_email
     reset_link = f"http://localhost:5173/reset-password?token={reset_token}&email={user.email}"
     
-    success = send_reset_email(user.email, reset_link)
+    success = send_reset_email(str(user.email), reset_link)
     if not success:
         raise HTTPException(status_code=500, detail="Şifre sıfırlama e-postası gönderilemedi")
          
