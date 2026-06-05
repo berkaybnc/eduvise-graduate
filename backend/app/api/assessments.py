@@ -32,7 +32,7 @@ async def get_diagnostic_questions(course_id: str, db: Session = Depends(get_db)
     
     if len(questions) < 3 or is_mock:
         from app.services.ai_engine import generate_diagnostic_questions
-        data = await generate_diagnostic_questions(course.title, course.category, course.sections)
+        data = await generate_diagnostic_questions(course.title, course.category, course.sections)  # type: ignore
         # Return dynamically generated questions
         return data.get("questions", [])
         
@@ -71,13 +71,13 @@ async def submit_diagnostic(submit: dict, db: Session = Depends(get_db), current
         ai_analysis=ai_analysis
     )
     db.add(assessment)
-    current_user.xp = (current_user.xp or 0) + 50
+    current_user.xp = (current_user.xp or 0) + 50  # type: ignore
     db.commit()
     
     # Generate Global Roadmap
     all_courses = db.query(Course).filter(Course.is_published == True).all()
     from app.services.ai_engine import generate_global_roadmap
-    await generate_global_roadmap(current_user.id, field_name, ai_analysis, all_courses, db)
+    await generate_global_roadmap(current_user.id, field_name, ai_analysis, all_courses, db)  # type: ignore
     
     return {"message": "Tanı sınavı tamamlandı", "ai_analysis": ai_analysis}
 
@@ -92,7 +92,7 @@ async def get_final_exam(course_id: str, db: Session = Depends(get_db)):
     if len(questions) < 10:
         # DB'de 10 soru yoksa AI ile anlık üret
         from app.services.ai_engine import generate_final_exam_questions
-        data = await generate_final_exam_questions(course.title, course.description or "")
+        data = await generate_final_exam_questions(course.title, course.description or "")  # type: ignore
         return data.get("questions", [])
         
     return [{"id": q.id, "question": q.question_text, "options": q.options, "correct": q.correct_option_index} for q in questions[:10]]
@@ -116,9 +116,9 @@ def submit_final_exam(course_id: str, submit: dict, db: Session = Depends(get_db
     db.add(assessment)
     
     if overall_score >= 0.8:
-        current_user.xp = (current_user.xp or 0) + 100
+        current_user.xp = (current_user.xp or 0) + 100  # type: ignore
     else:
-        current_user.xp = (current_user.xp or 0) + 20
+        current_user.xp = (current_user.xp or 0) + 20  # type: ignore
         
     db.commit()
     return {"message": "Sınav tamamlandı", "score": overall_score * 100}
