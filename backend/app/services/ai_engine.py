@@ -34,7 +34,7 @@ async def analyze_diagnostic_results(topic_scores: dict, course_topics: list) ->
                 "skip_topics": [], "summary": "AI API Key bulunamadı, varsayılan sıra.", "estimated_hours": 10
             }
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
         response = await model.generate_content_async(
             prompt,
             generation_config=genai.GenerationConfig(response_mime_type="application/json")
@@ -141,7 +141,7 @@ async def generate_counseling_report(user_id: str, course_id: str, db: Session) 
                 "skill_radar": {"Temel Kavramlar": 0.8}
             }
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
         response = await model.generate_content_async(
             prompt,
             generation_config=genai.GenerationConfig(response_mime_type="application/json")
@@ -166,7 +166,7 @@ async def get_ai_chat_response(message: str, student_context: dict, history: lis
         if not settings.GEMINI_API_KEY:
             return f"AI Asistan (Mock): '{video_title}' konusuyla ilgili size şöyle yardımcı olabilirim: ..."
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sen yardımsever ve teşvik edici bir eğitim asistanısın.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sen yardımsever ve teşvik edici bir eğitim asistanısın.")
         response = await model.generate_content_async(prompt)
         return response.text
     except Exception as e:
@@ -323,7 +323,7 @@ async def generate_diagnostic_questions(course_title: str, course_category: str,
                 "prerequisite_roadmap": roadmap_msg
             }
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
         response = await model.generate_content_async(
             prompt,
             generation_config=genai.GenerationConfig(response_mime_type="application/json")
@@ -436,7 +436,7 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
                 "detailed_narrative": "Öğrenme yolculuğunuzda şu ana kadar **harika bir ilerleme** kaydettiniz. Başlangıç seviyesindeki konuları kavramanız, ileriki aşamalarda çok işinize yarayacaktır. Gelecek adımlarda daha çok pratik yaparak becerilerinizi pekiştirebilirsiniz!"
             }
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
         response = await model.generate_content_async(
             prompt,
             generation_config=genai.GenerationConfig(response_mime_type="application/json")
@@ -568,7 +568,7 @@ async def generate_final_exam_questions(course_title: str, course_description: s
                 })
             return {"questions": questions}
 
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
         response = await model.generate_content_async(
             prompt,
             generation_config=genai.GenerationConfig(response_mime_type="application/json")
@@ -592,7 +592,7 @@ async def generate_forum_reply(title: str, content: str, course_title: str) -> s
         if not settings.GEMINI_API_KEY:
             return f"Merhaba! {course_title} kursundaki bu konuya şöyle yardımcı olabilirim... (Mock AI Yanıtı)"
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sen yardımsever ve teşvik edici bir eğitim asistanısın.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sen yardımsever ve teşvik edici bir eğitim asistanısın.")
         response = await model.generate_content_async(prompt)
         return response.text
     except Exception as e:
@@ -617,7 +617,7 @@ async def generate_instructor_insights(stats_data: dict) -> str:
         if not settings.GEMINI_API_KEY:
             return "### AI Asistanınız Diyor ki\n\n(Mock Veri) Kurslarınız harika gidiyor! Gelirinizi artırmak için daha fazla kurs eklemeyi düşünebilirsiniz."
             
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sen profesyonel bir veri analisti ve eğitim danışmanısın. Raporlarını Markdown formatında yaz.")
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sen profesyonel bir veri analisti ve eğitim danışmanısın. Raporlarını Markdown formatında yaz.")
         response = await model.generate_content_async(prompt)
         return response.text
     except Exception as e:
