@@ -361,7 +361,7 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
         if not c: continue
         
         comp = enr.completed_videos or []  # type: ignore
-        total_completed += len(comp)
+        total_completed += len(comp)  # type: ignore
         
         c_vids = 0
         for sec in c.sections:
@@ -371,7 +371,7 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
         if c.tags:
             all_tags.extend(c.tags)
             
-        course_details.append(f"{c.title} (İlerleme: {len(comp)}/{c_vids})")
+        course_details.append(f"{c.title} (İlerleme: {len(comp)}/{c_vids})")  # type: ignore
 
     overall_completion = int((total_completed / total_videos) * 100) if total_videos > 0 else 0
     unique_tags = list(set(all_tags))
