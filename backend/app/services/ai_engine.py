@@ -534,6 +534,11 @@ async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_re
     
     Görev: Öğrencinin hedefine ve analizine en uygun olan kursların ID'lerini mantıklı bir öğrenme sırasına göre diz. 
     Lütfen SADECE aşağıdaki JSON formatında yanıt ver, fazladan metin ekleme. En fazla 4 kurs seç.
+    
+    ÇOK ÖNEMLİ KURAL: Öğrencinin hedefi '{target_field}' ise, SADECE bu hedefle %100 uyuşan kursları seçmelisin. 
+    Örneğin; hedef "Frontend" ise, içinde "Yapay Zeka" veya "Siber Güvenlik" geçen kursları TEMEL EĞİTİM OLSA DAHİ ASLA SEÇME. 
+    Sadece hedefe doğrudan hizmet eden kursları öner! Eğer hedefle eşleşen sadece 1 kurs varsa, sadece o 1 kursu döndür. Alakasız kurslarla listeyi doldurma.
+    
     {{
       "ordered_course_ids": ["course_id_1", "course_id_2"],
       "reasonings": {{
