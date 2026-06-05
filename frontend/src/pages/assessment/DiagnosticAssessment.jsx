@@ -71,7 +71,7 @@ const DiagnosticAssessment = () => {
     } finally {
       setGeneratingRoadmap(false);
     }
-  }, [answers, selectedField, finished]);
+  }, [answers, selectedField, finished, showToast]);
 
   useEffect(() => {
     if (finished || !selectedField || questions.length === 0) return;
