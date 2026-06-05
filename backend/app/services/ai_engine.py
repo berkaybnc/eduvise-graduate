@@ -517,20 +517,67 @@ async def generate_field_diagnostic_questions(field: str) -> dict:
         }
 
 async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_result: dict, all_courses: list, db: Session) -> dict:
+    import json
+    from app.config import settings
+    import google.generativeai as genai
+    
+    courses_info = [{"id": c.id, "title": c.title, "category": c.category} for c in all_courses]
+    
+    prompt = f"""
+    Sen uzman bir eğitim ve kariyer planlayıcısısın. Bir öğrenci için kişiselleştirilmiş bir öğrenme yol haritası (roadmap) oluşturmalısın.
+    
+    Öğrencinin Kariyer Hedefi: {target_field}
+    Öğrencinin Ön Sınav Analizi: {diagnostic_result.get('summary', 'Henüz analiz yok.')}
+    
+    Platformumuzdaki Mevcut Kurslar:
+    {json.dumps(courses_info, ensure_ascii=False, indent=2)}
+    
+    Görev: Öğrencinin hedefine ve analizine en uygun olan kursların ID'lerini mantıklı bir öğrenme sırasına göre diz. 
+    Lütfen SADECE aşağıdaki JSON formatında yanıt ver, fazladan metin ekleme. En fazla 4 kurs seç.
+    {{
+      "ordered_course_ids": ["course_id_1", "course_id_2"],
+      "reasonings": {{
+        "course_id_1": "Bu kurs, frontend hedefinize ulaşmanız için temel oluşturacaktır.",
+        "course_id_2": "Ön sınavdaki eksiğinizi kapatmak için harika bir adımdır."
+      }}
+    }}
+    """
+    
+    ordered_course_ids = []
+    reasonings = {}
+    
+    try:
+        if not settings.GEMINI_API_KEY:
+            raise Exception("No API Key")
+            
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
+        )
+        data = json.loads(response.text)
+        ordered_course_ids = data.get("ordered_course_ids", [])
+        reasonings = data.get("reasonings", {})
+    except Exception as e:
+        print(f"Roadmap AI Error: {e}")
+        # Fallback logic if AI fails
+        relevant_courses = [c for c in all_courses if target_field.lower() in c.category.lower() or target_field.lower() in c.title.lower()]
+        if not relevant_courses:
+            relevant_courses = all_courses[:3]
+        ordered_course_ids = [c.id for c in relevant_courses]
+        reasonings = {c.id: f"{target_field} alanı için önerilen kurs" for c in relevant_courses}
+
+    # Build the final nodes using the ordered IDs
     ordered_topics = []
     nodes = {}
-    
     is_first = True
     
-    relevant_courses = [c for c in all_courses if target_field.lower() in c.category.lower() or target_field.lower() in c.title.lower()]
-    
-    if not relevant_courses:
-        relevant_courses = all_courses[:3]
+    for c_id in ordered_course_ids:
+        course = next((c for c in all_courses if c.id == c_id), None)
+        if not course: continue
         
-    for course in relevant_courses:
         topic = course.title
         ordered_topics.append(topic)
-        
         status = "active" if is_first else "locked"
         is_first = False
             
@@ -539,7 +586,7 @@ async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_re
             "mastery_score": 0.0,
             "video_ids": [], 
             "remedial_video_ids": [],
-            "reason": f"{target_field} alanı için önerilen kurs",
+            "reason": reasonings.get(c_id, f"{target_field} alanı için önerilen kurs"),
             "course_id": course.id,
             "thumbnail": course.thumbnail_url
         }
