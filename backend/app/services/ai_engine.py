@@ -451,7 +451,7 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
 async def generate_field_diagnostic_questions(field: str) -> dict:
     prompt = f"""
     Sen uzman bir eğitim ve kariyer danışmanısın. Bir öğrenci '{field}' alanında kendini değerlendirmek istiyor.
-    Bu alanın temel kavramlarını, mantığını ve sektörel yetkinliklerini ölçmek için 5 adet zorlayıcı ve öğretici çoktan seçmeli 'Alan Seviye Tespit Sınavı' hazırlamalısın.
+    Bu alanın temel kavramlarını, mantığını ve sektörel yetkinliklerini ölçmek için 20 adet zorlayıcı ve öğretici çoktan seçmeli 'Alan Seviye Tespit Sınavı' hazırlamalısın.
     
     ÖNEMLİ: Sorular, adayın {field} alanındaki yatkınlığını ve mevcut seviyesini gerçekten test etmeli.
     Ayrıca öğrenciye yol göstermek amacıyla teşvik edici kısa bir 'Önkoşul Yol Haritası' (prerequisite_roadmap) metni oluşturmalısın.
