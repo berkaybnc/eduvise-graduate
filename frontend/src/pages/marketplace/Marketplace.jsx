@@ -27,12 +27,34 @@ const CATEGORIES = [
   { name: 'Kişisel Gelişim Dünyası', subCategories: [] },
   { name: 'Tasarım Dünyası', subCategories: [] },
   { name: 'K12 Dünyası', subCategories: [] },
-  { name: 'Kariyer Yolu', subCategories: [] },
+  { 
+    name: 'Kariyer Yolu', 
+    subCategories: [
+      'Bilgi Teknolojileri Giriş Programı', 'Yazılım Geliştirici', 'Web Geliştirici - Back-End', 
+      'Web Geliştirici - Front End', 'Mobil Uygulama Geliştirici', 'Oyun Geliştirici', 
+      'Veri Analisti', 'İş Zekası Uzmanı', 'Veri Bilimci', 'Makine Öğrenmesi Uzmanı', 
+      'Veritabanı Yöneticisi', 'Büyük Veri Yönetim Uzmanı', 'Network Uzmanı', 
+      'Sistem Yöneticisi', 'Veri Merkezi Uzmanı', 'Sızma Testi Uzmanı', 
+      'Siber Güvenlik Uzmanı', 'Adli Bilişim Uzmanı', 'Zararlı Yazılım Uzmanı', 
+      'İş Analisti', 'Yazılım Test Uzmanı', 'DevOps Uzmanı', 'Proje Yöneticisi', 
+      'Bilgi Güvenliği Uzmanı', 'RPA Uzmanı', 'Blokzincir Uzmanı', 
+      'CBS Yazılım Uzmanı', 'Gömülü Sistemler Uzmanı'
+    ] 
+  },
   { name: 'Güvenli İnternet', subCategories: [] },
   { name: 'Regülasyon Dünyası', subCategories: [] },
-  { name: 'Temel Bilimler', subCategories: [] },
+  { 
+    name: 'Temel Bilimler', 
+    subCategories: ['Matematik'] 
+  },
   { name: 'Sosyal Bilimler', subCategories: [] },
-  { name: 'Kurum ve Kuruluşlar', subCategories: [] }
+  { 
+    name: 'Kurum ve Kuruluşlar', 
+    subCategories: [
+      'Türk Patent ve Marka Kurumu', 'Karayolları Genel Müdürlüğü', 
+      'MEB YEĞİTEK', 'ASBÜ'
+    ] 
+  }
 ];
 
 const LEVELS = [
