@@ -1,4 +1,4 @@
-import anthropic
+import google.generativeai as genai
 import json
 from app.config import settings
 from app.models.roadmap import LearningRoadmap
@@ -6,8 +6,9 @@ from app.models.course import Enrollment, Course
 from sqlalchemy.orm import Session
 import uuid
 
-# Anthropic API Key is loaded from settings
-client = anthropic.AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
+# Gemini API Key configuration
+if settings.GEMINI_API_KEY:
+    genai.configure(api_key=settings.GEMINI_API_KEY)
 
 async def analyze_diagnostic_results(topic_scores: dict, course_topics: list) -> dict:
     prompt = f"""
@@ -26,19 +27,19 @@ async def analyze_diagnostic_results(topic_scores: dict, course_topics: list) ->
     }}
     """
     try:
-        if not settings.ANTHROPIC_API_KEY:
+        if not settings.GEMINI_API_KEY:
             # Mock if no key
             return {
                 "strengths": [], "weaknesses": [], "recommended_order": course_topics,
                 "skip_topics": [], "summary": "AI API Key bulunamadı, varsayılan sıra.", "estimated_hours": 10
             }
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1000,
-            system="Sadece JSON çıktısı üret.",
-            messages=[{"role": "user", "content": prompt}]
+            
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
         )
-        return json.loads(response.content[0].text)
+        return json.loads(response.text)
     except Exception as e:
         print(f"AI Engine Error: {e}")
         return {
@@ -116,7 +117,6 @@ async def adjust_roadmap_after_module(user_id: str, course_id: str, topic: str, 
     return data
 
 async def generate_counseling_report(user_id: str, course_id: str, db: Session) -> dict:
-    # Dummy mock reporting implementation due to complexity and prompt instructions.
     prompt = """
     Sen bir AI Eğitsel Danışmansın. Öğrencinin dönem sonu raporunu oluştur.
     Lütfen SADECE şu formattaki bir JSON döndür:
@@ -133,20 +133,20 @@ async def generate_counseling_report(user_id: str, course_id: str, db: Session) 
     }
     """
     try:
-        if not settings.ANTHROPIC_API_KEY:
+        if not settings.GEMINI_API_KEY:
             return {
                 "overall_score": 0.8, "mastered_skills": ["Temel Kavramlar"], "weak_areas": [],
                 "learning_velocity": "fast", "study_hours_spent": 10, "compared_to_average": "+5%",
                 "next_courses": [], "detailed_narrative": "Harika bir gelişim gösterdiniz.",
                 "skill_radar": {"Temel Kavramlar": 0.8}
             }
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1000,
-            system="Sadece JSON çıktısı üret.",
-            messages=[{"role": "user", "content": prompt}]
+            
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
         )
-        return json.loads(response.content[0].text)
+        return json.loads(response.text)
     except Exception as e:
         print(f"AI Report Error: {e}")
         return {"overall_score": 0.0, "detailed_narrative": "Analiz başarısız."}
@@ -163,16 +163,12 @@ async def get_ai_chat_response(message: str, student_context: dict, history: lis
     Öğrencinin mesajı: {message}
     """
     try:
-        if not settings.ANTHROPIC_API_KEY:
+        if not settings.GEMINI_API_KEY:
             return f"AI Asistan (Mock): '{video_title}' konusuyla ilgili size şöyle yardımcı olabilirim: ..."
             
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1000,
-            system="Sen yardımsever ve teşvik edici bir eğitim asistanısın.",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.content[0].text
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sen yardımsever ve teşvik edici bir eğitim asistanısın.")
+        response = await model.generate_content_async(prompt)
+        return response.text
     except Exception as e:
         print(f"Chat AI Error: {e}")
         return "Üzgünüm, şu anda yanıt veremiyorum. Lütfen daha sonra tekrar deneyin."
@@ -196,8 +192,7 @@ async def generate_diagnostic_questions(course_title: str, course_category: str,
           "question": "Önkoşul bilgi sorusu 1",
           "options": ["Seçenek A", "Seçenek B", "Seçenek C", "Seçenek D"],
           "correct": 0
-        }},
-        ...
+        }}
       ],
       "prerequisite_roadmap": "Bu eğitime katılmadan önce şu temel konuları öğrenmeniz faydalı olacaktır: 1. Konu A, 2. Konu B..."
     }}
@@ -205,8 +200,7 @@ async def generate_diagnostic_questions(course_title: str, course_category: str,
     """
     
     try:
-        if not settings.ANTHROPIC_API_KEY:
-            # Gelişmiş Mock Verisi (Ücretsiz alternatif)
+        if not settings.GEMINI_API_KEY:
             cat_lower = course_category.lower()
             
             if "web" in cat_lower or "frontend" in cat_lower:
@@ -329,13 +323,12 @@ async def generate_diagnostic_questions(course_title: str, course_category: str,
                 "prerequisite_roadmap": roadmap_msg
             }
             
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1000,
-            system="Sadece JSON çıktısı üret.",
-            messages=[{"role": "user", "content": prompt}]
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
         )
-        return json.loads(response.content[0].text)
+        return json.loads(response.text)
     except Exception as e:
         print(f"AI Diagnostic Q Error: {e}")
         return {
@@ -354,7 +347,6 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
     enrollments = db.query(Enrollment).filter(Enrollment.user_id == user_id).all()
     
     if not enrollments:
-        # Öğrencinin hiç kursu yok
         return {
             "has_data": False,
             "message": "Henüz hiçbir kursa kayıtlı değilsiniz. Analiz için eğitimlere başlamanız gerekmektedir."
@@ -401,8 +393,7 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
       }},
       "skills": [
         {{ "name": "Algoritmalar", "initial": 30, "current": 80, "color": "#1A56DB" }},
-        {{ "name": "Konu 2", "initial": 20, "current": 60, "color": "#10B981" }},
-        {{ "name": "Konu 3", "initial": 20, "current": 60, "color": "#F59E0B" }}
+        {{ "name": "Konu 2", "initial": 20, "current": 60, "color": "#10B981" }}
       ],
       "competencies": [
         {{ "label": "Temel Python", "detail": "Değişkenler ve döngüler anlaşıldı.", "done": true }},
@@ -415,15 +406,15 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
     }}
     
     Kurallar:
-    1. 'skills' kısmında EN AZ 3, en fazla 6 adet yetkinlik/konu olsun. (Eğer öğrencinin konusu azsa "Problem Çözme", "Analitik Düşünme" gibi genel beceriler ekle). İlk (initial) seviye ile mevcut (current) seviye arasında mantıklı bir gelişim yaz. Renkler hex formatında olsun (Örn: #F59E0B).
-    2. 'competencies' kısmında öğrencinin kurslarına göre 4-5 adet hedef belirle, bazılarını done: true bazılarını done: false yap.
+    1. 'skills' kısmında EN AZ 3, en fazla 6 adet yetkinlik/konu olsun. İlk (initial) seviye ile mevcut (current) seviye arasında mantıklı bir gelişim yaz. Renkler hex formatında olsun (Örn: #F59E0B).
+    2. 'competencies' kısmında öğrencinin kurslarına göre 4-5 adet hedef belirle.
     3. 'recommendations' kısmında öğrenciye uygun 3 adet yeni eğitim önerisi yaz.
     4. 'detailed_narrative' kısmı öğrencinin anlayacağı samimi bir dilde olmalı.
     5. SADECE JSON ver.
     """
     
     try:
-        if not settings.ANTHROPIC_API_KEY:
+        if not settings.GEMINI_API_KEY:
             return {
                 "has_data": True,
                 "stats": {
@@ -445,13 +436,12 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
                 "detailed_narrative": "Öğrenme yolculuğunuzda şu ana kadar **harika bir ilerleme** kaydettiniz. Başlangıç seviyesindeki konuları kavramanız, ileriki aşamalarda çok işinize yarayacaktır. Gelecek adımlarda daha çok pratik yaparak becerilerinizi pekiştirebilirsiniz!"
             }
             
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1500,
-            system="Sadece JSON çıktısı üret.",
-            messages=[{"role": "user", "content": prompt}]
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
         )
-        return json.loads(response.content[0].text)
+        return json.loads(response.text)
     except Exception as e:
         print(f"Global Report AI Error: {e}")
         return {
@@ -463,7 +453,6 @@ async def generate_field_diagnostic_questions(field: str) -> dict:
     import os
     import json
     
-    # Gerçek soruları barındıran JSON dosyasının yolu
     file_path = os.path.join(os.path.dirname(__file__), 'questions.json')
     
     questions = []
@@ -505,14 +494,10 @@ async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_re
     ordered_topics = []
     nodes = {}
     
-    # Tüm kursları zorluk sırasına göre veya isimlerine göre diz
-    # Normalde AI, diagnostic_result'a göre eşleştirme yapar.
     is_first = True
     
-    # Seçilen alana uyan kursları bul (basit string eşleştirme mock)
     relevant_courses = [c for c in all_courses if target_field.lower() in c.category.lower() or target_field.lower() in c.title.lower()]
     
-    # Eğer o alana ait kurs yoksa genel birkaç kurs önerelim
     if not relevant_courses:
         relevant_courses = all_courses[:3]
         
@@ -526,7 +511,7 @@ async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_re
         nodes[topic] = {
             "status": status,
             "mastery_score": 0.0,
-            "video_ids": [], # Gerçekte kurs videoları buraya konur
+            "video_ids": [], 
             "remedial_video_ids": [],
             "reason": f"{target_field} alanı için önerilen kurs",
             "course_id": course.id,
@@ -572,8 +557,7 @@ async def generate_final_exam_questions(course_title: str, course_description: s
     "correct" alanı 0 ile 3 arasında doğru şıkkın indeksini belirtmelidir. Tam 10 soru üret.
     """
     try:
-        if not settings.ANTHROPIC_API_KEY:
-            # Mock 10 questions for testing if API key is missing
+        if not settings.GEMINI_API_KEY:
             questions = []
             for i in range(1, 11):
                 questions.append({
@@ -584,13 +568,12 @@ async def generate_final_exam_questions(course_title: str, course_description: s
                 })
             return {"questions": questions}
 
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=2000,
-            system="Sadece JSON çıktısı üret.",
-            messages=[{"role": "user", "content": prompt}]
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
         )
-        return json.loads(response.content[0].text)
+        return json.loads(response.text)
     except Exception as e:
         print(f"AI Final Exam Q Error: {e}")
         return {"questions": []}
@@ -606,16 +589,12 @@ async def generate_forum_reply(title: str, content: str, course_title: str) -> s
     Öğrencinin Sorusu: {content}
     """
     try:
-        if not settings.ANTHROPIC_API_KEY:
+        if not settings.GEMINI_API_KEY:
             return f"Merhaba! {course_title} kursundaki bu konuya şöyle yardımcı olabilirim... (Mock AI Yanıtı)"
             
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1000,
-            system="Sen yardımsever ve teşvik edici bir eğitim asistanısın.",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.content[0].text
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sen yardımsever ve teşvik edici bir eğitim asistanısın.")
+        response = await model.generate_content_async(prompt)
+        return response.text
     except Exception as e:
         print(f"Forum AI Error: {e}")
         return "Şu anda yanıt veremiyorum. Eğitmenler en kısa sürede dönüş yapacaktır."
@@ -635,16 +614,12 @@ async def generate_instructor_insights(stats_data: dict) -> str:
     3. Stratejik Tavsiyeler (Geliri veya öğrenci memnuniyetini artırmak için spesifik ve uygulanabilir öneriler)
     """
     try:
-        if not settings.ANTHROPIC_API_KEY:
+        if not settings.GEMINI_API_KEY:
             return "### AI Asistanınız Diyor ki\n\n(Mock Veri) Kurslarınız harika gidiyor! Gelirinizi artırmak için daha fazla kurs eklemeyi düşünebilirsiniz."
             
-        response = await client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1500,
-            system="Sen profesyonel bir veri analisti ve eğitim danışmanısın. Raporlarını Markdown formatında yaz.",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.content[0].text
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="Sen profesyonel bir veri analisti ve eğitim danışmanısın. Raporlarını Markdown formatında yaz.")
+        response = await model.generate_content_async(prompt)
+        return response.text
     except Exception as e:
         print(f"Instructor Insights AI Error: {e}")
         return "Şu anda veri analizi yapılamıyor. Lütfen daha sonra tekrar deneyin."
