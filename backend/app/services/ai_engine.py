@@ -111,10 +111,9 @@ async def adjust_roadmap_after_module(user_id: str, course_id: str, topic: str, 
                         nodes[next_t]["status"] = "active"
             except ValueError:
                 pass
-                
     roadmap.roadmap_data = data
     db.commit()
-    return dict(data) if data else {}
+    return data  # type: ignore
 
 async def generate_counseling_report(user_id: str, course_id: str, db: Session) -> dict:
     prompt = """
@@ -361,7 +360,7 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
         c = enr.course
         if not c: continue
         
-        comp = list(enr.completed_videos) if enr.completed_videos else []
+        comp = enr.completed_videos or []  # type: ignore
         total_completed += len(comp)
         
         c_vids = 0
