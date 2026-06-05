@@ -2,10 +2,36 @@ import { useState } from 'react';
 
 const PaymentModal = ({ course, onPaymentSuccess, onClose }) => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({ name: '', cardNumber: '', expiry: '', cvc: '' });
 
   const handlePayment = (e) => {
     e.preventDefault();
+    setError('');
+
+    const [monthStr, yearStr] = formData.expiry.split('/');
+    if (!monthStr || !yearStr || monthStr.length !== 2 || yearStr.length !== 2) {
+      setError('Lütfen geçerli bir son kullanma tarihi girin (AA/YY).');
+      return;
+    }
+
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
+
+    if (month < 1 || month > 12) {
+      setError('Geçersiz bir ay girdiniz.');
+      return;
+    }
+
+    const now = new Date();
+    const currentYear = parseInt(now.getFullYear().toString().slice(-2), 10);
+    const currentMonth = now.getMonth() + 1;
+
+    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+      setError('Kartınızın son kullanma tarihi geçmiş!');
+      return;
+    }
+
     setLoading(true);
     // Simulate payment processing
     setTimeout(() => {
@@ -37,6 +63,13 @@ const PaymentModal = ({ course, onPaymentSuccess, onClose }) => {
             <span className="text-emerald-400 font-bold text-xl">₺{course.price}</span>
           </div>
         </div>
+
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl mb-4 text-sm font-medium flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">error</span>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handlePayment} className="space-y-4">
           <div>
