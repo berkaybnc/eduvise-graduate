@@ -5,15 +5,62 @@ import FileUploadZone from '../../components/FileUploadZone';
 import useToastStore from '../../store/toastStore';
 
 const CATEGORIES = [
-  'Yazılım Dünyası', 'Yapay Zekâ Dünyası', 'Sistem Dünyası', 'İşletme Dünyası',
-  'Kişisel Gelişim Dünyası', 'Tasarım Dünyası', 'K12 Dünyası', 'Kariyer Yolu',
-  'Güvenli İnternet', 'Regülasyon Dünyası', 'Temel Bilimler', 'Sosyal Bilimler',
-  'Kurum ve Kuruluşlar'
+  {
+    name: 'Yazılım Dünyası',
+    subCategories: [
+      'Blok Zincir', 'İş Zekası ve Raporlama', 'Mobil Uygulama', 'Oyun Geliştirme',
+      'Programlama Dilleri', 'Veri Bilimi', 'Veri Tabanı', 'Yazılım Testi',
+      'Web Geliştirme', 'DevOps'
+    ]
+  },
+  {
+    name: 'Yapay Zekâ Dünyası',
+    subCategories: ['Geliştirme', 'Üretken Yapay Zekâ', 'Beşeri ve Sosyal']
+  },
+  {
+    name: 'Sistem Dünyası',
+    subCategories: ['İşletim Sistemleri', 'Siber Güvenlik', 'Bulut Sistemler']
+  },
+  {
+    name: 'İşletme Dünyası',
+    subCategories: ['Girişimcilik', 'Pazarlama', 'Proje Yönetimi', 'Ofis Programları']
+  },
+  { name: 'Kişisel Gelişim Dünyası', subCategories: [] },
+  { name: 'Tasarım Dünyası', subCategories: [] },
+  { name: 'K12 Dünyası', subCategories: [] },
+  { 
+    name: 'Kariyer Yolu', 
+    subCategories: [
+      'Bilgi Teknolojileri Giriş Programı', 'Yazılım Geliştirici', 'Web Geliştirici - Back-End', 
+      'Web Geliştirici - Front End', 'Mobil Uygulama Geliştirici', 'Oyun Geliştirici', 
+      'Veri Analisti', 'İş Zekası Uzmanı', 'Veri Bilimci', 'Makine Öğrenmesi Uzmanı', 
+      'Veritabanı Yöneticisi', 'Büyük Veri Yönetim Uzmanı', 'Network Uzmanı', 
+      'Sistem Yöneticisi', 'Veri Merkezi Uzmanı', 'Sızma Testi Uzmanı', 
+      'Siber Güvenlik Uzmanı', 'Adli Bilişim Uzmanı', 'Zararlı Yazılım Uzmanı', 
+      'İş Analisti', 'Yazılım Test Uzmanı', 'DevOps Uzmanı', 'Proje Yöneticisi', 
+      'Bilgi Güvenliği Uzmanı', 'RPA Uzmanı', 'Blokzincir Uzmanı', 
+      'CBS Yazılım Uzmanı', 'Gömülü Sistemler Uzmanı'
+    ] 
+  },
+  { name: 'Güvenli İnternet', subCategories: [] },
+  { name: 'Regülasyon Dünyası', subCategories: [] },
+  { 
+    name: 'Temel Bilimler', 
+    subCategories: ['Matematik'] 
+  },
+  { name: 'Sosyal Bilimler', subCategories: [] },
+  { 
+    name: 'Kurum ve Kuruluşlar', 
+    subCategories: [
+      'Türk Patent ve Marka Kurumu', 'Karayolları Genel Müdürlüğü', 
+      'MEB YEĞİTEK', 'ASBÜ'
+    ] 
+  }
 ];
 const LEVELS = [
   { value: 'beginner', label: 'Başlangıç' },
-  { value: 'intermediate', label: 'Orta Düzey' },
-  { value: 'advanced', label: 'İleri Düzey' },
+  { value: 'intermediate', label: 'Orta' },
+  { value: 'advanced', label: 'Uzman' },
 ];
 
 // ─── Adım göstergesi ────────────────────────────────────────────────────────
@@ -484,7 +531,14 @@ const CourseManager = () => {
                       className="w-full p-3 bg-[#0F172A] rounded-xl border border-white/10 text-white focus:outline-none focus:border-primary/50 transition-all"
                     >
                       <option value="">Seçin</option>
-                      {CATEGORIES.map(c => <option key={c} className="bg-[#0F172A]">{c}</option>)}
+                      {CATEGORIES.map(cat => (
+                        <optgroup key={cat.name} label={cat.name} className="bg-slate-800 text-primary font-bold">
+                          <option value={cat.name} className="bg-[#0F172A] text-white">{cat.name} (Genel)</option>
+                          {cat.subCategories.map(sub => (
+                            <option key={sub} value={sub} className="bg-[#0F172A] text-slate-300">└ {sub}</option>
+                          ))}
+                        </optgroup>
+                      ))}
                     </select>
                   </div>
                   <div>

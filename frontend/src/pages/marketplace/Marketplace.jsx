@@ -105,7 +105,13 @@ export const Marketplace = () => {
     
     // Filtre: Kategoriler
     if (selectedCategories.length > 0) {
-      result = result.filter(c => selectedCategories.includes(c.category));
+      const allowedCats = new Set(selectedCategories);
+      CATEGORIES.forEach(cat => {
+        if (selectedCategories.includes(cat.name)) {
+          cat.subCategories.forEach(sub => allowedCats.add(sub));
+        }
+      });
+      result = result.filter(c => allowedCats.has(c.category));
     }
     
     // Filtre: Seviye
