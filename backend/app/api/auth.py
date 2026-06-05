@@ -38,7 +38,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Geçersiz email veya şifre")
         
     import random
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
     
     # OTP bypass
     # otp = f"{random.randint(10000, 99999)}"
@@ -52,11 +52,11 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     # return {"status": "otp_required", "email": user.email}
     
     # Update last login and streak immediately
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    today_str = datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d")
     if user.last_login_date != today_str:
         if user.last_login_date:
             last_date = datetime.strptime(user.last_login_date, "%Y-%m-%d")
-            delta = (datetime.utcnow() - last_date).days
+            delta = (datetime.now(timezone.utc).replace(tzinfo=None) - last_date).days
             if delta == 1:
                 user.streak_days = (user.streak_days or 0) + 1
             else:
@@ -76,11 +76,11 @@ def verify_otp(otp_data: UserOTPVerify, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
         
-    from datetime import datetime
+    from datetime import datetime, timezone
     if not user.otp_code or not user.otp_expires_at:
         raise HTTPException(status_code=400, detail="Doğrulama kodu oluşturulmamış")
         
-    if datetime.utcnow() > user.otp_expires_at:
+    if datetime.now(timezone.utc).replace(tzinfo=None) > user.otp_expires_at:
         raise HTTPException(status_code=400, detail="Doğrulama kodunun süresi dolmuş")
         
     if user.otp_code != otp_data.code:
@@ -92,11 +92,11 @@ def verify_otp(otp_data: UserOTPVerify, db: Session = Depends(get_db)):
     db.commit()
     
     # Update last login and streak
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    today_str = datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d")
     if user.last_login_date != today_str:
         if user.last_login_date:
             last_date = datetime.strptime(user.last_login_date, "%Y-%m-%d")
-            delta = (datetime.utcnow() - last_date).days
+            delta = (datetime.now(timezone.utc).replace(tzinfo=None) - last_date).days
             if delta == 1:
                 user.streak_days = (user.streak_days or 0) + 1
             else:
@@ -176,11 +176,11 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı")
     
     import uuid
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
     
     reset_token = str(uuid.uuid4())
     user.reset_token = reset_token
-    user.reset_token_expires_at = datetime.utcnow() + timedelta(minutes=15)
+    user.reset_token_expires_at = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=15)
     db.commit()
     
     # Send email
@@ -200,11 +200,11 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
         
-    from datetime import datetime
+    from datetime import datetime, timezone
     if not user.reset_token or not user.reset_token_expires_at:
         raise HTTPException(status_code=400, detail="Şifre sıfırlama talebi bulunamadı")
         
-    if datetime.utcnow() > user.reset_token_expires_at:
+    if datetime.now(timezone.utc).replace(tzinfo=None) > user.reset_token_expires_at:
         raise HTTPException(status_code=400, detail="Şifre sıfırlama bağlantısının süresi dolmuş")
         
     if user.reset_token != req.token:
