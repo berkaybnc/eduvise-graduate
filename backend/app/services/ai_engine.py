@@ -449,45 +449,72 @@ async def generate_global_counseling_report(user_id: str, db: Session) -> dict:
         }
 
 async def generate_field_diagnostic_questions(field: str) -> dict:
-    import os
-    import json
+    prompt = f"""
+    Sen uzman bir eğitim ve kariyer danışmanısın. Bir öğrenci '{field}' alanında kendini değerlendirmek istiyor.
+    Bu alanın temel kavramlarını, mantığını ve sektörel yetkinliklerini ölçmek için 5 adet zorlayıcı ve öğretici çoktan seçmeli 'Alan Seviye Tespit Sınavı' hazırlamalısın.
     
-    file_path = os.path.join(os.path.dirname(__file__), 'questions.json')
+    ÖNEMLİ: Sorular, adayın {field} alanındaki yatkınlığını ve mevcut seviyesini gerçekten test etmeli.
+    Ayrıca öğrenciye yol göstermek amacıyla teşvik edici kısa bir 'Önkoşul Yol Haritası' (prerequisite_roadmap) metni oluşturmalısın.
     
-    questions = []
-    roadmap_msg = f"{field} alanındaki kariyerinize başlamadan önce bu kapsamlı sınav ile temel yetkinliklerinizi ölçüyoruz."
-    
+    Lütfen SADECE aşağıdaki formatta bir JSON objesi döndür. Ekstra açıklama ekleme:
+    {{
+      "questions": [
+        {{
+          "id": 1,
+          "question": "Soru metni...",
+          "options": ["A", "B", "C", "D"],
+          "correct": 0,
+          "category": "Kavramsal",
+          "difficulty": "Orta"
+        }}
+      ],
+      "prerequisite_roadmap": "Bu alanda başarılı olmak için şu konulara ağırlık vermelisiniz..."
+    }}
+    "correct" alanı 0 ile 3 arasında olmalıdır.
+    """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            
-        field_lower = field.lower()
-        if "frontend" in field_lower or "web" in field_lower:
-            questions = data.get("frontend", [])
-        elif "siber" in field_lower or "cyber" in field_lower:
-            questions = data.get("siber", [])
-        elif "backend" in field_lower or "sunucu" in field_lower:
-            questions = data.get("backend", [])
-        else:
-            questions = data.get("default", [])
-            
-    except Exception as e:
-        print(f"Soru dosyası okuma hatası: {e}")
-        questions = [
-             {
-                "id": 1,
-                "question": f"{field} alanı ile ilgili temel kavram aşağıdakilerden hangisidir?",
-                "options": ["A", "B", "C", "D"],
-                "correct": 0,
-                "category": "Genel",
-                "difficulty": "Orta"
+        if not settings.GEMINI_API_KEY:
+            return {
+                "questions": [
+                    {
+                        "id": 1,
+                        "question": f"{field} alanı ile ilgili temel kavram aşağıdakilerden hangisidir?",
+                        "options": ["A", "B", "C", "D"],
+                        "correct": 0,
+                        "category": "Genel",
+                        "difficulty": "Orta"
+                    }
+                ],
+                "prerequisite_roadmap": f"{field} alanındaki kariyerinize başlamadan önce bu kapsamlı sınav ile temel yetkinliklerinizi ölçüyoruz. (MOCK)"
             }
-        ]
 
-    return {
-        "questions": questions,
-        "prerequisite_roadmap": roadmap_msg
-    }
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction="Sadece JSON çıktısı üret.")
+        response = await model.generate_content_async(
+            prompt,
+            generation_config=genai.GenerationConfig(response_mime_type="application/json")
+        )
+        data = json.loads(response.text)
+        
+        # Validate data format
+        if "questions" not in data or not isinstance(data["questions"], list):
+            raise ValueError("Geçersiz JSON formatı")
+            
+        return data
+    except Exception as e:
+        print(f"AI Field Diagnostic Error: {e}")
+        return {
+            "questions": [
+                {
+                    "id": 1,
+                    "question": f"{field} alanı hakkında genel bir sorumuz var. (Hata oluştu)",
+                    "options": ["Devam", "Et", "Geç", "Sorun"],
+                    "correct": 0,
+                    "category": "Hata",
+                    "difficulty": "Kolay"
+                }
+            ],
+            "prerequisite_roadmap": "Sistem geçici olarak yapay zeka ile bağlantı kuramadı."
+        }
 
 async def generate_global_roadmap(user_id: str, target_field: str, diagnostic_result: dict, all_courses: list, db: Session) -> dict:
     ordered_topics = []
