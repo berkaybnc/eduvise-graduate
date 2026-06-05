@@ -358,7 +358,7 @@ export const CourseDetail = () => {
           <div className="sticky top-24 bg-[#1E293B] border border-white/10 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
             <div className="text-center mb-8 border-b border-white/10 pb-8">
               <span className="text-5xl font-black text-white tracking-tight block mb-2">
-                {course.price > 0 ? `$${course.price}` : 'Ücretsiz'}
+                {course.price > 0 ? `₺${course.price}` : 'Ücretsiz'}
               </span>
               <p className="text-slate-400 text-sm">30 Gün Para İade Garantisi</p>
             </div>

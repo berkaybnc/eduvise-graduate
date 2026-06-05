@@ -122,7 +122,7 @@ export const Marketplace = () => {
                   </p>
                   
                   <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                    <span className="text-white font-bold">Ücretsiz Dene</span>
+                    <span className="text-white font-bold">{course.price > 0 ? `₺${course.price}` : 'Ücretsiz'}</span>
                     <button className="w-10 h-10 rounded-full bg-primary/20 text-primary group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all duration-300">
                       <span className="material-symbols-outlined">arrow_forward</span>
                     </button>
