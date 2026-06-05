@@ -72,7 +72,7 @@ const InstructorSettings = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6 border-b border-white/5 pb-6">
             <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shrink-0 overflow-hidden border-2 border-white/10">
               {formData.avatar_url ? (
-                <img src={formData.avatar_url.startsWith('/uploads') ? `http://localhost:8000${formData.avatar_url}` : formData.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                <img src={formData.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${formData.avatar_url}` : formData.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
                 <span>{formData.full_name ? formData.full_name[0] : 'U'}</span>
               )}

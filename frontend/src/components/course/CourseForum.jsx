@@ -91,7 +91,7 @@ const CourseForum = ({ courseId }) => {
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-white overflow-hidden shrink-0">
               {details.user?.avatar_url ? (
-                <img src={details.user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${details.user.avatar_url}` : details.user.avatar_url} alt="" className="w-full h-full object-cover"/>
+                <img src={details.user.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${details.user.avatar_url}` : details.user.avatar_url} alt="" className="w-full h-full object-cover"/>
               ) : (
                 details.user?.full_name?.[0]?.toUpperCase()
               )}
@@ -129,7 +129,7 @@ const CourseForum = ({ courseId }) => {
                     <span className="material-symbols-outlined">smart_toy</span>
                   ) : (
                     reply.user?.avatar_url ? (
-                      <img src={reply.user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${reply.user.avatar_url}` : reply.user.avatar_url} alt="" className="w-full h-full object-cover rounded-full"/>
+                      <img src={reply.user.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${reply.user.avatar_url}` : reply.user.avatar_url} alt="" className="w-full h-full object-cover rounded-full"/>
                     ) : (
                       reply.user?.full_name?.[0]?.toUpperCase()
                     )
@@ -242,7 +242,7 @@ const CourseForum = ({ courseId }) => {
             >
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-white shrink-0 overflow-hidden">
                 {topic.user?.avatar_url ? (
-                  <img src={topic.user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${topic.user.avatar_url}` : topic.user.avatar_url} alt="" className="w-full h-full object-cover"/>
+                  <img src={topic.user.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${topic.user.avatar_url}` : topic.user.avatar_url} alt="" className="w-full h-full object-cover"/>
                 ) : (
                   topic.user?.full_name?.[0]?.toUpperCase()
                 )}

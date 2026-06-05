@@ -90,7 +90,7 @@ export const Marketplace = () => {
                 {/* Kurs Görseli */}
                 <div className={`h-48 w-full relative z-10 overflow-hidden ${course.thumbnail_url ? '' : `bg-gradient-to-br ${course.image || 'from-slate-700 to-slate-900'}`}`}>
                   {course.thumbnail_url && (
-                    <img src={course.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={course.thumbnail_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
                   )}
                   <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full flex items-center gap-1 z-20">
                     <span className="material-symbols-outlined text-yellow-400 text-sm">star</span>

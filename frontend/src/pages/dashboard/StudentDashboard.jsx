@@ -264,7 +264,7 @@ const StudentDashboard = () => {
               <div key={course.id} onClick={() => navigate(`/courses/${course.id}`)} className="bg-[#1E293B] border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all cursor-pointer group">
                 <div className={`h-32 relative bg-gradient-to-br from-slate-700 to-slate-900`}>
                   {course.thumbnail_url && (
-                    <img src={course.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={course.thumbnail_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
                   )}
                   <div className="absolute top-3 left-3">
                     <span className={`text-[10px] font-bold px-2 py-1 rounded-md border text-primary bg-primary/10 border-primary/20`}>{course.category}</span>

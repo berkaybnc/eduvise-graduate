@@ -84,7 +84,7 @@ const Sidebar = () => {
         <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 mb-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
             {user?.avatar_url ? (
-              <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              <img src={user.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${user.avatar_url}` : user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
               initials
             )}

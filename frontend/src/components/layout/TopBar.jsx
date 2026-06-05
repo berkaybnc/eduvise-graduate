@@ -33,7 +33,9 @@ const TopBar = () => {
     if (!token) return;
     
     // Create WebSocket connection
-    const wsUrl = `ws://localhost:8000/notifications/ws?token=${token}`;
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const wsBaseUrl = baseUrl.replace(/^http/, 'ws');
+    const wsUrl = `${wsBaseUrl}/notifications/ws?token=${token}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
@@ -184,7 +186,7 @@ const TopBar = () => {
         <div className="flex items-center gap-2 pl-3 border-l border-white/10">
           <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-lg overflow-hidden">
             {user?.avatar_url ? (
-              <img src={user.avatar_url.startsWith('/uploads') ? `http://localhost:8000${user.avatar_url}` : user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              <img src={user.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${user.avatar_url}` : user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
               user?.full_name ? user.full_name[0].toUpperCase() : 'E'
             )}

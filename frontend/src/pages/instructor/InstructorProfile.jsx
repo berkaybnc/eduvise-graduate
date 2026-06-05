@@ -56,7 +56,7 @@ const InstructorProfile = () => {
           {/* Avatar */}
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#0F172A] shadow-2xl overflow-hidden shrink-0 bg-gradient-to-tr from-emerald-500 to-indigo-600 flex items-center justify-center">
             {profile.avatar_url ? (
-              <img src={profile.avatar_url.startsWith('/uploads') ? `http://localhost:8000${profile.avatar_url}` : profile.avatar_url} alt={profile.full_name} className="w-full h-full object-cover" />
+              <img src={profile.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${profile.avatar_url}` : profile.avatar_url} alt={profile.full_name} className="w-full h-full object-cover" />
             ) : (
               <span className="text-white text-5xl font-black">{profile.full_name[0]}</span>
             )}
@@ -116,7 +116,7 @@ const InstructorProfile = () => {
               <div key={course.id} onClick={() => navigate(`/course/${course.id}`)} className="bg-[#1E293B] border border-white/10 rounded-2xl overflow-hidden hover:border-emerald-500/50 hover:shadow-xl hover:-translate-y-1 cursor-pointer transition-all group">
                 <div className={`h-40 relative overflow-hidden ${course.thumbnail_url ? '' : 'bg-gradient-to-br from-slate-800 to-black'}`}>
                   {course.thumbnail_url && (
-                    <img src={course.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={course.thumbnail_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
                   )}
                   <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">
                     {course.category}

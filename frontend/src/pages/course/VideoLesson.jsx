@@ -164,7 +164,7 @@ export const Learn = () => {
                 controls
                 autoPlay
                 className="w-full h-full object-contain"
-                src={currentVideo.video_url.startsWith('/uploads') ? `http://localhost:8000${currentVideo.video_url}` : currentVideo.video_url}
+                src={currentVideo.video_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${currentVideo.video_url}` : currentVideo.video_url}
                 onEnded={handleComplete}
               />
             ) : (
@@ -250,7 +250,7 @@ export const Learn = () => {
                 {currentVideo.attachments.map(attachment => (
                   <a 
                     key={attachment.id} 
-                    href={attachment.file_url.startsWith('/uploads') ? `http://localhost:8000${attachment.file_url}` : attachment.file_url} 
+                    href={attachment.file_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${attachment.file_url}` : attachment.file_url} 
                     target="_blank" 
                     rel="noreferrer" 
                     className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-primary/50 transition-all group"

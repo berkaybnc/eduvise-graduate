@@ -155,7 +155,7 @@ export const CourseDetail = () => {
           <div className="w-full lg:w-[480px] shrink-0">
             <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
               {course.thumbnail_url ? (
-                <img src={course.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
+                <img src={course.thumbnail_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 to-slate-800 flex items-center justify-center">
                   <span className="material-symbols-outlined text-6xl text-white/20">play_circle</span>

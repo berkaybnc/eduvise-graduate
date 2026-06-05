@@ -110,7 +110,7 @@ const Leaderboard = () => {
                 
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-bold overflow-hidden shrink-0">
                   {leader.avatar_url ? (
-                    <img src={leader.avatar_url.startsWith('/uploads') ? `http://localhost:8000${leader.avatar_url}` : leader.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                    <img src={leader.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${leader.avatar_url}` : leader.avatar_url} alt="avatar" className="w-full h-full object-cover" />
                   ) : (
                     leader.name[0].toUpperCase()
                   )}

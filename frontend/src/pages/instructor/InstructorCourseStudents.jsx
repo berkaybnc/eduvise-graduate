@@ -69,7 +69,7 @@ const InstructorCourseStudents = () => {
                   >
                     <div className="w-10 h-10 rounded-full bg-white/10 shrink-0 overflow-hidden flex items-center justify-center font-bold text-white">
                       {student.avatar_url ? (
-                        <img src={student.avatar_url.startsWith('/uploads') ? `http://localhost:8000${student.avatar_url}` : student.avatar_url} alt="" className="w-full h-full object-cover"/>
+                        <img src={student.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${student.avatar_url}` : student.avatar_url} alt="" className="w-full h-full object-cover"/>
                       ) : (
                         student.name[0].toUpperCase()
                       )}
@@ -100,7 +100,7 @@ const InstructorCourseStudents = () => {
                     <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-indigo-500 p-0.5">
                       <div className="w-full h-full rounded-full bg-[#1E293B] border-2 border-transparent flex items-center justify-center overflow-hidden font-black text-2xl text-white">
                         {selectedStudent.avatar_url ? (
-                          <img src={selectedStudent.avatar_url.startsWith('/uploads') ? `http://localhost:8000${selectedStudent.avatar_url}` : selectedStudent.avatar_url} alt="" className="w-full h-full object-cover"/>
+                          <img src={selectedStudent.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${selectedStudent.avatar_url}` : selectedStudent.avatar_url} alt="" className="w-full h-full object-cover"/>
                         ) : (
                           selectedStudent.name[0].toUpperCase()
                         )}

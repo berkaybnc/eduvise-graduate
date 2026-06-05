@@ -334,7 +334,7 @@ const CourseManager = () => {
                   <div key={course.id} className="bg-[#1E293B] border border-white/10 rounded-2xl overflow-hidden hover:border-primary/30 transition-all group">
                     <div className={`h-36 relative ${course.thumbnail_url ? '' : `bg-gradient-to-br ${GRADIENT_MAP[course.category] || GRADIENT_MAP.default}`}`}>
                       {course.thumbnail_url && (
-                        <img src={course.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
+                        <img src={course.thumbnail_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.thumbnail_url}` : course.thumbnail_url} alt="Kapak" className="absolute inset-0 w-full h-full object-cover" />
                       )}
                       <div className="absolute top-3 right-3">
                         <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${
@@ -454,7 +454,7 @@ const CourseManager = () => {
                   <label className="block text-slate-300 text-sm font-semibold mb-1.5">Kapak Fotoğrafı</label>
                   {courseInfo.thumbnail_url ? (
                     <div className="relative rounded-xl overflow-hidden border border-white/10 h-48">
-                      <img src={courseInfo.thumbnail_url.startsWith('/uploads') ? `http://localhost:8000${courseInfo.thumbnail_url}` : courseInfo.thumbnail_url} alt="Kapak" className="w-full h-full object-cover" />
+                      <img src={courseInfo.thumbnail_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${courseInfo.thumbnail_url}` : courseInfo.thumbnail_url} alt="Kapak" className="w-full h-full object-cover" />
                       <button type="button" onClick={() => setCourseInfo(p => ({ ...p, thumbnail_url: '' }))} className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white p-1.5 rounded-lg hover:bg-red-500 transition-colors">
                         <span className="material-symbols-outlined text-[18px]">delete</span>
                       </button>
