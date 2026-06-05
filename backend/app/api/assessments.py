@@ -20,9 +20,23 @@ def add_question(course_id: str, question: QuestionCreate, db: Session = Depends
     return q
 
 @router.get("/diagnostic/{course_id}")
-def get_diagnostic_questions(course_id: str, db: Session = Depends(get_db)):
+async def get_diagnostic_questions(course_id: str, db: Session = Depends(get_db)):
+    course = db.query(Course).filter(Course.id == course_id).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Kurs bulunamadı")
+
     questions = db.query(Question).filter_by(course_id=course_id, assessment_type=AssessmentType.diagnostic).limit(15).all()
-    return questions
+    
+    # Check if there are no questions or if they are just the mock data ("A", "B", "C", "D")
+    is_mock = len(questions) > 0 and questions[0].options == ["A", "B", "C", "D"]
+    
+    if len(questions) < 3 or is_mock:
+        from app.services.ai_engine import generate_diagnostic_questions
+        data = await generate_diagnostic_questions(course.title, course.category, course.sections)
+        # Return dynamically generated questions
+        return data.get("questions", [])
+        
+    return [{"id": q.id, "question": q.question_text, "options": q.options, "correct": q.correct_option_index} for q in questions]
 
 @router.get("/diagnostic/field/{field_name}")
 async def get_field_diagnostic(field_name: str):
