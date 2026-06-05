@@ -10,11 +10,19 @@ const DIFFICULTY_COLORS = {
 };
 
 const FIELDS = [
-  { id: 'frontend', name: 'Frontend Geliştirme', icon: 'web', desc: 'React, Vue, HTML, CSS ve modern arayüz teknolojileri.' },
-  { id: 'backend', name: 'Backend Geliştirme', icon: 'dns', desc: 'Sunucu mimarisi, API tasarımı, veritabanı yönetimi.' },
-  { id: 'siber', name: 'Siber Güvenlik', icon: 'security', desc: 'Ağ güvenliği, sızma testleri ve kriptografi.' },
-  { id: 'veri', name: 'Veri Bilimi & AI', icon: 'analytics', desc: 'Makine öğrenmesi, veri analizi ve istatistik.' },
-  { id: 'mobil', name: 'Mobil Geliştirme', icon: 'smartphone', desc: 'iOS, Android ve Cross-Platform uygulama geliştirme.' }
+  { id: 'yazilim', name: 'Yazılım Dünyası', icon: 'code', desc: 'Programlama dilleri, yazılım geliştirme metodolojileri ve mimariler.' },
+  { id: 'yapay-zeka', name: 'Yapay Zekâ Dünyası', icon: 'psychology', desc: 'Makine öğrenmesi, derin öğrenme ve AI teknolojileri.' },
+  { id: 'sistem', name: 'Sistem Dünyası', icon: 'dns', desc: 'Ağ yönetimi, bulut bilişim ve sistem yöneticiliği.' },
+  { id: 'isletme', name: 'İşletme Dünyası', icon: 'business', desc: 'Yönetim, liderlik, dijital pazarlama ve finans.' },
+  { id: 'kisisel-gelisim', name: 'Kişisel Gelişim Dünyası', icon: 'self_improvement', desc: 'İletişim, zaman yönetimi ve yaratıcılık eğitimleri.' },
+  { id: 'tasarim', name: 'Tasarım Dünyası', icon: 'palette', desc: 'UI/UX tasarımı, grafik tasarım ve 3D modelleme.' },
+  { id: 'k12', name: 'K12 Dünyası', icon: 'school', desc: 'İlk, orta ve lise seviyesi için temel teknoloji eğitimleri.' },
+  { id: 'kariyer-yolu', name: 'Kariyer Yolu', icon: 'trending_up', desc: 'Kariyer planlama, mülakat hazırlığı ve CV oluşturma.' },
+  { id: 'guvenli-internet', name: 'Güvenli İnternet', icon: 'security', desc: 'İnternet etiği, siber güvenlik farkındalığı ve koruma.' },
+  { id: 'regulasyon', name: 'Regülasyon Dünyası', icon: 'gavel', desc: 'Bilişim hukuku, KVKK ve yasal uyumluluklar.' },
+  { id: 'temel-bilimler', name: 'Temel Bilimler', icon: 'science', desc: 'Matematik, fizik ve teknolojiye yön veren bilimler.' },
+  { id: 'sosyal-bilimler', name: 'Sosyal Bilimler', icon: 'public', desc: 'Toplumbilim, psikoloji ve insan odaklı eğitimler.' },
+  { id: 'kurum-kurulus', name: 'Kurum ve Kuruluşlar', icon: 'corporate_fare', desc: 'Kurumsal eğitimler ve kurumlara özel sertifikalar.' }
 ];
 
 const DiagnosticAssessment = () => {

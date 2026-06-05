@@ -4,7 +4,12 @@ import api from '../../lib/api';
 import FileUploadZone from '../../components/FileUploadZone';
 import useToastStore from '../../store/toastStore';
 
-const CATEGORIES = ['Yazılım', 'Siber Güvenlik', 'Veri Bilimi', 'Yapay Zeka', 'Tasarım', 'İş Dünyası', 'Matematik', 'Diğer'];
+const CATEGORIES = [
+  'Yazılım Dünyası', 'Yapay Zekâ Dünyası', 'Sistem Dünyası', 'İşletme Dünyası',
+  'Kişisel Gelişim Dünyası', 'Tasarım Dünyası', 'K12 Dünyası', 'Kariyer Yolu',
+  'Güvenli İnternet', 'Regülasyon Dünyası', 'Temel Bilimler', 'Sosyal Bilimler',
+  'Kurum ve Kuruluşlar'
+];
 const LEVELS = [
   { value: 'beginner', label: 'Başlangıç' },
   { value: 'intermediate', label: 'Orta Düzey' },

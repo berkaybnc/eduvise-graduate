@@ -5,11 +5,19 @@ import api from '../../lib/api';
 
 const CATEGORIES = [
   { id: 'all', label: 'Tüm Eğitimler', icon: 'grid_view' },
-  { id: 'Siber Güvenlik', label: 'Siber Güvenlik', icon: 'security' },
-  { id: 'Yazılım', label: 'Yazılım', icon: 'code' },
-  { id: 'Veri Bilimi', label: 'Veri Bilimi', icon: 'database' },
-  { id: 'Yapay Zeka', label: 'Yapay Zeka', icon: 'psychology' },
-  { id: 'Tasarım', label: 'Tasarım', icon: 'palette' }
+  { id: 'Yazılım Dünyası', label: 'Yazılım Dünyası', icon: 'code' },
+  { id: 'Yapay Zekâ Dünyası', label: 'Yapay Zekâ Dünyası', icon: 'psychology' },
+  { id: 'Sistem Dünyası', label: 'Sistem Dünyası', icon: 'dns' },
+  { id: 'İşletme Dünyası', label: 'İşletme Dünyası', icon: 'business' },
+  { id: 'Kişisel Gelişim Dünyası', label: 'Kişisel Gelişim Dünyası', icon: 'self_improvement' },
+  { id: 'Tasarım Dünyası', label: 'Tasarım Dünyası', icon: 'palette' },
+  { id: 'K12 Dünyası', label: 'K12 Dünyası', icon: 'school' },
+  { id: 'Kariyer Yolu', label: 'Kariyer Yolu', icon: 'trending_up' },
+  { id: 'Güvenli İnternet', label: 'Güvenli İnternet', icon: 'security' },
+  { id: 'Regülasyon Dünyası', label: 'Regülasyon Dünyası', icon: 'gavel' },
+  { id: 'Temel Bilimler', label: 'Temel Bilimler', icon: 'science' },
+  { id: 'Sosyal Bilimler', label: 'Sosyal Bilimler', icon: 'public' },
+  { id: 'Kurum ve Kuruluşlar', label: 'Kurum ve Kuruluşlar', icon: 'corporate_fare' }
 ];
 
 export const Marketplace = () => {

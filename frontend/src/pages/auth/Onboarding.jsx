@@ -4,26 +4,22 @@ import useAuthStore from '../../store/authStore';
 import api from '../../lib/api';
 
 const STUDENT_INTERESTS = [
-  { label: "Siber Güvenlik", icon: "security" },
-  { label: "Yapay Zeka ve ML", icon: "psychology" },
-  { label: "Veri Bilimi", icon: "database" },
-  { label: "Web Geliştirme", icon: "code" },
-  { label: "Mobil Uygulama", icon: "smartphone" },
-  { label: "Oyun Geliştirme", icon: "sports_esports" },
-  { label: "Bulut Bilişim", icon: "cloud" },
-  { label: "DevOps", icon: "terminal" },
+  { label: "Yazılım Dünyası", icon: "code" },
+  { label: "Yapay Zekâ Dünyası", icon: "psychology" },
+  { label: "Sistem Dünyası", icon: "dns" },
+  { label: "İşletme Dünyası", icon: "business" },
+  { label: "Kişisel Gelişim Dünyası", icon: "self_improvement" },
+  { label: "Tasarım Dünyası", icon: "palette" },
+  { label: "K12 Dünyası", icon: "school" },
+  { label: "Kariyer Yolu", icon: "trending_up" },
+  { label: "Güvenli İnternet", icon: "security" },
+  { label: "Regülasyon Dünyası", icon: "gavel" },
+  { label: "Temel Bilimler", icon: "science" },
+  { label: "Sosyal Bilimler", icon: "public" },
+  { label: "Kurum ve Kuruluşlar", icon: "corporate_fare" }
 ];
 
-const INSTRUCTOR_DOMAINS = [
-  { label: "Yazılım", icon: "code" },
-  { label: "Teknoloji", icon: "devices" },
-  { label: "Müzik", icon: "music_note" },
-  { label: "Matematik", icon: "functions" },
-  { label: "Grafik Tasarım", icon: "palette" },
-  { label: "Kişisel Gelişim", icon: "self_improvement" },
-  { label: "İşletme", icon: "business" },
-  { label: "Dil Eğitimi", icon: "translate" },
-];
+const INSTRUCTOR_DOMAINS = STUDENT_INTERESTS;
 
 const Onboarding = () => {
   const [selectedInterests, setSelectedInterests] = useState([]);
