@@ -130,6 +130,7 @@ async def get_me(current_user: User = Depends(get_current_user)):
         "role": current_user.role,
         "avatar_url": current_user.avatar_url,
         "bio": current_user.bio,
+        "interests": current_user.interests,
         "badges": badges_list,
         "xp": current_user.xp or 0,
         "streak_days": current_user.streak_days or 0
@@ -161,6 +162,7 @@ def update_profile(user_update: UserUpdate, db: Session = Depends(get_db), curre
         "role": current_user.role,
         "avatar_url": current_user.avatar_url,
         "bio": current_user.bio,
+        "interests": current_user.interests,
         "badges": badges_list,
         "xp": current_user.xp or 0,
         "streak_days": current_user.streak_days or 0
