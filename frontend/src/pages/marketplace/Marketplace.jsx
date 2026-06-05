@@ -131,7 +131,7 @@ export const Marketplace = () => {
     }
     
     return result;
-  }, [courses, searchQuery, selectedCategories, selectedLevels, sortOption, hideRegistered]);
+  }, [courses, searchQuery, selectedCategories, selectedLevels, sortOption]);
 
   const toggleCategory = (cat) => {
     setSelectedCategories(prev => 
