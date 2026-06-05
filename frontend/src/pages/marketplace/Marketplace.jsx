@@ -4,10 +4,35 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../../lib/api';
 
 const CATEGORIES = [
-  'Yazılım Dünyası', 'Yapay Zekâ Dünyası', 'Sistem Dünyası', 'İşletme Dünyası',
-  'Kişisel Gelişim Dünyası', 'Tasarım Dünyası', 'K12 Dünyası', 'Kariyer Yolu',
-  'Güvenli İnternet', 'Regülasyon Dünyası', 'Temel Bilimler', 'Sosyal Bilimler',
-  'Kurum ve Kuruluşlar'
+  {
+    name: 'Yazılım Dünyası',
+    subCategories: [
+      'Blok Zincir', 'İş Zekası ve Raporlama', 'Mobil Uygulama', 'Oyun Geliştirme',
+      'Programlama Dilleri', 'Veri Bilimi', 'Veri Tabanı', 'Yazılım Testi',
+      'Web Geliştirme', 'DevOps'
+    ]
+  },
+  {
+    name: 'Yapay Zekâ Dünyası',
+    subCategories: ['Geliştirme', 'Üretken Yapay Zekâ', 'Beşeri ve Sosyal']
+  },
+  {
+    name: 'Sistem Dünyası',
+    subCategories: ['İşletim Sistemleri', 'Siber Güvenlik', 'Bulut Sistemler']
+  },
+  {
+    name: 'İşletme Dünyası',
+    subCategories: ['Girişimcilik', 'Pazarlama', 'Proje Yönetimi', 'Ofis Programları']
+  },
+  { name: 'Kişisel Gelişim Dünyası', subCategories: [] },
+  { name: 'Tasarım Dünyası', subCategories: [] },
+  { name: 'K12 Dünyası', subCategories: [] },
+  { name: 'Kariyer Yolu', subCategories: [] },
+  { name: 'Güvenli İnternet', subCategories: [] },
+  { name: 'Regülasyon Dünyası', subCategories: [] },
+  { name: 'Temel Bilimler', subCategories: [] },
+  { name: 'Sosyal Bilimler', subCategories: [] },
+  { name: 'Kurum ve Kuruluşlar', subCategories: [] }
 ];
 
 const LEVELS = [
@@ -29,6 +54,12 @@ export const Marketplace = () => {
   // Accordion states
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const [isLevelOpen, setIsLevelOpen] = useState(true);
+  const [expandedCategories, setExpandedCategories] = useState({
+    'Yazılım Dünyası': true,
+    'Yapay Zekâ Dünyası': true,
+    'Sistem Dünyası': true,
+    'İşletme Dünyası': true
+  });
 
   const { data: courses, isLoading, error } = useQuery({
     queryKey: ['courses'],
@@ -86,6 +117,13 @@ export const Marketplace = () => {
     );
   };
 
+  const toggleCategoryExpand = (catName) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [catName]: !prev[catName]
+    }));
+  };
+
   const getLevelStyle = (level) => {
     const found = LEVELS.find(l => l.id === level);
     return found ? found.color : 'bg-slate-500/10 text-slate-400 border-slate-500/20';
@@ -133,14 +171,40 @@ export const Marketplace = () => {
               <span className={`material-symbols-outlined text-slate-400 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`}>expand_more</span>
             </button>
             {isCategoryOpen && (
-              <div className="p-5 flex flex-col gap-3 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+              <div className="p-5 flex flex-col gap-1 max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                 {CATEGORIES.map(cat => (
-                  <label key={cat} className="flex items-center gap-3 cursor-pointer group" onClick={(e) => { e.preventDefault(); toggleCategory(cat); }}>
-                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${selectedCategories.includes(cat) ? 'bg-primary border-primary' : 'border-slate-500 group-hover:border-slate-400'}`}>
-                      {selectedCategories.includes(cat) && <span className="material-symbols-outlined text-white text-[16px]">check</span>}
+                  <div key={cat.name} className="flex flex-col mb-2">
+                    <div className="flex items-center justify-between group">
+                      <label className="flex items-center gap-3 cursor-pointer py-1" onClick={(e) => { e.preventDefault(); toggleCategory(cat.name); }}>
+                        <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${selectedCategories.includes(cat.name) ? 'bg-primary border-primary' : 'border-slate-500 group-hover:border-slate-400'}`}>
+                          {selectedCategories.includes(cat.name) && <span className="material-symbols-outlined text-white text-[16px]">check</span>}
+                        </div>
+                        <span className={`text-sm transition-colors ${selectedCategories.includes(cat.name) ? 'text-white font-medium' : 'text-slate-400 group-hover:text-slate-300'}`}>{cat.name}</span>
+                      </label>
+                      {cat.subCategories.length > 0 && (
+                        <button 
+                          onClick={() => toggleCategoryExpand(cat.name)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors"
+                        >
+                          <span className={`material-symbols-outlined text-slate-400 text-[18px] transition-transform ${expandedCategories[cat.name] ? 'rotate-180' : ''}`}>expand_more</span>
+                        </button>
+                      )}
                     </div>
-                    <span className={`text-sm transition-colors ${selectedCategories.includes(cat) ? 'text-white font-medium' : 'text-slate-400 group-hover:text-slate-300'}`}>{cat}</span>
-                  </label>
+                    
+                    {/* Subcategories */}
+                    {cat.subCategories.length > 0 && expandedCategories[cat.name] && (
+                      <div className="flex flex-col gap-1.5 pl-8 mt-1 border-l border-white/5 ml-2.5">
+                        {cat.subCategories.map(subCat => (
+                          <label key={subCat} className="flex items-center gap-3 cursor-pointer group py-1" onClick={(e) => { e.preventDefault(); toggleCategory(subCat); }}>
+                            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedCategories.includes(subCat) ? 'bg-primary border-primary' : 'border-slate-600 group-hover:border-slate-400'}`}>
+                              {selectedCategories.includes(subCat) && <span className="material-symbols-outlined text-white text-[12px]">check</span>}
+                            </div>
+                            <span className={`text-xs transition-colors ${selectedCategories.includes(subCat) ? 'text-white font-medium' : 'text-slate-500 group-hover:text-slate-300'}`}>{subCat}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
