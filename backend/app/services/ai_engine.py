@@ -700,4 +700,4 @@ async def generate_instructor_insights(stats_data: dict) -> str:
         return response.text
     except Exception as e:
         print(f"Instructor Insights AI Error: {e}")
-        return "Şu anda veri analizi yapılamıyor. Lütfen daha sonra tekrar deneyin."
+        return f"Şu anda veri analizi yapılamıyor. Lütfen daha sonra tekrar deneyin.\n\n**Hata Detayı:** {e}"
