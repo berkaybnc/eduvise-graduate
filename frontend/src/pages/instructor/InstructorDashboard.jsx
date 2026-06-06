@@ -20,6 +20,85 @@ const StatCard = ({ icon, label, value, color, delta }) => (
   </div>
 );
 
+const parseMarkdownToJSX = (text) => {
+  if (!text) return null;
+  const lines = text.split('\n');
+  const elements = [];
+  let currentList = [];
+  let isNumbered = false;
+
+  const flushList = () => {
+    if (currentList.length > 0) {
+      elements.push(
+        isNumbered ? (
+          <ol key={`list-${elements.length}`} className="list-decimal list-inside space-y-2 mb-4 text-slate-300">
+            {currentList.map((item, i) => (
+              <li key={i} className="pl-1 leading-relaxed">
+                <span dangerouslySetInnerHTML={{ __html: parseInline(item) }} />
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <ul key={`list-${elements.length}`} className="list-none space-y-3 mb-6">
+            {currentList.map((item, i) => (
+              <li key={i} className="flex items-start gap-3 text-slate-300 leading-relaxed bg-white/5 p-3 rounded-xl border border-white/5">
+                <span className="material-symbols-outlined text-emerald-400 text-[18px] shrink-0 mt-0.5">check_circle</span>
+                <span dangerouslySetInnerHTML={{ __html: parseInline(item) }} />
+              </li>
+            ))}
+          </ul>
+        )
+      );
+      currentList = [];
+    }
+  };
+
+  const parseInline = (line) => {
+    return line
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em class="text-emerald-200 italic">$1</em>');
+  };
+
+  lines.forEach((line, i) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushList();
+      return;
+    }
+
+    if (trimmed.startsWith('### ')) {
+      flushList();
+      elements.push(
+        <h3 key={`h3-${i}`} className="text-lg font-bold text-white mt-6 mb-3 flex items-center gap-2">
+          <span className="w-2 h-6 bg-emerald-500 rounded-full inline-block"></span>
+          {trimmed.replace('### ', '')}
+        </h3>
+      );
+    } else if (trimmed.startsWith('## ')) {
+      flushList();
+      elements.push(
+        <h2 key={`h2-${i}`} className="text-xl font-black text-emerald-400 mt-8 mb-4 border-b border-white/10 pb-2">
+          {trimmed.replace('## ', '')}
+        </h2>
+      );
+    } else if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+      isNumbered = false;
+      currentList.push(trimmed.substring(2));
+    } else if (/^\d+\.\s/.test(trimmed)) {
+      isNumbered = true;
+      currentList.push(trimmed.replace(/^\d+\.\s/, ''));
+    } else {
+      flushList();
+      elements.push(
+        <p key={`p-${i}`} className="text-slate-300 leading-relaxed mb-4 text-sm" dangerouslySetInnerHTML={{ __html: parseInline(trimmed) }} />
+      );
+    }
+  });
+
+  flushList();
+  return elements;
+};
+
 const InstructorDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -188,13 +267,8 @@ const InstructorDashboard = () => {
           </h2>
           <div className="relative z-10">
             {insights ? (
-              <div className="prose prose-invert prose-emerald max-w-none prose-headings:text-white prose-strong:text-white prose-a:text-emerald-400">
-                <div dangerouslySetInnerHTML={{ 
-                  __html: insights
-                    .replace(/### (.*?)\n/g, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\n/g, '<br/>') 
-                }} />
+              <div className="custom-markdown-content">
+                {parseMarkdownToJSX(insights)}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-slate-500">
