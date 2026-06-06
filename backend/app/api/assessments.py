@@ -93,6 +93,8 @@ async def get_final_exam(course_id: str, db: Session = Depends(get_db)):
         # DB'de 10 soru yoksa AI ile anlık üret
         from app.services.ai_engine import generate_final_exam_questions
         data = await generate_final_exam_questions(course.title, course.description or "")  # type: ignore
+        if "error" in data:
+            return [{"id": "error", "question": data["error"], "options": [], "correct": 0}]
         return data.get("questions", [])
         
     return [{"id": q.id, "question": q.question_text, "options": q.options, "correct": q.correct_option_index} for q in questions[:10]]

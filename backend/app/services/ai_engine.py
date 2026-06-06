@@ -654,7 +654,7 @@ async def generate_final_exam_questions(course_title: str, course_description: s
         return json.loads(response.text)
     except Exception as e:
         print(f"AI Final Exam Q Error: {e}")
-        return {"questions": []}
+        return {"questions": [], "error": str(e), "text_response": getattr(e, "text", None)}
 
 async def generate_forum_reply(title: str, content: str, course_title: str) -> str:
     prompt = f"""
