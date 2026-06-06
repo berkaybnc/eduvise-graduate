@@ -64,24 +64,32 @@ const LEVELS = [
 ];
 
 // ─── Adım göstergesi ────────────────────────────────────────────────────────
-const StepIndicator = ({ step }) => {
+const StepIndicator = ({ step, setStep, createdCourse }) => {
   const steps = ['Kurs Bilgileri', 'Bölümler & Videolar', 'Yayınla'];
   return (
     <div className="flex items-center gap-2 mb-8">
-      {steps.map((label, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all
-            ${step > i ? 'bg-emerald-500 text-white' : step === i ? 'bg-primary text-white ring-4 ring-primary/20' : 'bg-white/5 text-slate-500'}`}>
-            {step > i ? <span className="material-symbols-outlined text-sm">check</span> : i + 1}
+      {steps.map((label, i) => {
+        const isClickable = createdCourse != null || i === 0;
+        return (
+          <div key={i} className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => isClickable && setStep(i)}
+              disabled={!isClickable}
+              className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all ${isClickable ? 'cursor-pointer hover:ring-2 hover:ring-primary/50' : 'cursor-not-allowed'}
+                ${step > i ? 'bg-emerald-500 text-white' : step === i ? 'bg-primary text-white ring-4 ring-primary/20' : 'bg-white/5 text-slate-500'}`}
+            >
+              {step > i ? <span className="material-symbols-outlined text-sm">check</span> : i + 1}
+            </button>
+            <span className={`text-sm font-semibold hidden sm:block ${step === i ? 'text-white' : step > i ? 'text-emerald-400' : 'text-slate-500'}`}>
+              {label}
+            </span>
+            {i < steps.length - 1 && (
+              <div className={`flex-1 h-px w-8 mx-1 ${step > i ? 'bg-emerald-500' : 'bg-white/10'}`} />
+            )}
           </div>
-          <span className={`text-sm font-semibold hidden sm:block ${step === i ? 'text-white' : step > i ? 'text-emerald-400' : 'text-slate-500'}`}>
-            {label}
-          </span>
-          {i < steps.length - 1 && (
-            <div className={`flex-1 h-px w-8 mx-1 ${step > i ? 'bg-emerald-500' : 'bg-white/10'}`} />
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
@@ -152,7 +160,7 @@ const CourseManager = () => {
       thumbnail_url: course.thumbnail_url || ''
     });
     setSections(course.sections || []);
-    setStep(1);
+    setStep(0);
     setActiveTab('create');
   };
 
@@ -465,7 +473,7 @@ const CourseManager = () => {
         {/* ──────────────── KURS OLUŞTUR ──────────────── */}
         {activeTab === 'create' && (
           <div className="max-w-2xl">
-            <StepIndicator step={step} />
+            <StepIndicator step={step} setStep={setStep} createdCourse={createdCourse} />
 
             {errorMsg && (
               <div className="mb-5 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl flex items-center gap-3">
@@ -570,7 +578,7 @@ const CourseManager = () => {
                   </button>
                   <button type="submit" disabled={savingCourse}
                     className="flex-1 bg-gradient-to-r from-primary to-indigo-600 text-white py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2">
-                    {savingCourse ? <><span className="material-symbols-outlined animate-spin text-xl">progress_activity</span> Oluşturuluyor...</> : 'Kursu Oluştur ve Devam Et →'}
+                    {savingCourse ? <><span className="material-symbols-outlined animate-spin text-xl">progress_activity</span> Kaydediliyor...</> : (createdCourse ? 'Kaydet ve Devam Et →' : 'Kursu Oluştur ve Devam Et →')}
                   </button>
                 </div>
               </form>
