@@ -135,7 +135,6 @@ const CourseManager = () => {
     return () => { cancelled = true; };
   }, [refreshKey]);
 
-
   const resetCreation = () => {
     setStep(0);
     setCourseInfo({ title: '', description: '', category: '', level: 'beginner', price: 0, thumbnail_url: '' });
@@ -148,6 +147,17 @@ const CourseManager = () => {
     setAddingExercise(false);
     setExerciseForm({ title: '', description: '', language: 'python', initial_code: '', test_code: '' });
   };
+
+  // Listen for navigation state changes
+  useEffect(() => {
+    if (location.state?.openCreateTab) {
+      resetCreation();
+      setActiveTab('create');
+      // Temizle state'i tekrar tıklandığında algılaması için
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
+
 
   const handleEditCourse = (course) => {
     setCreatedCourse(course);

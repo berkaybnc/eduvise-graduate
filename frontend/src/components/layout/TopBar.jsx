@@ -164,7 +164,7 @@ const TopBar = () => {
 
         {/* AI Quick Action */}
         <button
-          onClick={() => navigate(isInstructor ? '/instructor/courses' : '/assessment/diagnostic')}
+          onClick={() => navigate(isInstructor ? '/instructor/courses' : '/assessment/diagnostic', { state: { openCreateTab: isInstructor } })}
           className="flex items-center gap-2 bg-gradient-to-r from-primary to-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
         >
           <span className="material-symbols-outlined text-[18px]">
