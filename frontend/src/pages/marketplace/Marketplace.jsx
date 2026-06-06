@@ -91,6 +91,14 @@ export const Marketplace = () => {
     }
   });
 
+  const { data: enrolledCourses } = useQuery({
+    queryKey: ['enrolled-courses'],
+    queryFn: async () => {
+      const response = await api.get('/courses/enrolled');
+      return response.data.map(enr => enr.course.id);
+    }
+  });
+
   // Filter and Sort Logic
   const filteredCourses = useMemo(() => {
     if (!courses) return [];
@@ -130,8 +138,13 @@ export const Marketplace = () => {
       result.sort((a, b) => (b.price || 0) - (a.price || 0));
     }
     
+    // Filtre: Kayıtlıları Gizle
+    if (hideRegistered && enrolledCourses) {
+      result = result.filter(c => !enrolledCourses.includes(c.id));
+    }
+    
     return result;
-  }, [courses, searchQuery, selectedCategories, selectedLevels, sortOption]);
+  }, [courses, searchQuery, selectedCategories, selectedLevels, sortOption, hideRegistered, enrolledCourses]);
 
   const toggleCategory = (cat) => {
     setSelectedCategories(prev => 
