@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <title>EduVise - Bitirme Projesi Sunumu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Reveal.js Core CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <!-- Reveal.js Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/night.min.css" id="theme">
+    <!-- Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.min.css">
+    
+    <!-- Custom Styles for Extra Beauty -->
+    <style>
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            text-transform: none;
+            letter-spacing: -0.5px;
+        }
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .glass-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .slide-img {
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-height: 400px;
+            margin: 20px auto !important;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 0.8em;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. Kapak Slaytı -->
+            <section>
+                <img src="frontend/public/logo.png" alt="EduVise Logo" style="background:transparent; border:none; box-shadow:none; width:200px; margin-bottom: 20px;">
+                <h1 class="gradient-text">EduVise</h1>
+                <h3>Yapay Zeka Destekli Uyarlanabilir Öğrenme Platformu</h3>
+                <p>
+                    <small>Bitirme Projesi Sunumu</small>
+                </p>
+            </section>
+
+            <!-- 2. Giriş Slaytı -->
+            <section>
+                <h2>Platforma Genel Bakış</h2>
+                <div class="glass-box">
+                    <p>EduVise, öğrencilerin yeteneklerini analiz eden, onlara özel öğrenme yolları (roadmap) sunan ve eğitim sürecini oyunlaştırma ile destekleyen modern bir akıllı eğitim platformudur.</p>
+                </div>
+                <br>
+                <ul>
+                    <li class="fragment">Kişiselleştirilmiş Öğrenme (Adaptive Learning)</li>
+                    <li class="fragment">Geniş Çaplı Dil Modeli (LLM) Entegrasyonu</li>
+                    <li class="fragment">Tam yığın (Full-stack) modern mimari</li>
+                </ul>
+            </section>
+
+            <!-- 3. Problem ve Çözüm -->
+            <section>
+                <section>
+                    <h2>Problem ve Çözüm</h2>
+                    <p>Geleneksel eğitim sistemlerindeki eksiklikler ve bizim çözümümüz.</p>
+                </section>
+                <section>
+                    <div class="feature-grid">
+                        <div class="feature-item" style="border-left-color: #ef4444;">
+                            <h3>Geleneksel Eğitim</h3>
+                            <p>Herkes için tek tip içerik.</p>
+                            <p>Eksik geri bildirim döngüsü.</p>
+                            <p>Düşük motivasyon ve etkileşim.</p>
+                        </div>
+                        <div class="feature-item" style="border-left-color: #10b981;">
+                            <h3>EduVise Çözümü</h3>
+                            <p>Öğrenciye özel adaptif haritalar.</p>
+                            <p>Anlık yapay zeka analizleri.</p>
+                            <p>Oyunlaştırma ve sosyal öğrenme.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 4. Frontend Mimarisi -->
+            <section>
+                <h2 class="gradient-text">Frontend Mimarisi</h2>
+                <div class="glass-box">
+                    <ul>
+                        <li><strong>React.js & Vite:</strong> Hızlı derleme süreleri ve modern bileşen tabanlı yapı.</li>
+                        <li><strong>Tailwind CSS:</strong> Duyarlı (responsive) ve ölçeklenebilir tasarım sistemi.</li>
+                        <li><strong>Zustand:</strong> Merkezi ve asenkron state (durum) yönetimi.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 5. Backend Mimarisi -->
+            <section>
+                <h2 class="gradient-text">Backend Mimarisi</h2>
+                <div class="glass-box">
+                    <ul>
+                        <li><strong>Python & FastAPI:</strong> Yüksek performanslı asenkron RESTful API tasarımı.</li>
+                        <li><strong>SQLAlchemy & SQLite:</strong> Güçlü ORM yapısı ve ilişkisel veri modeli yönetimi.</li>
+                        <li><strong>Modüler Yapı:</strong> Auth, Kurs, Değerlendirme, Forum ve Ödeme modülleri.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 6. Yapay Zeka Entegrasyonu -->
+            <section>
+                <h2>Yapay Zeka Motoru</h2>
+                <p>EduVise, <strong>Anthropic API</strong> kullanarak derinlemesine analiz yapar.</p>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Teşhis (Diagnostic)</h4>
+                        <p>Öğrencinin bilgi boşluklarını tespit eder.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Yol Haritası (Roadmap)</h4>
+                        <p>Kişiye özel adım adım öğrenim planı oluşturur.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Danışmanlık (Counseling)</h4>
+                        <p>Gelişim raporları ve geri bildirim sunar.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>İçerik Önerisi</h4>
+                        <p>Dinamik olarak en uygun kursu eşleştirir.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Gelişmiş Modüller: Oyunlaştırma ve Forum -->
+            <section>
+                <h2>Oyunlaştırma & Topluluk</h2>
+                <div class="glass-box">
+                    <p><strong>🎮 Gamification:</strong> Öğrenciler eğitimlerini tamamladıkça XP, Başarı Rozetleri (Badges) ve Liderlik (Leaderboard) puanları kazanır.</p>
+                    <p><strong>💬 Forum Sistemi:</strong> P2P (Peer-to-Peer) eşler arası öğrenmeyi destekleyen soru-cevap ve tartışma platformu.</p>
+                </div>
+            </section>
+
+            <!-- 8. Kod İncelemesi 1: Auth -->
+            <section>
+                <h2>Kod İncelemesi: Auth Modülü</h2>
+                <p>Güvenli ve Asenkron Kimlik Doğrulama</p>
+                <pre><code class="language-javascript" data-trim data-line-numbers="2-10|12-16">
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const response = await api.post('/auth/login', {
+    email: formData.email,
+    password: formData.password,
+  });
+  
+  const token = response.data.access_token;
+  const meResponse = await api.get('/auth/me', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  
+  setAuth(meResponse.data, token);
+
+  if (meResponse.data.role === 'instructor') {
+    navigate('/instructor/dashboard');
+  } else {
+    navigate('/dashboard');
+  }
+};
+                </code></pre>
+            </section>
+
+            <!-- 9. Kod İncelemesi 2: CourseManager -->
+            <section>
+                <h2>Kod İncelemesi: Optimizasyon</h2>
+                <p>Cascading Render hatalarını önleyen yaklaşım</p>
+                <pre><code class="language-javascript" data-trim data-line-numbers="3-6|8-11">
+// React Hook içerisinde eşzamanlı render'ı önlemek
+useEffect(() => {
+  if (location.state?.openCreateTab) {
+    const timer = setTimeout(() => {
+      resetCreation();
+      setActiveTab('create');
+      
+      // Route state'ini temizle
+      navigate(location.pathname, { replace: true, state: {} });
+    }, 0);
+    return () => clearTimeout(timer);
+  }
+}, [location.state, location.pathname, navigate]);
+                </code></pre>
+            </section>
+
+            <!-- 10. Sonuçlar ve Değerlendirme -->
+            <section>
+                <h2>Performans & Sonuçlar</h2>
+                <div class="feature-grid">
+                    <div class="feature-item" style="border-color:#eab308;">
+                        <h4>Güvenilirlik</h4>
+                        <p>Hızlı backend yanıt süreleri ve render optimizasyonu.</p>
+                    </div>
+                    <div class="feature-item" style="border-color:#3b82f6;">
+                        <h4>UX Değerlendirmesi</h4>
+                        <p>Kullanıcı dostu navigasyon ve etkileşimli eğitim arayüzü.</p>
+                    </div>
+                </div>
+                <br>
+                <p class="fragment"><small>Not: Gelecek adımlarda büyük ölçekli kullanıcı testleri ve bulut (cloud) ortamı dağıtımı hedeflenmektedir.</small></p>
+            </section>
+
+            <!-- 11. Gelecek Vizyonu -->
+            <section>
+                <h2 class="gradient-text">Gelecek Vizyonu</h2>
+                <ul>
+                    <li>📱 Mobil Uygulama Entegrasyonu</li>
+                    <li>🎙️ Ses Tabanlı Yapay Zeka Eğitmeni</li>
+                    <li>🌍 Çoklu Dil Desteği</li>
+                    <li>☁️ Cloud-Native Altyapı</li>
+                </ul>
+            </section>
+
+            <!-- 12. Teşekkürler -->
+            <section>
+                <h1 class="gradient-text">Teşekkürler</h1>
+                <p>EduVise: Geleceğin Adaptif Öğrenme Sistemi</p>
+                <br>
+                <p><small>Sorularınız için hazırım.</small></p>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Core JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+    
+    <script>
+        // Reveal.js Başlatma Ayarları
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+            backgroundTransition: 'fade',
+            plugins: [ RevealHighlight ],
+            slideNumber: 'c/t' // Sayfa numaralarını göster
+        });
+    </script>
+</body>
+</html>
