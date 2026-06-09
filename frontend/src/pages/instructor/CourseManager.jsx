@@ -151,10 +151,13 @@ const CourseManager = () => {
   // Listen for navigation state changes
   useEffect(() => {
     if (location.state?.openCreateTab) {
-      resetCreation();
-      setActiveTab('create');
-      // Temizle state'i tekrar tıklandığında algılaması için
-      navigate(location.pathname, { replace: true, state: {} });
+      const timer = setTimeout(() => {
+        resetCreation();
+        setActiveTab('create');
+        // Temizle state'i tekrar tıklandığında algılaması için
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [location.state, location.pathname, navigate]);
 
