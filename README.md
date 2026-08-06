@@ -1,57 +1,73 @@
-# Eduvise Graduate
+# Eduvise Graduate (EduviseSkills)
 
-Eduvise Graduate is a comprehensive web application designed for graduate students and educators. It provides tools for diagnostic assessment, marketplace features, and more.
+Eduvise Graduate is a modern, comprehensive educational platform featuring a microservices-based backend architecture and a responsive React frontend. It provides diagnostic assessments, a course marketplace, instructor dashboards, AI-driven course generation, and various analytics features.
 
-## Project Structure
+## Architecture Overview
 
-- `frontend/`: Contains the React-based frontend application (Vite/Next.js/React).
-- `backend/`: Contains the backend services and APIs.
-- `services/`: Additional microservices or background workers.
-- `presentation/`: Presentation materials and HTML slides.
-- `docker-compose.yml`: Docker composition for running the services locally.
+The system is designed with a service-oriented architecture using Docker Compose:
 
-## Prerequisites
+### Frontend
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS, PostCSS, Autoprefixer
+- **State Management**: Zustand, React Query (TanStack)
+- **Routing**: React Router DOM v7
+- **Features**: Data visualization (Recharts), Code editor integration (Monaco Editor), Diagramming (React Flow), PDF/Canvas exports (jspdf, html2canvas)
 
-- Node.js
-- Docker & Docker Compose
-- Python 3.x (for various utility scripts)
+### Backend Services
+The backend uses **Python & FastAPI (Uvicorn)** and is split into several microservices:
+- `api-gateway` (Port 8000): Central entry point handling requests and routing them to respective services.
+- `auth-service` (Port 8001): Manages user authentication, roles, and sessions.
+- `course-service` (Port 8002): Manages courses, lessons, diagnostic assessments, and content generation.
+- `ai-service` (Port 8003): Handles AI capabilities, integrations (Gemini, etc.), and intelligent content processing.
+- `analytics-service` (Port 8004): Processes platform analytics and user performance metrics.
+
+**Infrastructure**:
+- **PostgreSQL**: Relational database for persistent storage (`eduviseskills` DB).
+- **Redis**: Caching, session management, and potential message queuing.
 
 ## Getting Started
 
-To get started with the project locally:
+### Prerequisites
+- Node.js (v18 or higher)
+- Docker & Docker Compose
+- Python 3.10+ (for utility scripts)
 
-1. Clone the repository and navigate to the root directory.
-2. Ensure Docker Desktop is running.
-3. Start the services using Docker Compose or the provided batch script:
-   ```bash
-   docker-compose up -d
-   ```
-   Or run the `baslat.bat` script.
+### Running Locally (Docker Compose)
 
-## Frontend
+The easiest way to run the entire backend stack is via Docker Compose:
 
-Navigate to the `frontend/` directory to run the development server:
+```bash
+# Clone the repository
+git clone https://github.com/berkaybnc/eduvise-graduate.git
+cd eduvise-graduate
+
+# Start all microservices and databases in detached mode
+docker-compose up --build -d
+```
+You can also simply run the provided `baslat.bat` if on Windows.
+
+### Running Frontend Locally
+
+To start the Vite development server for the frontend UI:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+The frontend will typically run on `http://localhost:5173`.
 
-## Backend
+## Additional Tools & Scripts
+The repository includes several helpful Python scripts in the root directory:
+- `extract_docx.py`, `update_docx.py`: Scripts for processing Word documents.
+- `take_screenshots.py`: Tool for automated UI screenshot capture.
+- `replace_urls.py`: Utility for environment/URL manipulation.
+- `test_flow.py`, `test_gemini.py`: Test scripts for verifying flows and AI API connections.
 
-Navigate to the `backend/` directory to set up the backend environment and run the server. Check the backend README for more specific instructions if available.
-
-## Deployment
-
-This repository uses continuous deployment. Pushing to the `main` branch will trigger the deployment process via GitHub Actions.
-
-> **Note:** Only push to the `main` branch when you are ready to deploy.
-
-## Scripts
-
-- `replace_urls.py`, `take_screenshots.py`, `update_docx.py`, `extract_docx.py`: Utility Python scripts for various administrative and data extraction tasks.
-- `test_flow.py`, `test_gemini.py`: Test scripts.
+## Deployment Pipeline
+This project is configured with continuous deployment workflows.
+- Merging or pushing to the `main` branch automatically triggers the production deployment pipeline (GitHub Actions -> Google Cloud Run + Railway).
+- **Rule**: Do NOT push directly to `master`. Only push/merge to `main` when ready to deploy.
 
 ## License
-
-This project is proprietary and confidential.
+Proprietary. Do not distribute.
